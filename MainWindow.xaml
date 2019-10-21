@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Сonsolidated Excel" Height="450" Width="800">
+        Title="Сonsolidated Excel" Height="450" Width="800" Icon="excel_import.ico" MinWidth="800" MinHeight="450">
     <Grid>
         <Menu x:Name="menu" Height="28" VerticalAlignment="Top">
             <MenuItem Header="File">
@@ -17,9 +17,20 @@
                 <MenuItem Header="Free entry into the table" IsEnabled="False"/>
             </MenuItem>
         </Menu>
-        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="386" Margin="0,33,0,0" VerticalAlignment="Top" Width="792">
+        <TabControl x:Name="tabControl" Margin="0,33,0,0">
             <TabItem x:Name="ImportTab" Header="Import">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid x:Name="dataGrid">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Дата проведения "/>
+                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Время проведения"/>
+                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Преподаватель"/>
+                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Номер группы"/>
+                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Категория слушателей"/>
+                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Место проведения"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
             </TabItem>
             <TabItem x:Name="ExportTab" Header="View All Data" IsEnabled="False">
                 <Grid Background="#FFE5E5E5"/>
