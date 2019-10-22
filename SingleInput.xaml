@@ -34,7 +34,7 @@
             <Grid Margin="0">
                 <Label x:Name="label_time" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Дата проведения:" FontSize="14"/>
                 <xctk:MaskedTextBox x:Name="MaskedTextBoxStartTime" HorizontalAlignment="Left" Height="22" Margin="208,16,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="44"
-                             Mask="00:00" FontSize="14" GotFocus="MaskedTextBoxStartTime_GotFocus"/>
+                             Mask="00:00" FontSize="14" GotFocus="MaskedTextBoxStartTime_GotFocus" SelectionChanged="MaskedTextBoxStartTime_SelectionChanged" />
                 <Label x:Name="label_start_time" HorizontalAlignment="Left" Margin="139,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="начало - " FontSize="14"/>
                 <xctk:MaskedTextBox x:Name="MaskedTextBoxStartTime_Copy" HorizontalAlignment="Left" Height="22" Margin="336,16,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="52"
                     Mask="00:00" FontSize="14"/>
