@@ -29,5 +29,17 @@ namespace SvodExcel
         {
             this.Close();
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AboutBox1 f = new AboutBox1();
+            f.ShowDialog();
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            SingleInput f = new SingleInput();
+            f.ShowDialog();
+        }
     }
 }

@@ -11,10 +11,13 @@
             <MenuItem Header="File">
                 <MenuItem Header="Exit" Click="MenuItem_Click_Exit"/>
             </MenuItem>
-            <MenuItem Header="Imput">
-                <MenuItem Header="Single manual entry"/>
+            <MenuItem Header="Input">
+                <MenuItem Header="Single manual entry" Click="MenuItem_Click_1"/>
                 <MenuItem Header="Import from Excel" IsEnabled="False"/>
                 <MenuItem Header="Free entry into the table" IsEnabled="False"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About..." Click="MenuItem_Click"/>
             </MenuItem>
         </Menu>
         <TabControl x:Name="tabControl" Margin="0,33,0,0">
