@@ -21,7 +21,7 @@ namespace SvodExcel
             buttonConfirmTime.Visibility = Visibility.Hidden;
             labelTimeOut.Visibility = Visibility.Hidden;
             DefaultTimes = MaskedTextBoxStartTime.Text;
-            //GetExcel();
+            GetExcel();
         }
 
         private void MaskedTextBoxStartTime_GotFocus(object sender, RoutedEventArgs e)
@@ -144,7 +144,8 @@ namespace SvodExcel
         private void GetExcel()
         {
             //string path = ".\\РАСП.xlsx";
-            string path = "C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+            //string path = "C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+            string path = "C:\\Users\\Ilya\\Source\\Repos\\gladeger\\SvodExcel\\РАСП.xlsx";
             //Microsoft.Office.Interop.Excel.XLCel
             var exApp = new Microsoft.Office.Interop.Excel.Application();
             var exBook = exApp.Workbooks.Open(path);
@@ -153,12 +154,12 @@ namespace SvodExcel
             var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
             //string[,] list = new string[lastcell.Row, lastcell.Column];
             List<List<string>> list = new List<List<string>>();
-            for (int i = 0; i < lastcell.Column; i++) //Все колонки
+            /*for (int i = 0; i < lastcell.Column; i++) //Все колонки
             {
                 list.Add(new List<string>());
                 for (int j = 0; j < lastcell.Row; j++) //строки
                     list[i].Add(ExSheet.Cells[j + 1, i + 1].Value.ToString());
-            }
+            }*/
             // ReSharper disable once CoVariantArrayConversion
             //comboBoxTeacher.Items.AddRange(items: list[0].ToArray());
             exBook.Close(false);
