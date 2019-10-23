@@ -8,20 +8,20 @@
         Title="Сonsolidated Excel" Height="450" Width="800" Icon="excel_import.ico" MinWidth="800" MinHeight="450">
     <Grid>
         <Menu x:Name="menu" Height="28" VerticalAlignment="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="Exit" Click="MenuItem_Click_Exit"/>
+            <MenuItem Header="Файл">
+                <MenuItem Header="Выход" Click="MenuItem_Click_Exit"/>
             </MenuItem>
-            <MenuItem Header="Input">
-                <MenuItem Header="Single manual entry" Click="MenuItem_Click_1"/>
-                <MenuItem Header="Import from Excel" IsEnabled="False"/>
-                <MenuItem Header="Free entry into the table" IsEnabled="False"/>
+            <MenuItem Header="Ввод данных">
+                <MenuItem Header="Ручной ввод по одному" Click="MenuItem_Click_1"/>
+                <MenuItem Header="Импорт из Excel" IsEnabled="False"/>
+                <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False"/>
             </MenuItem>
-            <MenuItem Header="Help">
-                <MenuItem Header="About..." Click="MenuItem_Click"/>
+            <MenuItem Header="Справка">
+                <MenuItem Header="О программе" Click="MenuItem_Click"/>
             </MenuItem>
         </Menu>
         <TabControl x:Name="tabControl" Margin="0,33,0,0">
-            <TabItem x:Name="ImportTab" Header="Import">
+            <TabItem x:Name="ImportTab" Header="Импорт">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid x:Name="dataGrid">
                         <DataGrid.Columns>
@@ -35,7 +35,7 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="ExportTab" Header="View All Data" IsEnabled="False">
+            <TabItem x:Name="ExportTab" Header="Просмотр всех данных" IsEnabled="False">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
