@@ -1,11 +1,9 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using Microsoft.Office.Core;
-using Microsoft.Office.Interop;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System;
+using System.Threading;
+using System.Windows;
+using System.Windows.Input;
+
 
 
 
@@ -25,6 +23,7 @@ namespace SvodExcel
             labelTimeOut.Visibility = Visibility.Hidden;
             DefaultTimes = MaskedTextBoxStartTime.Text;
             StartListTeacher();
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
         }
 
         private void MaskedTextBoxStartTime_GotFocus(object sender, RoutedEventArgs e)
@@ -170,17 +169,49 @@ namespace SvodExcel
             exApp.Quit();
             //GC.Collect();
         }
-
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            //GetExcel();
+            //System.Windows.Threading.Dispatcher.Run();
+
+            WinEffectON();
+            
             UpdateListTeacher();
+            Thread.Sleep(2000);
+            
+        }
+        private void WinEffectON()
+        {
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            objBlur.Radius = 4;
+            this.Effect = objBlur;
         }
         private void UpdateListTeacher()
-        {
-            
+        {            
+            double This_TH2 = this.Top + this.Height / 2.0;
+            double This_LW2 = this.Left + this.Width / 2.0;
             string path = @".\ListTeacher.dat";
+            Thread newWindowThread = new Thread(new ThreadStart(() =>
+            {
+                // Create and show the Window
+                SvodExcel.ProgressBar PB = new SvodExcel.ProgressBar();
+                PB.Top = This_TH2 - PB.Height / 2.0;
+                PB.Left = This_LW2 - PB.Width / 2.0;
+                PB.Topmost = true;
+                PB.Show();
+                //Thread.Sleep(2000);
+                // Start the Dispatcher Processing
+                //System.Windows.Threading.Dispatcher.Run();
+            }));
+            // Set the apartment state
+            newWindowThread.SetApartmentState(ApartmentState.STA);
+            // Make the thread a background thread
+            newWindowThread.IsBackground = true;
+            // Start the thread
+            newWindowThread.Start();
 
+
+            //GetExcel();
+            //PB.Close();
             if (!File.Exists(path))
             {
                 comboBoxTeacher.Items.Add("Пронина Л.Н.");
@@ -199,7 +230,9 @@ namespace SvodExcel
                 {
                     comboBoxTeacher.Items.Add(Teachers[i]);
                 }
-            }          
+            }
+
+            newWindowThread.Abort();
         }
         private void StartListTeacher()
         {
@@ -226,5 +259,6 @@ namespace SvodExcel
                 }
             }
         }
+
     }
 }
