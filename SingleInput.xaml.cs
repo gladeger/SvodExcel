@@ -3,6 +3,9 @@ using System.Windows.Input;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System;
 
 
 
@@ -21,7 +24,7 @@ namespace SvodExcel
             buttonConfirmTime.Visibility = Visibility.Hidden;
             labelTimeOut.Visibility = Visibility.Hidden;
             DefaultTimes = MaskedTextBoxStartTime.Text;
-            GetExcel();
+            StartListTeacher();
         }
 
         private void MaskedTextBoxStartTime_GotFocus(object sender, RoutedEventArgs e)
@@ -166,6 +169,62 @@ namespace SvodExcel
             //exBook.Close(false, Type.Missing, Type.Missing);
             exApp.Quit();
             //GC.Collect();
+        }
+
+        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            //GetExcel();
+            UpdateListTeacher();
+        }
+        private void UpdateListTeacher()
+        {
+            
+            string path = @".\ListTeacher.dat";
+
+            if (!File.Exists(path))
+            {
+                comboBoxTeacher.Items.Add("Пронина Л.Н.");
+                comboBoxTeacher.Items.Add("Григорьева А.И.");
+                File.WriteAllText(path, comboBoxTeacher.Items[0].ToString());
+                for (int i = 1; i < comboBoxTeacher.Items.Count; i++)
+                {
+                    File.AppendAllText(path, "\n" + comboBoxTeacher.Items[i].ToString());
+                }
+            }
+            else
+            {
+                string[] Teachers=File.ReadAllLines(path);
+                comboBoxTeacher.Items.Clear();
+                for (int i = 0; i < Teachers.Length;i++)
+                {
+                    comboBoxTeacher.Items.Add(Teachers[i]);
+                }
+            }          
+        }
+        private void StartListTeacher()
+        {
+
+            string path = @".\ListTeacher.dat";
+
+            if (!File.Exists(path))
+            {
+                comboBoxTeacher.Items.Add("Пронина Л.Н.");
+                comboBoxTeacher.Items.Add("Григорьева А.И.");
+                File.WriteAllText(path, comboBoxTeacher.Items[0].ToString());
+                for (int i = 1; i < comboBoxTeacher.Items.Count; i++)
+                {
+                    File.AppendAllText(path, "\n" + comboBoxTeacher.Items[i].ToString());
+                }
+            }
+            else
+            {
+                string[] Teachers = File.ReadAllLines(path);
+                comboBoxTeacher.Items.Clear();
+                for (int i = 0; i < Teachers.Length; i++)
+                {
+                    comboBoxTeacher.Items.Add(Teachers[i]);
+                }
+            }
         }
     }
 }

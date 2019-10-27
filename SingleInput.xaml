@@ -52,6 +52,7 @@
             <Grid Margin="0">
                 <Label x:Name="label_teacher" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Преподаватель:" FontSize="14"/>
                 <ComboBox x:Name="comboBoxTeacher" HorizontalAlignment="Left" Margin="127,14,0,0" VerticalAlignment="Top" Width="201" FontSize="14" IsEditable="True"/>
+                <Button x:Name="buttonUpdate" HorizontalAlignment="Left" Margin="333,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="ButtonUpdate_Click"><Image Source="update.png" /></Button>
             </Grid>
         </Border>
 
