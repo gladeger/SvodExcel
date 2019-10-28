@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
         Title="Загрузка" Height="50" Width="270" ShowInTaskbar="False" ResizeMode="NoResize" Icon="update.png" Topmost="True" WindowStyle="None">
-    <Grid>
+    <Grid Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}">
         <ProgressBar x:Name="PB" HorizontalAlignment="Left" Height="30" Margin="10,10,0,0" VerticalAlignment="Top" Width="250" IsIndeterminate="True"/>
 
     </Grid>
