@@ -15,17 +15,26 @@ namespace SvodExcel
     /// </summary>
     public partial class SingleInput : System.Windows.Window
     {
-        private string DefaultTimes;
+        private string DefaultTimes="__:__";
         private bool FlagStartCursorMST = true;
         private bool itisclickcombobox = true;
         private bool itisclose = false;
+        private List<string> NotCheckTeacher=new List<string>();
+        private bool itisnotstart = false;
         public SingleInput()
         {
             InitializeComponent();
-            buttonConfirmTime.Visibility = Visibility.Hidden;
+            GridCalcTime.Visibility = Visibility.Hidden;
             DefaultTimes = MaskedTextBoxStartTime.Text;
             StartListTeacher();
             System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            checkBoxAutoEdit.IsChecked = true;
+            NotCheckTeacher.Add(ButtonNewTeacher.Name);
+            NotCheckTeacher.Add(buttonUpdate.Name);
+            NotCheckTeacher.Add(ButtonWriteAndContinue.Name);
+            NotCheckTeacher.Add(ButtonWriteAndStop.Name);
+            NotCheckTeacher.Add(ButtonCancel.Name);
+            itisnotstart = true;
         }
 
         private void MaskedTextBoxStartTime_GotFocus(object sender, RoutedEventArgs e)
@@ -98,11 +107,18 @@ namespace SvodExcel
 
         private void MaskedTextBoxStartTime_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (checkBoxAutoEdit.IsChecked.Value)
+            if(!itisclose)
             {
-                NormMST(MaskedTextBoxStartTime);
-                PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
-            }
+                string NewFocusElement = (FocusManager.GetFocusedElement(this) as FrameworkElement).Name;
+                if (NewFocusElement != checkBoxAutoEdit.Name)
+                {
+                    if (checkBoxAutoEdit.IsChecked.Value)
+                    {
+                        NormMST(MaskedTextBoxStartTime);
+                        PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
+                    }
+                }
+            }                        
         }
         private void NormMST(Xceed.Wpf.Toolkit.MaskedTextBox MST)
         {
@@ -141,11 +157,18 @@ namespace SvodExcel
 
         private void MaskedTextBoxEndTime_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (checkBoxAutoEdit.IsChecked.Value)
+            if (!itisclose)
             {
-                NormMST(MaskedTextBoxEndTime);
-                PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
-            }
+                string NewFocusElement = (FocusManager.GetFocusedElement(this) as FrameworkElement).Name;
+                if (NewFocusElement != checkBoxAutoEdit.Name)
+                {
+                    if (checkBoxAutoEdit.IsChecked.Value)
+                    {
+                        NormMST(MaskedTextBoxEndTime);
+                        PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
+                    }
+                }
+            }                       
         }
 
         private void GetExcel()
@@ -198,7 +221,7 @@ namespace SvodExcel
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
             WinEffectON();
-            MessageBoxResult DR = MessageBox.Show("Сейчас программа попытается обновить список преподавателей. Этот процесс может занять несколько минут. \nВнимание! Новые проподаватели, еще не загруженный в общий доступ, будут удалены.\n Продолжить?", "Начать обновление списка преподавателей", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK);
+            MessageBoxResult DR = MessageBox.Show("Сейчас программа попытается обновить список преподавателей. Этот процесс может занять несколько минут. \nВнимание! Новые проподаватели, еще не загруженные в общий доступ, будут удалены.\nПродолжить?", "Начать обновление списка преподавателей", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK);
             if (DR == MessageBoxResult.OK)
             {
                 UpdateListTeacher();
@@ -278,6 +301,16 @@ namespace SvodExcel
             }
             else
             {
+                if(System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(3, 2))>59)
+                {
+                    flag = 0;
+                    flag_time = 0;
+                }
+                if (System.Convert.ToInt32(MaskedTextBoxEndTime.Text.Substring(3, 2)) > 59)
+                {
+                    flag = 0;
+                    flag_time = 0;
+                }
                 if (System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(0, 2) + MaskedTextBoxStartTime.Text.Substring(3, 2)) < 840)
                 {
                     flag = 0;
@@ -365,7 +398,6 @@ namespace SvodExcel
             {
                 GridTeacher.Background = null;
             }
-            //!!!!!! flag надо изменять уже после проверок полей в соответсвии с флагами полей
             return flag;
         }
 
@@ -396,7 +428,9 @@ namespace SvodExcel
            
                 if(!itisclose)
                 {
-                CorrectAndAddTeacher(!itisclickcombobox);
+                string NewFocusElement = (FocusManager.GetFocusedElement(this) as FrameworkElement).Name;
+                if(NotCheckTeacher.IndexOf(NewFocusElement)<0)
+                        CorrectAndAddTeacher(!itisclickcombobox);
                 }
   
         }
@@ -431,7 +465,7 @@ namespace SvodExcel
                             }
                             else
                             {
-                                MessageBox.Show("Строка \"" + comboBoxTeacher.Text + "\" не удовлетворяет формату записи преподователя - Фамилия и инифиалы.\nК примеру, Иванов И.И.\nФИО должно записываться только из букв русского алфавита, пробела и симовла точки.");
+                                MessageBox.Show("Строка \"" + comboBoxTeacher.Text + "\" не удовлетворяет формату записи преподавателя - Фамилия и инициалы.\nК примеру, Иванов И.И.\nФИО должно записываться только из букв русского алфавита, пробела и символа точки.");
                                 return false;
                             }                      
                         }
@@ -529,6 +563,46 @@ namespace SvodExcel
         private void comboBoxTeacher_GotFocus(object sender, RoutedEventArgs e)
         { 
             itisclickcombobox = true;
+        }
+
+        private void CheckBoxAutoEdit_Checked(object sender, RoutedEventArgs e)
+        {
+            NormMST(MaskedTextBoxStartTime);
+            NormMST(MaskedTextBoxEndTime);
+            PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
+        }
+
+        private void MaskedTextBoxStartTime_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (itisnotstart)
+                OutCalcTime();
+        }
+
+        private void MaskedTextBoxEndTime_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if(itisnotstart)
+                OutCalcTime();
+        }
+
+        private void OutCalcTime()
+        {
+            Xceed.Wpf.Toolkit.MaskedTextBox MSTS=MaskedTextBoxStartTime, MSTE=MaskedTextBoxEndTime;
+            if (ReadyMST(MSTS)&& ReadyMST(MSTE))
+            {
+                GridCalcTime.Visibility = Visibility.Visible;
+                labelCalcTime.Content=((System.Convert.ToInt32(MSTE.Text.Substring(0, 2)) * 60 + System.Convert.ToInt32(MSTE.Text.Substring(3, 2))) - (System.Convert.ToInt32(MSTS.Text.Substring(0, 2)) * 60 + System.Convert.ToInt32(MSTS.Text.Substring(3, 2)))).ToString();
+                labelCalcTime.Content = labelCalcTime.Content + " мин.";
+
+            }
+            else
+            {
+                GridCalcTime.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void ButtonNewTeacher_Click(object sender, RoutedEventArgs e)
+        {
+            CorrectAndAddTeacher();
         }
     }
 }

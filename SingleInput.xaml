@@ -34,16 +34,18 @@
             <Grid x:Name="GridTime" Margin="0">
                 <Label x:Name="label_time" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Время проведения:" FontSize="14"/>
                 <xctk:MaskedTextBox x:Name="MaskedTextBoxStartTime" HorizontalAlignment="Left" Height="22" Margin="236,14,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="44"
-                             Mask="00:00" FontSize="14" GotFocus="MaskedTextBoxStartTime_GotFocus" SelectionChanged="MaskedTextBoxStartTime_SelectionChanged" TextAlignment="Center" LostFocus="MaskedTextBoxStartTime_LostFocus" />
+                             Mask="00:00" FontSize="14" GotFocus="MaskedTextBoxStartTime_GotFocus" SelectionChanged="MaskedTextBoxStartTime_SelectionChanged" TextAlignment="Center" LostFocus="MaskedTextBoxStartTime_LostFocus" TextChanged="MaskedTextBoxStartTime_TextChanged" />
                 <Label x:Name="label_start_time" HorizontalAlignment="Left" Margin="167
                        ,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="начало - " FontSize="14"/>
                 <xctk:MaskedTextBox x:Name="MaskedTextBoxEndTime" HorizontalAlignment="Left" Height="22" Margin="367,15,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="44"
-                    Mask="00:00" FontSize="14" TextAlignment="Center" GotFocus="MaskedTextBoxEndTime_GotFocus" SelectionChanged="MaskedTextBoxEndTime_SelectionChanged" LostFocus="MaskedTextBoxEndTime_LostFocus"/>
+                    Mask="00:00" FontSize="14" TextAlignment="Center" GotFocus="MaskedTextBoxEndTime_GotFocus" SelectionChanged="MaskedTextBoxEndTime_SelectionChanged" LostFocus="MaskedTextBoxEndTime_LostFocus" TextChanged="MaskedTextBoxEndTime_TextChanged"/>
                 <Label x:Name="label_start_time_Copy" HorizontalAlignment="Left" Margin="305,8,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="конец - " FontSize="14"/>
-                <CheckBox x:Name="checkBoxAutoEdit" Content="Включить автоматическую правку опечаток" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="True"/>
-                <Button x:Name="buttonConfirmTime" HorizontalAlignment="Left" Margin="640,10,0,0" VerticalAlignment="Top" Width="120" FontSize="14" Height="59">
-                    <TextBlock TextAlignment="Center"> Время указано<LineBreak/>ВЕРНО</TextBlock>
-                </Button>
+                <CheckBox x:Name="checkBoxAutoEdit" Content="Включить автоматическую правку опечаток" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" FontSize="14" Checked="CheckBoxAutoEdit_Checked"/>
+
+                <Grid x:Name="GridCalcTime" Height="81" Margin="458,0,0,0" VerticalAlignment="Top">
+                    <Label x:Name="labelTextCalcTime" Content="подсчитанное время занятия" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" FontStyle="Italic"/>
+                    <Label x:Name="labelCalcTime" Content="00" Margin="0,13,0,0" VerticalAlignment="Top" Height="68" FontSize="48" FontWeight="Bold"/>
+                </Grid>
 
             </Grid>
         </Border>
@@ -54,7 +56,7 @@
                 <Button x:Name="buttonUpdate" HorizontalAlignment="Left" Margin="466,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="ButtonUpdate_Click">
                     <Image Source="update.png" />
                 </Button>
-                <Button x:Name="ButtonNewTeacher" Content="Добавить нового" Margin="0,0,10,15" HorizontalAlignment="Right" Width="120" Height="30" VerticalAlignment="Bottom" IsEnabled="False"/>
+                <Button x:Name="ButtonNewTeacher" Content="Добавить нового" Margin="0,0,10,15" HorizontalAlignment="Right" Width="120" Height="30" VerticalAlignment="Bottom" IsEnabled="False" Click="ButtonNewTeacher_Click"/>
             </Grid>
         </Border>
         <Grid Margin="10,284,10,45">
