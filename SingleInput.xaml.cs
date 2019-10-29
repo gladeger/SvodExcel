@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows.Media;
 
 
-
 namespace SvodExcel
 {
     /// <summary>
@@ -259,24 +258,15 @@ namespace SvodExcel
 
         private void ButtonWriteAndStop_Click(object sender, RoutedEventArgs e)
         {
-            switch(CorrectData())
-            {
-                case 0: MessageBox.Show("Ошибка во введенных данных");
-                    break;
-                case 1: MessageBox.Show("Пошла запись");
-                    break;
-                case 2: MessageBox.Show("Были внесены корректировки записи, Убедитесь что новые данные действительны");
-                    break;
-                default: MessageBox.Show("Неизвестная ошибка");
-                    break;
-            }
-            this.Close();
+            MessageBox.Show("Кнопка пока не работает");
+            //this.Close();
         }
 
         private int CorrectData()
         {
             int flag = 1;
             int flag_time = 1;
+            int flag_date = 1;
             if (!ReadyMST(MaskedTextBoxStartTime) || !ReadyMST(MaskedTextBoxEndTime))
             {
                 flag = 0;
@@ -331,8 +321,9 @@ namespace SvodExcel
 
             if(DatePicker_Date.Text.Length==0)
             {
-                flag = 2;
+                flag = 0;
                 GridDate.Background = new SolidColorBrush(Colors.Red);
+                flag_date = 0;
             }
             else
             {
@@ -340,13 +331,23 @@ namespace SvodExcel
             }
             switch(flag_time)
             {
-                case 0: GridTime.Background = new SolidColorBrush(Colors.Red);
+                case 0:
+                    GridTime.Background = new SolidColorBrush(Colors.Red);
+                    if(flag==2)
+                    {
+                        flag = 3;
+                    }
                     break;
                 case 2: GridTime.Background = new SolidColorBrush(Colors.Yellow);
+                    if (flag == 0)
+                    {
+                        flag = 3;
+                    }
                     break;
                 default: GridTime.Background = null;
                     break;
             }
+            //!!!!!! flag надо изменять уже после проверок полей в соответсвии с флагами полей
             return flag;
         }
 
@@ -361,7 +362,10 @@ namespace SvodExcel
                     MessageBox.Show("Пошла запись");
                     break;
                 case 2:
-                    MessageBox.Show("Были внесены корректировки записи, Убедитесь что новые данные действительны");
+                    MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
+                    break;
+                case 3:
+                    MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны. Однако не все данные удалось исправить.");
                     break;
                 default:
                     MessageBox.Show("Неизвестная ошибка");
