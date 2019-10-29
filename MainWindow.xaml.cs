@@ -39,6 +39,8 @@ namespace SvodExcel
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
             SingleInput f = new SingleInput();
+            f.Top = this.Top+50;
+            f.Left = this.Left+50;
             f.ShowDialog();
         }
     }

@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Linq;
 using System.Windows.Media;
-
+using System.Text.RegularExpressions;
 
 
 namespace SvodExcel
@@ -18,6 +18,7 @@ namespace SvodExcel
         private string DefaultTimes;
         private bool FlagStartCursorMST = true;
         private bool itisclickcombobox = true;
+        private bool itisclose = false;
         public SingleInput()
         {
             InitializeComponent();
@@ -40,25 +41,25 @@ namespace SvodExcel
                 FlagStartCursorMST = false;
                 StartCursorMST(MaskedTextBoxStartTime);
             }
-                
+
         }
         private void StartCursorMST(Xceed.Wpf.Toolkit.MaskedTextBox MST)
         {
             int IC = 0;
-            string BufString= MST.Text;
-            if(MST.SelectionStart>0)
+            string BufString = MST.Text;
+            if (MST.SelectionStart > 0)
             {
                 if (BufString[0] == DefaultTimes[0])
                     IC = 0;
                 else
                     if (BufString[1] == DefaultTimes[1])
-                        IC = 1;
-                    else
+                    IC = 1;
+                else
                         if (BufString[3] == DefaultTimes[3])
-                        IC = 3;
-                    else
+                    IC = 3;
+                else
                             if (BufString[4] == DefaultTimes[4])
-                        IC = 4;
+                    IC = 4;
                 MST.Select(IC, 0);
                 MST.CaretIndex = IC;
             }
@@ -97,7 +98,7 @@ namespace SvodExcel
 
         private void MaskedTextBoxStartTime_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(checkBoxAutoEdit.IsChecked.Value)
+            if (checkBoxAutoEdit.IsChecked.Value)
             {
                 NormMST(MaskedTextBoxStartTime);
                 PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
@@ -107,9 +108,9 @@ namespace SvodExcel
         {
             if (ReadyMST(MST))
             {
-                if(System.Convert.ToInt32(MST.Text.Substring(3, 2))>59)
+                if (System.Convert.ToInt32(MST.Text.Substring(3, 2)) > 59)
                 {
-                    MST.Text = MST.Text.Substring(0,2)+":59";
+                    MST.Text = MST.Text.Substring(0, 2) + ":59";
                 }
                 if (System.Convert.ToInt32(MST.Text.Substring(0, 2) + MST.Text.Substring(3, 2)) < 840)
                 {
@@ -144,21 +145,21 @@ namespace SvodExcel
             {
                 NormMST(MaskedTextBoxEndTime);
                 PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
-            }            
+            }
         }
 
         private void GetExcel()
         {
             string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
-            if(File.Exists(pathA))
+            if (File.Exists(pathA))
             {
                 ;
-                string path = Directory.GetCurrentDirectory()+".\\РАСП.xlsx";
+                string path = Directory.GetCurrentDirectory() + ".\\РАСП.xlsx";
                 //string path = "C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
                 string pathB = @".\\РАСП.xlsx";
                 if (File.Exists(pathB))
                     File.Delete(pathB);
-                File.Copy(pathA,pathB);
+                File.Copy(pathA, pathB);
                 while (!File.Exists(pathB)) { };
                 //string path = "C:\\Users\\Ilya\\Source\\Repos\\gladeger\\SvodExcel\\РАСП.xlsx";
                 //Microsoft.Office.Interop.Excel.XLCel
@@ -197,13 +198,13 @@ namespace SvodExcel
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
             WinEffectON();
-            MessageBoxResult DR = MessageBox.Show("Сейчас программа попытается обновить список преподавателей. Этот процесс может занять несколько минут. Продолжить?", "Начать обновление списка преподавателей", MessageBoxButton.OKCancel,MessageBoxImage.Question,MessageBoxResult.OK);
-            if(DR== MessageBoxResult.OK)
+            MessageBoxResult DR = MessageBox.Show("Сейчас программа попытается обновить список преподавателей. Этот процесс может занять несколько минут. \nВнимание! Новые проподаватели, еще не загруженный в общий доступ, будут удалены.\n Продолжить?", "Начать обновление списка преподавателей", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK);
+            if (DR == MessageBoxResult.OK)
             {
                 UpdateListTeacher();
-            }            
+            }
             this.Effect = null;
-            
+
         }
         private void WinEffectON()
         {
@@ -212,7 +213,7 @@ namespace SvodExcel
             this.Effect = objBlur;
         }
         private void UpdateListTeacher()
-        {            
+        {
             double This_TH2 = this.Top + this.Height / 2.0;
             double This_LW2 = this.Left + this.Width / 2.0;
             Thread newWindowThread = new Thread(new ThreadStart(() =>
@@ -230,6 +231,7 @@ namespace SvodExcel
             GetExcel();
             //PB.Close();
             newWindowThread.Abort();
+            comboBoxTeacher.SelectedIndex = -1;
         }
         private void StartListTeacher()
         {
@@ -255,28 +257,20 @@ namespace SvodExcel
                     comboBoxTeacher.Items.Add(Teachers[i]);
                 }
             }
-        }
+        }        
 
         private void ButtonWriteAndStop_Click(object sender, RoutedEventArgs e)
         {
-            switch(CorrectData())
-            {
-                case 0: MessageBox.Show("Ошибка во введенных данных");
-                    break;
-                case 1: MessageBox.Show("Пошла запись");
-                    break;
-                case 2: MessageBox.Show("Были внесены корректировки записи, Убедитесь что новые данные действительны");
-                    break;
-                default: MessageBox.Show("Неизвестная ошибка");
-                    break;
-            }
-            this.Close();
+            MessageBox.Show("Кнопка пока не работает");
+            //this.Close();
         }
 
         private int CorrectData()
         {
             int flag = 1;
             int flag_time = 1;
+            int flag_date = 1;
+            int flag_teacher = 1;
             if (!ReadyMST(MaskedTextBoxStartTime) || !ReadyMST(MaskedTextBoxEndTime))
             {
                 flag = 0;
@@ -284,69 +278,94 @@ namespace SvodExcel
             }
             else
             {
-                    if (System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(0, 2) + MaskedTextBoxStartTime.Text.Substring(3, 2)) < 840)
+                if (System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(0, 2) + MaskedTextBoxStartTime.Text.Substring(3, 2)) < 840)
+                {
+                    flag = 0;
+                    flag_time = 0;
+                }
+                else
+                {
+                    if (System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(0, 2) + MaskedTextBoxStartTime.Text.Substring(3, 2)) > 2100)
                     {
                         flag = 0;
                         flag_time = 0;
                     }
-                    else
-                    {
-                        if (System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(0, 2) + MaskedTextBoxStartTime.Text.Substring(3, 2)) > 2100)
-                        {
-                            flag = 0;
-                            flag_time = 0;
-                        }
-                    }
-                    if (System.Convert.ToInt32(MaskedTextBoxEndTime.Text.Substring(0, 2) + MaskedTextBoxEndTime.Text.Substring(3, 2)) < 840)
-                    {
-                        flag = 0;
-                        flag_time = 0;
-                    }
-                    else
-                    {
-                        if (System.Convert.ToInt32(MaskedTextBoxEndTime.Text.Substring(0, 2) + MaskedTextBoxEndTime.Text.Substring(3, 2)) > 2100)
-                        {
-                            flag = 0;
-                            flag_time = 0;
-                        }
-                    }
-                    if (System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(0, 2) + MaskedTextBoxStartTime.Text.Substring(3, 2)) > System.Convert.ToInt32(MaskedTextBoxEndTime.Text.Substring(0, 2) + MaskedTextBoxEndTime.Text.Substring(3, 2)))
+                }
+                if (System.Convert.ToInt32(MaskedTextBoxEndTime.Text.Substring(0, 2) + MaskedTextBoxEndTime.Text.Substring(3, 2)) < 840)
+                {
+                    flag = 0;
+                    flag_time = 0;
+                }
+                else
+                {
+                    if (System.Convert.ToInt32(MaskedTextBoxEndTime.Text.Substring(0, 2) + MaskedTextBoxEndTime.Text.Substring(3, 2)) > 2100)
                     {
                         flag = 0;
                         flag_time = 0;
                     }
+                }
+                if (System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(0, 2) + MaskedTextBoxStartTime.Text.Substring(3, 2)) > System.Convert.ToInt32(MaskedTextBoxEndTime.Text.Substring(0, 2) + MaskedTextBoxEndTime.Text.Substring(3, 2)))
+                {
+                    flag = 0;
+                    flag_time = 0;
+                }
 
                 if (checkBoxAutoEdit.IsChecked.Value)
                 {
                     NormMST(MaskedTextBoxEndTime);
                     NormMST(MaskedTextBoxStartTime);
                     PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
-                    if(flag_time == 0)
+                    if (flag_time == 0)
                     {
                         flag_time = 2;
                         flag = 2;
                     }
                 }
             }
-
-            if(DatePicker_Date.Text.Length==0)
+            if (DatePicker_Date.Text.Length == 0)
             {
-                flag = 2;
+                flag = 0;
                 GridDate.Background = new SolidColorBrush(Colors.Red);
+                flag_date = 0;
             }
             else
             {
                 GridDate.Background = null;
             }
-            switch(flag_time)
+            switch (flag_time)
             {
-                case 0: GridTime.Background = new SolidColorBrush(Colors.Red);
+                case 0:
+                    GridTime.Background = new SolidColorBrush(Colors.Red);
+                    if (flag == 2)
+                    {
+                        flag = 3;
+                    }
                     break;
-                case 2: GridTime.Background = new SolidColorBrush(Colors.Yellow);
+                case 2:
+                    GridTime.Background = new SolidColorBrush(Colors.Yellow);
+                    if (flag == 0)
+                    {
+                        flag = 3;
+                    }
                     break;
-                default: GridTime.Background = null;
+                default:
+                    GridTime.Background = null;
                     break;
             }
+            if(!CorrectAndAddTeacher()||comboBoxTeacher.Text.Length<1)
+            {
+                if (flag == 2)
+                    flag = 3;
+                else
+                    flag = 0;
+                GridTeacher.Background = new SolidColorBrush(Colors.Red);
+                flag_teacher = 0;
+            }
+            else
+            {
+                GridTeacher.Background = null;
+            }
+            //!!!!!! flag надо изменять уже после проверок полей в соответсвии с флагами полей
             return flag;
         }
 
@@ -361,7 +380,10 @@ namespace SvodExcel
                     MessageBox.Show("Пошла запись");
                     break;
                 case 2:
-                    MessageBox.Show("Были внесены корректировки записи, Убедитесь что новые данные действительны");
+                    MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
+                    break;
+                case 3:
+                    MessageBox.Show("Были внесены корректировки в записи, убедитесь что новые данные действительны. Однако не все данные удалось исправить.");
                     break;
                 default:
                     MessageBox.Show("Неизвестная ошибка");
@@ -371,42 +393,142 @@ namespace SvodExcel
 
         private void comboBoxTeacher_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(itisclickcombobox)
-                if(CorrectTeacher())
+           
+                if(!itisclose)
                 {
-
+                CorrectAndAddTeacher(!itisclickcombobox);
                 }
+  
         }
 
-        private bool CorrectTeacher()
+        private bool CorrectAndAddTeacher(bool silence=false)
         {
-            if(comboBoxTeacher.SelectedIndex<0)
+            string ACT= "Non action";
+            if (comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text) < 0)
             {
-                ButtonNewTeacher.IsEnabled = true;
-                if (comboBoxTeacher.Text.Length>0)
+                if(comboBoxTeacher.SelectedIndex >= 0)
                 {
-                    MessageBoxResult DR = MessageBox.Show("Указанного преподавателя нет в списке преподавателей. Добавить нового преподавателя?", "Новый преподаватель", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.OK);
-                    if (DR==MessageBoxResult.Yes)
-                    {
-                        MessageBox.Show("Добавляем преподавателя");
-                    }
+                    comboBoxTeacher.Text = comboBoxTeacher.SelectedValue.ToString();
+                    ButtonNewTeacher.IsEnabled = false;
                 }
+                else
+                {
+                    if (comboBoxTeacher.Text.Length > 0)
+                    {
+                        
+                        MessageBoxResult DR= MessageBoxResult.No;
+                        if(!silence)
+                            DR = MessageBox.Show("Преподавателя \""+comboBoxTeacher.Text+"\" нет в списке преподавателей. Добавить нового преподавателя?", "Новый преподаватель", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                        if (DR == MessageBoxResult.Yes)
+                        {
+                            
+                            if(CorrectNewTeacher(comboBoxTeacher.Text))
+                            {
+                                if (NewTeacher(comboBoxTeacher.Text))
+                                    MessageBox.Show("Запись нового преподавателя успеешно завершена.\nНо другие пользователи не увидят нового преподавателя, пока не будут сделаны новые записи в общее расписание.");
+                                else
+                                    MessageBox.Show("Ошибка записи нового преподавателя");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Строка \"" + comboBoxTeacher.Text + "\" не удовлетворяет формату записи преподователя - Фамилия и инифиалы.\nК примеру, Иванов И.И.\nФИО должно записываться только из букв русского алфавита, пробела и симовла точки.");
+                                return false;
+                            }                      
+                        }
+                        else
+                        {
+                            ButtonNewTeacher.IsEnabled = true;
+                            return false;
+                        }
+                    }
+                }           
+                
             }
             else
             {
+              //labelTech.Content= comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text).ToString();
+              //if(comboBoxTeacher.SelectedIndex>=0 && comboBoxTeacher.Text != comboBoxTeacher.SelectedValue.ToString())
+              // if(comboBoxTeacher.Text!= comboBoxTeacher.SelectedValue.ToString())
+                {
+                    //labelTech.Content = "Action";
+                }
                 ButtonNewTeacher.IsEnabled = false;
             }
-            
+            /*string CBT = "null";
+            if (comboBoxTeacher.SelectedIndex >= 0)
+                CBT = comboBoxTeacher.SelectedValue.ToString();
+            labelTech.Content =  CBT+ "+" + comboBoxTeacher.Text + "+";
+            labelTech.Content = labelTech.Content + comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text).ToString();
+            */
+            //labelTech2.Content = comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text).ToString();
+            //labelTech.Content = ACT;
             //MessageBox.Show("!");
+            GridTeacher.Background = null;
             return true;
         }
 
         private void Single_manual_entry_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(comboBoxTeacher.IsFocused)
-            {
                 itisclickcombobox = false;
+            itisclose = true;
+        }
+        
+        private bool CorrectNewTeacher(string Teacher)
+        {
+            Regex regex = new Regex(@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$");
+            if(regex.IsMatch(Teacher))
+                return true;
+            return false;
+        }
+        private bool NewTeacher(string Teacher)
+        {
+            string path = @".\ListTeacher.dat";
+
+            if (!File.Exists(path))
+            {
+                return false;
             }
+            else
+            {
+                try
+                {
+                    List<string> Teachers = new List<string>(File.ReadAllLines(path));
+                    Teachers.Add(Teacher);
+                    Teachers.Sort();
+                    comboBoxTeacher.Items.Clear();
+                    File.WriteAllText(path, Teachers[0]);
+                    for (int i = 1; i < Teachers.Count; i++)
+                    {
+                        File.AppendAllText(path, "\n" + Teachers[i]);
+                    }
+                    for (int i = 0; i < Teachers.Count; i++)
+                    {
+                        comboBoxTeacher.Items.Add(Teachers[i]);
+                    }
+                }
+                catch
+                {
+                    return false;
+                }                
+            }
+            return true;
+        }
+
+        private void comboBoxTeacher_MouseEnter(object sender, MouseEventArgs e)
+        {
+            itisclickcombobox = false;
+            
+        }
+
+        private void comboBoxTeacher_MouseLeave(object sender, MouseEventArgs e)
+        {
+            itisclickcombobox = true;
+            
+        }
+
+        private void comboBoxTeacher_GotFocus(object sender, RoutedEventArgs e)
+        { 
+            itisclickcombobox = true;
         }
     }
 }

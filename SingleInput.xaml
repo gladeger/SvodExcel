@@ -32,7 +32,7 @@
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" Height="83" Margin="10,139,10,0" VerticalAlignment="Top">
             <Grid x:Name="GridTime" Margin="0">
-                <Label x:Name="label_time" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Дата проведения:" FontSize="14"/>
+                <Label x:Name="label_time" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Время проведения:" FontSize="14"/>
                 <xctk:MaskedTextBox x:Name="MaskedTextBoxStartTime" HorizontalAlignment="Left" Height="22" Margin="236,14,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="44"
                              Mask="00:00" FontSize="14" GotFocus="MaskedTextBoxStartTime_GotFocus" SelectionChanged="MaskedTextBoxStartTime_SelectionChanged" TextAlignment="Center" LostFocus="MaskedTextBoxStartTime_LostFocus" />
                 <Label x:Name="label_start_time" HorizontalAlignment="Left" Margin="167
@@ -48,9 +48,9 @@
             </Grid>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" Height="57" Margin="10,227,10,0" VerticalAlignment="Top">
-            <Grid Margin="0">
+            <Grid x:Name="GridTeacher" Margin="0">
                 <Label x:Name="label_teacher" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Преподаватель:" FontSize="14"/>
-                <ComboBox x:Name="comboBoxTeacher" HorizontalAlignment="Left" Margin="167,14,0,0" VerticalAlignment="Top" Width="294" FontSize="14" IsEditable="True" LostFocus="comboBoxTeacher_LostFocus"/>
+                <ComboBox x:Name="comboBoxTeacher" HorizontalAlignment="Left" Margin="167,14,0,0" VerticalAlignment="Top" Width="294" FontSize="14" IsEditable="True" LostFocus="comboBoxTeacher_LostFocus" MouseEnter="comboBoxTeacher_MouseEnter" MouseLeave="comboBoxTeacher_MouseLeave" GotFocus="comboBoxTeacher_GotFocus"/>
                 <Button x:Name="buttonUpdate" HorizontalAlignment="Left" Margin="466,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="ButtonUpdate_Click">
                     <Image Source="update.png" />
                 </Button>
@@ -78,5 +78,7 @@
         <Button x:Name="ButtonWriteAndContinue" Content="Записать и продолжить" HorizontalAlignment="Left" Margin="10,0,0,10" Width="150" IsDefault="True" Height="30" VerticalAlignment="Bottom" Click="ButtonWriteAndContinue_Click"/>
         <Button x:Name="ButtonWriteAndStop" Content="Записать и остановиться" Margin="0,0,0,10" Height="30" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Center" Click="ButtonWriteAndStop_Click"/>
         <Button x:Name="ButtonCancel" Content="Отмена" Margin="0,0,10,10" IsCancel="True" HorizontalAlignment="Right" Width="150" Height="30" VerticalAlignment="Bottom"/>
+        <Label x:Name="labelTech" Content="labelTech" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="labelTech2" Content="labelTech" HorizontalAlignment="Left" Margin="723,46,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
