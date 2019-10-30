@@ -173,7 +173,8 @@ namespace SvodExcel
 
         private void GetExcel()
         {
-            string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+            //string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+            string pathA = @"C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx";
             if (File.Exists(pathA))
             {
                 ;
@@ -184,7 +185,6 @@ namespace SvodExcel
                     File.Delete(pathB);
                 File.Copy(pathA, pathB);
                 while (!File.Exists(pathB)) { };
-                //string path = "C:\\Users\\Ilya\\Source\\Repos\\gladeger\\SvodExcel\\РАСП.xlsx";
                 //Microsoft.Office.Interop.Excel.XLCel
                 var exApp = new Microsoft.Office.Interop.Excel.Application();
                 var exBook = exApp.Workbooks.Open(path);
@@ -244,8 +244,8 @@ namespace SvodExcel
                 SvodExcel.ProgressBar PB = new SvodExcel.ProgressBar();
                 PB.Top = This_TH2 - PB.Height / 2.0;
                 PB.Left = This_LW2 - PB.Width / 2.0;
-                PB.Topmost = true;
-                PB.Show();
+                PB.Topmost = false;
+                PB.ShowDialog();
                 System.Windows.Threading.Dispatcher.Run();
             }));
             newWindowThread.SetApartmentState(ApartmentState.STA);
@@ -409,7 +409,10 @@ namespace SvodExcel
                     MessageBox.Show("Ошибка во введенных данных");
                     break;
                 case 1:
-                    MessageBox.Show("Пошла запись");
+                    WinEffectON();                
+                    NewRecord();
+                    Thread.Sleep(1000);
+                    this.Effect = null;
                     break;
                 case 2:
                     MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
@@ -437,7 +440,6 @@ namespace SvodExcel
 
         private bool CorrectAndAddTeacher(bool silence=false)
         {
-            string ACT= "Non action";
             if (comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text) < 0)
             {
                 if(comboBoxTeacher.SelectedIndex >= 0)
@@ -449,7 +451,6 @@ namespace SvodExcel
                 {
                     if (comboBoxTeacher.Text.Length > 0)
                     {
-                        
                         MessageBoxResult DR= MessageBoxResult.No;
                         if(!silence)
                             DR = MessageBox.Show("Преподавателя \""+comboBoxTeacher.Text+"\" нет в списке преподавателей. Добавить нового преподавателя?", "Новый преподаватель", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
@@ -476,27 +477,11 @@ namespace SvodExcel
                         }
                     }
                 }           
-                
             }
             else
             {
-              //labelTech.Content= comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text).ToString();
-              //if(comboBoxTeacher.SelectedIndex>=0 && comboBoxTeacher.Text != comboBoxTeacher.SelectedValue.ToString())
-              // if(comboBoxTeacher.Text!= comboBoxTeacher.SelectedValue.ToString())
-                {
-                    //labelTech.Content = "Action";
-                }
                 ButtonNewTeacher.IsEnabled = false;
             }
-            /*string CBT = "null";
-            if (comboBoxTeacher.SelectedIndex >= 0)
-                CBT = comboBoxTeacher.SelectedValue.ToString();
-            labelTech.Content =  CBT+ "+" + comboBoxTeacher.Text + "+";
-            labelTech.Content = labelTech.Content + comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text).ToString();
-            */
-            //labelTech2.Content = comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text).ToString();
-            //labelTech.Content = ACT;
-            //MessageBox.Show("!");
             GridTeacher.Background = null;
             return true;
         }
@@ -603,6 +588,11 @@ namespace SvodExcel
         private void ButtonNewTeacher_Click(object sender, RoutedEventArgs e)
         {
             CorrectAndAddTeacher();
+        }
+
+        private void NewRecord()
+        {
+
         }
     }
 }

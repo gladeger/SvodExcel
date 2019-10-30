@@ -43,5 +43,10 @@ namespace SvodExcel
             f.Left = this.Left+50;
             f.ShowDialog();
         }
+
+        private void SvodExcel_Closed(object sender, EventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
     }
 }

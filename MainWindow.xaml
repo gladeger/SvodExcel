@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Сonsolidated Excel" Height="450" Width="800" Icon="excel_import.ico" MinWidth="800" MinHeight="450">
+        Title="Сonsolidated Excel" Height="450" Width="800" Icon="excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed">
     <Grid>
         <Menu x:Name="menu" Height="28" VerticalAlignment="Top">
             <MenuItem Header="Файл">
