@@ -229,6 +229,15 @@
   <ItemGroup>
     <Resource Include="update.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="SingleInput.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MultiInputp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Upload.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -80,7 +80,7 @@
         <Button x:Name="ButtonWriteAndContinue" Content="Записать и продолжить" HorizontalAlignment="Left" Margin="10,0,0,10" Width="150" IsDefault="True" Height="30" VerticalAlignment="Bottom" Click="ButtonWriteAndContinue_Click"/>
         <Button x:Name="ButtonWriteAndStop" Content="Записать и остановиться" Margin="0,0,0,10" Height="30" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Center" Click="ButtonWriteAndStop_Click"/>
         <Button x:Name="ButtonCancel" Content="Отмена" Margin="0,0,10,10" IsCancel="True" HorizontalAlignment="Right" Width="150" Height="30" VerticalAlignment="Bottom"/>
-        <Label x:Name="labelTech" Content="labelTech" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="labelTech2" Content="labelTech" HorizontalAlignment="Left" Margin="723,46,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,46,10,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

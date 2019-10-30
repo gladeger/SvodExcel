@@ -20,6 +20,16 @@ namespace SvodExcel
     /// </summary>
     public partial class MainWindow : Window
     {
+        public class DataTableRow
+        {
+            public string Date{ get; set; }
+            public string Time { get; set; }
+            public string Teacher { get; set; }
+            public string Group { get; set; }
+            public string Category { get; set; }
+            public string Place { get; set; }
+
+        }
         public MainWindow()
         {
             InitializeComponent();
@@ -36,7 +46,7 @@ namespace SvodExcel
             f.ShowDialog();
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void MenuItemSingleInput_Click(object sender, RoutedEventArgs e)
         {
             SingleInput f = new SingleInput();
             f.Top = this.Top+50;

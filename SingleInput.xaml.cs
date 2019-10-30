@@ -173,8 +173,8 @@ namespace SvodExcel
 
         private void GetExcel()
         {
-            //string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
-            string pathA = @"C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx";
+            string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+            //string pathA = @"C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx";
             if (File.Exists(pathA))
             {
                 ;
@@ -284,8 +284,26 @@ namespace SvodExcel
 
         private void ButtonWriteAndStop_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Кнопка пока не работает");
-            //this.Close();
+            //MessageBox.Show("Кнопка пока не работает");
+            switch (CorrectData())
+            {
+                case 0:
+                    MessageBox.Show("Ошибка во введенных данных");
+                    break;
+                case 1:
+                    NewRecord();
+                    break;
+                case 2:
+                    MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
+                    break;
+                case 3:
+                    MessageBox.Show("Были внесены корректировки в записи, убедитесь что новые данные действительны. Однако не все данные удалось исправить.");
+                    break;
+                default:
+                    MessageBox.Show("Неизвестная ошибка");
+                    break;
+            }
+            this.Close();
         }
 
         private int CorrectData()
@@ -408,11 +426,9 @@ namespace SvodExcel
                 case 0:
                     MessageBox.Show("Ошибка во введенных данных");
                     break;
-                case 1:
-                    WinEffectON();                
+                case 1:                    
                     NewRecord();
-                    Thread.Sleep(1000);
-                    this.Effect = null;
+                    ClearData();
                     break;
                 case 2:
                     MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
@@ -592,7 +608,21 @@ namespace SvodExcel
 
         private void NewRecord()
         {
-
+           List<MainWindow.DataTableRow> DTR =new List<MainWindow.DataTableRow>();
+        DTR.Add(new MainWindow.DataTableRow { Date="", Time="", Teacher="", Group="",Category="",  Place="" });
+            //(this.Parent as MainWindow).dataGrid.Items.Add({ DatePicker_Date.Text; MaskedTextBoxStartTime.Text });
+        }
+        private void ClearData()
+        {
+            DatePicker_Date.Text = null;
+            MaskedTextBoxStartTime.Text = DefaultTimes;
+            MaskedTextBoxEndTime.Text = DefaultTimes;
+            GridCalcTime.Visibility = Visibility.Hidden;
+            comboBoxTeacher.Text = null;
+            comboBoxTeacher.SelectedIndex = -1;
+            ButtonNewTeacher.IsEnabled = false;
+            textBoxCategory.Text = null;
+            textBoxPlace.Text = null;
         }
     }
 }
