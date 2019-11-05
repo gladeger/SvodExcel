@@ -20,6 +20,7 @@ namespace SvodExcel
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         public class DataTableRow
         {
             public string Date{ get; set; }
@@ -29,10 +30,50 @@ namespace SvodExcel
             public string Category { get; set; }
             public string Place { get; set; }
 
+            public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace)
+            {
+                Date = inputDate;
+                Time = inputTime;
+                Teacher = inputTeacher;
+                Group = inputGroup;
+                Category = inputCategory;
+                Place = inputPlace;
+            }
+            public DataTableRow()
+            {
+                Date = null;
+                Time = null;
+                Teacher = null;
+                Group = null;
+                Category = null;
+                Place = null;
+            }
         }
+        public List<DataTableRow> DTR = new List<DataTableRow>();
+
         public MainWindow()
         {
             InitializeComponent();
+            DTR.Clear();
+            dataGridExport.ItemsSource = DTR;
+        }
+        private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
+        {
+            DTR.Clear();
+            dataGridExport.Columns[0].Header = "Дата проведения";
+            dataGridExport.Columns[1].Header = "Время проведения";
+            dataGridExport.Columns[2].Header = "Преподаватель";
+            dataGridExport.Columns[3].Header = "Номер группы";
+            dataGridExport.Columns[4].Header = "Категория слушателей";
+            dataGridExport.Columns[5].Header = "Место проведения";
+            dataGridExport.Columns[0].MaxWidth = 120;
+            dataGridExport.Columns[1].MaxWidth = 120;
+            dataGridExport.Columns[2].MaxWidth = 200;
+            dataGridExport.Columns[3].MaxWidth = 120;
+        }
+        private void SvodExcel_Closed(object sender, EventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
@@ -52,11 +93,31 @@ namespace SvodExcel
             f.Top = this.Top+50;
             f.Left = this.Left+50;
             f.ShowDialog();
+            //f.Show();
+
+            //DTR.Add(new DataTableRow { Date = "112312adasd312", Time = "1131232asdsd13", Teacher = "1adasd", Group = "1adasd", Category = "1adasd", Place = "1adasd" });
+            //DTR.Add(new DataTableRow("112312adasd312","1131232asdsd13","1adasd","1adasd","1adasd","1adasd"));
+
+            //dataGridExport.UpdateLayout();
+            //MessageBox.Show(DTR[0].Date);
+
+
+            //dataGridExport.Items.Add(DTR);
+            //labelTech.Content=(dataGridExport.Items[0] as DataTableRow).Category;
+            //labelTech.Content = dataGridExport.ItemsSource.ToString();
+
+            CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }
 
-        private void SvodExcel_Closed(object sender, EventArgs e)
+        public void AddNewItem(DataTableRow newDTR)
         {
-            System.Windows.Application.Current.Shutdown();
+            DTR.Add(newDTR);
+            CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+        }
+
+        private void dataGridExport_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("Edit record");
         }
     }
 }

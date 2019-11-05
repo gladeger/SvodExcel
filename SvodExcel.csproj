@@ -233,10 +233,19 @@
     <Resource Include="SingleInput.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MultiInputp.png" />
+    <Resource Include="MultiInput.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Upload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="excel_import.png" />
+    <Resource Include="excel_import_disable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MultiInput_disable.png" />
+    <Resource Include="SingleInput_disable.png" />
+    <Resource Include="Upload_disable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

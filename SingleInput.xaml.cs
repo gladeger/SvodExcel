@@ -102,6 +102,7 @@ namespace SvodExcel
             else
                         if (BufString[4] == DefaultTimes[4])
                 return false;
+            GridTime.Background = null;
             return true;
         }
 
@@ -608,9 +609,12 @@ namespace SvodExcel
 
         private void NewRecord()
         {
-           List<MainWindow.DataTableRow> DTR =new List<MainWindow.DataTableRow>();
-        DTR.Add(new MainWindow.DataTableRow { Date="", Time="", Teacher="", Group="",Category="",  Place="" });
-            //(this.Parent as MainWindow).dataGrid.Items.Add({ DatePicker_Date.Text; MaskedTextBoxStartTime.Text });
+            //(this.Parent as MainWindow).DTR.Add(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text," ", textBoxCategory.Text, textBoxCategory.Text));
+            //(this.Parent as MainWindow).AddNewItem(new MainWindow.DataTableRow("112312adasd312", "1131232asdsd13", "1adasd", "1adasd", "1adasd", "1adasd"));
+            MainWindow home = Application.Current.MainWindow as MainWindow;
+            //home.labelTech.Content = "Action";
+            home.AddNewItem(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxCategory.Text));
+            //((MainWindow)(this.Parent)).DTR.Add(new MainWindow.DataTableRow("112312adasd312", "1131232asdsd13", "1adasd", "1adasd", "1adasd", "1adasd"));
         }
         private void ClearData()
         {
@@ -618,11 +622,16 @@ namespace SvodExcel
             MaskedTextBoxStartTime.Text = DefaultTimes;
             MaskedTextBoxEndTime.Text = DefaultTimes;
             GridCalcTime.Visibility = Visibility.Hidden;
-            comboBoxTeacher.Text = null;
+            comboBoxTeacher.Text = "";
             comboBoxTeacher.SelectedIndex = -1;
             ButtonNewTeacher.IsEnabled = false;
             textBoxCategory.Text = null;
             textBoxPlace.Text = null;
+        }
+
+        private void DatePicker_Date_GotFocus(object sender, RoutedEventArgs e)
+        {
+            GridDate.Background = null;
         }
     }
 }

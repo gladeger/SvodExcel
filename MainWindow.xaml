@@ -5,7 +5,98 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Сonsolidated Excel" Height="450" Width="800" Icon="excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed">
+        Title="Сonsolidated Excel" Height="450" Width="800" Icon="excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded">
+    <Window.Resources>
+        <Image x:Key="excel_import_enable" Source="excel_import.png"></Image>
+        <Image x:Key="excel_import_disable" Source="excel_import_disable.png"></Image>
+        <Image x:Key="SingleInput_enable" Source="SingleInput.png"></Image>
+        <Image x:Key="SingleInput_disable" Source="SingleInput_disable.png"></Image>
+        <Image x:Key="MultiInput_enable" Source="MultiInput.png"></Image>
+        <Image x:Key="MultiInput_disable" Source="MultiInput_disable.png"></Image>
+        <Image x:Key="Upload_enable" Source="Upload.png"></Image>
+        <Image x:Key="Upload_disable" Source="Upload_disable.png"></Image>
+        <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="290" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
+            <Image Source="Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="Upload_disable_grid"  Margin="0,0,0,0" Width="290" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
+            <Image Source="Upload_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+
+        <Style TargetType="{x:Type Button}" x:Key="excel_import_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="excel_import_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="excel_import_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+            </Style>
+        <Style TargetType="{x:Type Button}" x:Key="SingleInput_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="SingleInput_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="SingleInput_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="MultiInput_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="MultiInput_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="MultiInput_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="Upload_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Upload_enable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Upload_disable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Menu x:Name="menu" Height="28" VerticalAlignment="Top">
             <MenuItem Header="Файл">
@@ -20,43 +111,35 @@
                 <MenuItem Header="О программе" Click="MenuItem_Click"/>
             </MenuItem>
         </Menu>
-        <Menu x:Name="menu_Hot" Height="28" VerticalAlignment="Top" Margin="0,28,0,0">
-            <Button x:Name="buttonExportHot" IsEnabled="False">
-                <Image Source="excel_import.ico" />
-            </Button>
-            <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click">
-                <Image Source="SingleInput.png" />
-            </Button>
-            <Button x:Name="buttonMultiInputHot" IsEnabled="False">
-                <Image Source="MultiInputp.png" />
-            </Button>
-        </Menu>
+        <StackPanel x:Name="menu_Hot" Height="28" VerticalAlignment="Top" Margin="0,28,0,0" Orientation="Horizontal" >
+            <Button x:Name="buttonExportHot" Width="26" Margin="10,0,0,0" Style="{StaticResource excel_import_button}" IsEnabled="False"/>
+            <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" />
+            <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" />
+        </StackPanel>
 
         <TabControl x:Name="tabControl" Margin="0,61,0,0">
             <TabItem x:Name="ExportTab1" Header="Экспорт">
-                <Grid Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGrid" Margin="0,0,0,72">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Дата проведения "/>
-                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Время проведения"/>
-                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Преподаватель"/>
-                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Номер группы"/>
-                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Категория слушателей"/>
-                            <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Место проведения"/>
+                <Grid x:Name="gridDataGridExport" Background="#FFE5E5E5">
+                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" MouseDoubleClick="dataGridExport_MouseDoubleClick">
+                       <!-- <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="Date" Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Date"/>
+                            <DataGridTextColumn x:Name="Time" Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Time"/>
+                            <DataGridTextColumn x:Name="Teacher" Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Teacher"/>
+                            <DataGridTextColumn x:Name="Group" Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Group"/>
+                            <DataGridTextColumn x:Name="Category" Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Category"/>
+                            <DataGridTextColumn x:Name="Place" Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Place"/>
                         </DataGrid.Columns>
+                        -->
                     </DataGrid>
-                    <Button x:Name="buttonExport"  Margin="243,0,243,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" IsEnabled="False">
-                        <Grid Margin="0,0,0,0" Width="290">
-                            <TextBlock Margin="0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
-                            <Image Source="Upload.png" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Right" />
-                        </Grid>                        
-                    </Button>
+                    <Button x:Name="buttonExport"  Margin="243,0,243,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" IsEnabled="False" Style="{StaticResource Upload_button}"/>
+                    <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,41" Height="26" VerticalAlignment="Bottom"/>
+                    <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,41" Height="26" VerticalAlignment="Bottom"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="ExportTab" Header="Просмотр всех данных" IsEnabled="False">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
-
     </Grid>
+
 </Window>
