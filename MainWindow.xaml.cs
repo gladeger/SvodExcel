@@ -92,19 +92,9 @@ namespace SvodExcel
             SingleInput f = new SingleInput();
             f.Top = this.Top+50;
             f.Left = this.Left+50;
+            f.RowIndex = -1;
             f.ShowDialog();
             //f.Show();
-
-            //DTR.Add(new DataTableRow { Date = "112312adasd312", Time = "1131232asdsd13", Teacher = "1adasd", Group = "1adasd", Category = "1adasd", Place = "1adasd" });
-            //DTR.Add(new DataTableRow("112312adasd312","1131232asdsd13","1adasd","1adasd","1adasd","1adasd"));
-
-            //dataGridExport.UpdateLayout();
-            //MessageBox.Show(DTR[0].Date);
-
-
-            //dataGridExport.Items.Add(DTR);
-            //labelTech.Content=(dataGridExport.Items[0] as DataTableRow).Category;
-            //labelTech.Content = dataGridExport.ItemsSource.ToString();
 
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }
@@ -112,6 +102,12 @@ namespace SvodExcel
         public void AddNewItem(DataTableRow newDTR)
         {
             DTR.Add(newDTR);
+            CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+        }
+
+        public void EditItem(int RowIndex,DataTableRow newDTR)
+        {
+            DTR[RowIndex] = newDTR;
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }
 

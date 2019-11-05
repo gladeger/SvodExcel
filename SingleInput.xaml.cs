@@ -15,6 +15,7 @@ namespace SvodExcel
     /// </summary>
     public partial class SingleInput : System.Windows.Window
     {
+        public int RowIndex;
         private string DefaultTimes="__:__";
         private bool FlagStartCursorMST = true;
         private bool itisclickcombobox = true;
@@ -613,7 +614,12 @@ namespace SvodExcel
             //(this.Parent as MainWindow).AddNewItem(new MainWindow.DataTableRow("112312adasd312", "1131232asdsd13", "1adasd", "1adasd", "1adasd", "1adasd"));
             MainWindow home = Application.Current.MainWindow as MainWindow;
             //home.labelTech.Content = "Action";
-            home.AddNewItem(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxCategory.Text));
+            if(RowIndex==-1)
+                home.AddNewItem(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxCategory.Text));
+            else
+            {
+
+            }
             //((MainWindow)(this.Parent)).DTR.Add(new MainWindow.DataTableRow("112312adasd312", "1131232asdsd13", "1adasd", "1adasd", "1adasd", "1adasd"));
         }
         private void ClearData()
