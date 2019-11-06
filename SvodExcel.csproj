@@ -181,7 +181,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="FilesAndNet.config" />
     <None Include="ListTeacher.dat" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

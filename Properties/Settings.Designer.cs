@@ -49,5 +49,50 @@ namespace SvodExcel.Properties {
                 return ((string)(this["PathVariable2"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\Users\\\\Администратор ОК\\\\source\\\\repos\\\\SvodExcel\\\\")]
+        public string PathToGlobal {
+            get {
+                return ((string)(this["PathToGlobal"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("РАСП.xlsx")]
+        public string GlobalData {
+            get {
+                return ((string)(this["GlobalData"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("employed")]
+        public string GlobalMarker {
+            get {
+                return ((string)(this["GlobalMarker"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\\\РАСП.xlsx")]
+        public string PathToLocalData {
+            get {
+                return ((string)(this["PathToLocalData"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public double WaitingInLine {
+            get {
+                return ((double)(this["WaitingInLine"]));
+            }
+        }
     }
 }

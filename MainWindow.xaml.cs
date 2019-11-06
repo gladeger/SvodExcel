@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -67,9 +69,13 @@ namespace SvodExcel
             AddNewItem(new DataTableRow("06.11.2019","08:40-12:00", "Пронина Л.Н.", "","******","!@#$%&"));
             AddNewItem(new DataTableRow("07.11.2019", "09:20-13:00", "Пронина Л.Н.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+            //----exmpla data
+
+            ClearHang();
         }
         private void SvodExcel_Closed(object sender, EventArgs e)
         {
+            ClearHang();
             System.Windows.Application.Current.Shutdown();
         }
 
@@ -114,9 +120,6 @@ namespace SvodExcel
         private void ChangeDataGrid()
         {
             int SI = dataGridExport.SelectedIndex;
-            //string data1 = dataGridExport.SelectedIndex.ToString();
-            //string data2 = dataGridExport.CurrentColumn.DisplayIndex.ToString();
-            //MessageBox.Show(data1+" "+data2);
             SingleInput f = new SingleInput();
             f.Top = this.Top + 50;
             f.Left = this.Left + 50;
@@ -156,8 +159,6 @@ namespace SvodExcel
             f.ButtonWriteAndStop.HorizontalAlignment = HorizontalAlignment.Left;
             f.ButtonWriteAndStop.Margin= new Thickness(10, 0, 0, 10);
             f.ShowDialog();
-            //f.Show();
-
         }
         public void EditItem(int RowIndex,DataTableRow newDTR)
         {
@@ -188,15 +189,88 @@ namespace SvodExcel
 
         private void buttonExport_Click(object sender, RoutedEventArgs e)
         {
-            ExportData();
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            objBlur.Radius = 4;
+            this.Effect = objBlur;
+            if (MessageBox.Show("Вы действительно хотите добавить в общий файл все созданные ранее записи?\nВсего записей для экспорта: "+DTR.Count, "Экспот данных в общий файл", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+            {
+                double This_TH2 = this.Top + this.Height / 2.0;
+                double This_LW2 = this.Left + this.Width / 2.0;
+                SvodExcel.ProgressBar PB = new SvodExcel.ProgressBar();
+                PB.Top = This_TH2 - PB.Height / 2.0;
+                PB.Left = This_LW2 - PB.Width / 2.0;
+                PB.Topmost = true;
+                PB.Show();
+                ExportData();
+                PB.Close();
+            }
+            this.Effect = null;
         }
         private void buttonExportHot_Click(object sender, RoutedEventArgs e)
         {
-            ExportData();
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            objBlur.Radius = 4;
+            this.Effect = objBlur;
+            if (MessageBox.Show("Вы действительно хотите добавить в общий файл все созданные ранее записи?\nВсего записей для экспорта: " + DTR.Count, "Экспот данных в общий файл", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+            {
+                
+                double This_TH2 = this.Top + this.Height / 2.0;
+                double This_LW2 = this.Left + this.Width / 2.0;
+                    SvodExcel.ProgressBar PB = new SvodExcel.ProgressBar();
+                    PB.Top = This_TH2 - PB.Height / 2.0;
+                    PB.Left = This_LW2 - PB.Width / 2.0;
+                    PB.Topmost = true;
+                    PB.Show();
+                    ExportData();
+                PB.Close();
+            }
+            this.Effect = null;
         }
         public void ExportData()
+        {           
+            string pathB = Properties.Settings.Default.PathToGlobal+Properties.Settings.Default.GlobalMarker;
+            ClearHang();
+            if (File.Exists(pathB))
+            {
+                MessageBox.Show("К сожалению, на данный момент экспоорт невозможен - другой пользователь уже начал оновлять общий файл!\nПопробуйте еще раз чуть позже");
+            }
+            else
+            {
+                StreamWriter sw = File.CreateText(pathB);
+                String host = System.Net.Dns.GetHostName();
+                System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList[0];
+                sw.WriteLine(ip.ToString());
+                sw.Close();
+                string pathA = Properties.Settings.Default.PathToGlobalData;
+                string pathC = Properties.Settings.Default.PathToLocalData;
+                File.Copy(pathA, pathC);
+                File.Delete(pathC);
+                File.Delete(pathB);
+            }
+        }
+        public void ClearHang()
         {
-
+            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            if (File.Exists(pathB))
+            {
+                FileInfo employed = new FileInfo(pathB);
+                StreamReader sw = new StreamReader(pathB);
+                String host = System.Net.Dns.GetHostName();
+                System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList[0];
+                string busy_customer = "";
+                busy_customer = sw.ReadLine();
+                sw.Close();
+                if ((busy_customer == ip.ToString())||(DateTime.Now.Subtract(employed.CreationTime.ToLocalTime()).TotalMinutes > Properties.Settings.Default.WaitingInLine))
+                {
+                    File.Delete(pathB);
+                    int i = 0;
+                    while (File.Exists(pathB)) {
+                        if (i > 10000)
+                            break;
+                        i++;
+                    }
+                }
+            }
         }
     }
 }

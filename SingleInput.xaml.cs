@@ -178,48 +178,53 @@ namespace SvodExcel
             //string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
             string pathA = Properties.Settings.Default.PathToGlobalData;
             //string pathA = @"C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx";
-            if (File.Exists(pathA))
+            string pathER = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            if (File.Exists(pathER))
             {
-                ;
-                string path = Directory.GetCurrentDirectory() + ".\\РАСП.xlsx";
-                //string path = "C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
-                string pathB = @".\\РАСП.xlsx";
-                if (File.Exists(pathB))
-                    File.Delete(pathB);
-                File.Copy(pathA, pathB);
-                while (!File.Exists(pathB)) { };
-                //Microsoft.Office.Interop.Excel.XLCel
-                var exApp = new Microsoft.Office.Interop.Excel.Application();
-                var exBook = exApp.Workbooks.Open(path);
-                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                List<string> ListExcel = new List<string>();
-                for (int j = 15; j < lastcell.Row; j++)
-                {
-                    if (ExSheet.Cells[j + 1, 4].Value != null)
-                    {
-                        ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
-                    }
-                }
-                exBook.Close(false);
-                exApp.Quit();
-                File.Delete(pathB);
-
-                List<string> ListTeacher = new List<string>(ListExcel.Distinct());
-                ListTeacher.Sort();
-                string pathData = @".\ListTeacher.dat";
-                File.WriteAllText(pathData, ListTeacher[0]);
-                for (int i = 1; i < ListTeacher.Count; i++)
-                {
-                    File.AppendAllText(pathData, "\n" + ListTeacher[i]);
-                }
-                StartListTeacher();
+                MessageBox.Show("К сожалению обновление списка сейчас невозможно, обновляется общий сводный файл.\nПопробуйте чуть позже.");
             }
             else
-            {
-                MessageBox.Show("Не удалось подключиться к общему сводному файлу!", "Ошибка обновления", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
-            }
+                if (File.Exists(pathA))
+                {
+                    string path = Directory.GetCurrentDirectory() + ".\\РАСП.xlsx";
+                    //string path = "C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+                    //string pathB = @".\\РАСП.xlsx";
+                    string pathB = Properties.Settings.Default.PathToLocalData;
+                    if (File.Exists(pathB))
+                        File.Delete(pathB);
+                    File.Copy(pathA, pathB);
+                    while (!File.Exists(pathB)) { };
+                    //Microsoft.Office.Interop.Excel.XLCel
+                    var exApp = new Microsoft.Office.Interop.Excel.Application();
+                    var exBook = exApp.Workbooks.Open(path);
+                    var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                    var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
+                    List<string> ListExcel = new List<string>();
+                    for (int j = 15; j < lastcell.Row; j++)
+                    {
+                        if (ExSheet.Cells[j + 1, 4].Value != null)
+                        {
+                            ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
+                        }
+                    }
+                    exBook.Close(false);
+                    exApp.Quit();
+                    File.Delete(pathB);
 
+                    List<string> ListTeacher = new List<string>(ListExcel.Distinct());
+                    ListTeacher.Sort();
+                    string pathData = @".\ListTeacher.dat";
+                    File.WriteAllText(pathData, ListTeacher[0]);
+                    for (int i = 1; i < ListTeacher.Count; i++)
+                    {
+                        File.AppendAllText(pathData, "\n" + ListTeacher[i]);
+                    }
+                    StartListTeacher();
+                }
+                else
+                {
+                    MessageBox.Show("Не удалось подключиться к общему сводному файлу!", "Ошибка обновления", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+                }
         }
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
@@ -615,17 +620,13 @@ namespace SvodExcel
 
         private void NewRecord()
         {
-            //(this.Parent as MainWindow).DTR.Add(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text," ", textBoxCategory.Text, textBoxCategory.Text));
-            //(this.Parent as MainWindow).AddNewItem(new MainWindow.DataTableRow("112312adasd312", "1131232asdsd13", "1adasd", "1adasd", "1adasd", "1adasd"));
             MainWindow home = Application.Current.MainWindow as MainWindow;
-            //home.labelTech.Content = "Action";
             if(RowIndex==-1)
                 home.AddNewItem(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
             else
             {
                 home.EditItem(RowIndex,new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
             }
-            //((MainWindow)(this.Parent)).DTR.Add(new MainWindow.DataTableRow("112312adasd312", "1131232asdsd13", "1adasd", "1adasd", "1adasd", "1adasd"));
         }
         private void ClearData()
         {
