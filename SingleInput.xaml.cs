@@ -175,7 +175,8 @@ namespace SvodExcel
 
         private void GetExcel()
         {
-            string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+            //string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+            string pathA = Properties.Settings.Default.PathToGlobalData;
             //string pathA = @"C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx";
             if (File.Exists(pathA))
             {
@@ -294,6 +295,7 @@ namespace SvodExcel
                     break;
                 case 1:
                     NewRecord();
+                    this.Close();
                     break;
                 case 2:
                     MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
@@ -305,7 +307,6 @@ namespace SvodExcel
                     MessageBox.Show("Неизвестная ошибка");
                     break;
             }
-            this.Close();
         }
 
         private int CorrectData()
@@ -379,6 +380,7 @@ namespace SvodExcel
             {
                 flag = 0;
                 GridDate.Background = new SolidColorBrush(Colors.Red);
+                DatePicker_Date.Focus();
                 flag_date = 0;
             }
             else
@@ -393,6 +395,7 @@ namespace SvodExcel
                     {
                         flag = 3;
                     }
+                    MaskedTextBoxStartTime.Focus();
                     break;
                 case 2:
                     GridTime.Background = new SolidColorBrush(Colors.Yellow);
@@ -400,6 +403,7 @@ namespace SvodExcel
                     {
                         flag = 3;
                     }
+                    MaskedTextBoxStartTime.Focus();
                     break;
                 default:
                     GridTime.Background = null;
@@ -412,6 +416,7 @@ namespace SvodExcel
                 else
                     flag = 0;
                 GridTeacher.Background = new SolidColorBrush(Colors.Red);
+                comboBoxTeacher.Focus();
                 flag_teacher = 0;
             }
             else
@@ -615,10 +620,10 @@ namespace SvodExcel
             MainWindow home = Application.Current.MainWindow as MainWindow;
             //home.labelTech.Content = "Action";
             if(RowIndex==-1)
-                home.AddNewItem(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxCategory.Text));
+                home.AddNewItem(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
             else
             {
-
+                home.EditItem(RowIndex,new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
             }
             //((MainWindow)(this.Parent)).DTR.Add(new MainWindow.DataTableRow("112312adasd312", "1131232asdsd13", "1adasd", "1adasd", "1adasd", "1adasd"));
         }

@@ -181,6 +181,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="FilesAndNet.config" />
     <None Include="ListTeacher.dat" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -246,6 +247,10 @@
     <Resource Include="MultiInput_disable.png" />
     <Resource Include="SingleInput_disable.png" />
     <Resource Include="Upload_disable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="DeleteRecord.png" />
+    <Resource Include="DeleteRecord_disable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
