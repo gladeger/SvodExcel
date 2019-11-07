@@ -1,7 +1,30 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SvodExcel.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PathToGlobalData" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx</Value>
+    </Setting>
+    <Setting Name="PathVariable1" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx</Value>
+    </Setting>
+    <Setting Name="PathVariable2" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx</Value>
+    </Setting>
+    <Setting Name="PathToGlobal" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\</Value>
+    </Setting>
+    <Setting Name="GlobalData" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">РАСП.xlsx</Value>
+    </Setting>
+    <Setting Name="GlobalMarker" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">employed</Value>
+    </Setting>
+    <Setting Name="PathToLocalData" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">.\\РАСП.xlsx</Value>
+    </Setting>
+    <Setting Name="WaitingInLine" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
