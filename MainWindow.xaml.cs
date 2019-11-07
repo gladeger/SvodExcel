@@ -236,14 +236,34 @@ namespace SvodExcel
             }
             else
             {
+                string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
+                if (File.Exists(pathC))
+                {
+                    File.Delete(pathC);
+                }
                 StreamWriter sw = File.CreateText(pathB);
                 String host = System.Net.Dns.GetHostName();
                 System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList[0];
                 sw.WriteLine(ip.ToString());
                 sw.Close();
                 string pathA = Properties.Settings.Default.PathToGlobalData;
-                string pathC = Properties.Settings.Default.PathToLocalData;
                 File.Copy(pathA, pathC);
+                var exApp = new Microsoft.Office.Interop.Excel.Application();
+                var exBook = exApp.Workbooks.Open(pathC);
+                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
+                for(int i=0;i<DTR.Count;i++)
+                {
+                    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i].Date;
+                    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i].Time;
+                    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i].Teacher;
+                    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i].Group;
+                    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i].Category;
+                    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i].Place;
+                }
+                exBook.Close(false);
+                exApp.Quit();
+                File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
                 File.Delete(pathC);
                 File.Delete(pathB);
             }
