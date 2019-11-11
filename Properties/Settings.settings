@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="PathToGlobalData" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">C:\Users\Илья\Source\Repos\gladeger\SvodExcel\РАСП.xlsx</Value>
+      <Value Profile="(Default)">C:\TimeRepos\SvodExcel\РАСП.xlsx</Value>
     </Setting>
     <Setting Name="PathVariable1" Type="System.String" Scope="Application">
       <Value Profile="(Default)">C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx</Value>
@@ -12,7 +12,7 @@
       <Value Profile="(Default)">C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx</Value>
     </Setting>
     <Setting Name="PathToGlobal" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">C:\Users\Илья\Source\Repos\gladeger\SvodExcel\</Value>
+      <Value Profile="(Default)">C:\TimeRepos\SvodExcel</Value>
     </Setting>
     <Setting Name="GlobalData" Type="System.String" Scope="Application">
       <Value Profile="(Default)">РАСП.xlsx</Value>

@@ -27,7 +27,7 @@ namespace SvodExcel
             public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace)
             {
                 Date = inputDate;
-                Time = inputTime;
+                Time = inputTime.Replace(':','.');
                 Teacher = inputTeacher;
                 Group = inputGroup;
                 Category = inputCategory;
@@ -66,8 +66,8 @@ namespace SvodExcel
             dataGridExport.Columns[3].MaxWidth = 120;
 
             // example data
-            AddNewItem(new DataTableRow("06.11.2019","08:40-12:00", "Пронина Л.Н.", "","******","!@#$%&"));
-            AddNewItem(new DataTableRow("07.11.2019", "09:20-13:00", "Пронина Л.Н.", "", "#######", "*?!~%$#"));
+            AddNewItem(new DataTableRow("06.11.2019","08.40-12.00", "Пронина Л.Н.", "","******","!@#$%&"));
+            AddNewItem(new DataTableRow("07.11.2019", "09.20-13.00", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             //----exmpla data
 
@@ -147,8 +147,8 @@ namespace SvodExcel
             }
             f.DatePicker_Date.Text = DTR[SI].Date;
             f.comboBoxTeacher.Text = DTR[SI].Teacher;
-            f.MaskedTextBoxStartTime.Text = DTR[SI].Time.Substring(0, 5);
-            f.MaskedTextBoxEndTime.Text = DTR[SI].Time.Substring(6, 5);
+            f.MaskedTextBoxStartTime.Text = DTR[SI].Time.Substring(0, 5).Replace('.',':');
+            f.MaskedTextBoxEndTime.Text = DTR[SI].Time.Substring(6, 5).Replace('.', ':');
             f.comboBoxTeacher.SelectedIndex = f.comboBoxTeacher.Items.IndexOf(DTR[SI].Teacher);
             f.textBoxCategory.Text = DTR[SI].Category;
             f.textBoxPlace.Text = DTR[SI].Place;
@@ -232,7 +232,7 @@ namespace SvodExcel
             ClearHang();
             if (File.Exists(pathB))
             {
-                MessageBox.Show("К сожалению, на данный момент экспоорт невозможен - другой пользователь уже начал оновлять общий файл!\nПопробуйте еще раз чуть позже");
+                MessageBox.Show("К сожалению, на данный момент экспорт невозможен - другой пользователь уже начал оновлять общий файл!\nПопробуйте еще раз чуть позже");
             }
             else
             {
@@ -251,8 +251,11 @@ namespace SvodExcel
                 var exApp = new Microsoft.Office.Interop.Excel.Application();
                 var exBook = exApp.Workbooks.Open(pathC);
                 var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                int BlinkEnd = 0;
                 var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                for(int i=0;i<DTR.Count;i++)
+                if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
+                    BlinkEnd = 1;
+                for (int i= BlinkEnd; i<(DTR.Count+BlinkEnd); i++)
                 {
                     ExSheet.Cells[lastcell.Row + i, 2] = DTR[i].Date;
                     ExSheet.Cells[lastcell.Row + i, 3] = DTR[i].Time;
@@ -261,7 +264,14 @@ namespace SvodExcel
                     ExSheet.Cells[lastcell.Row + i, 6] = DTR[i].Category;
                     ExSheet.Cells[lastcell.Row + i, 7] = DTR[i].Place;
                 }
-                exBook.Close(false);
+                MessageBox.Show(
+                    exBook.Path.ToString()+"\\"+exBook.Name.ToString()+ "\n" + (lastcell.Row -1).ToString() + " 4:\n" +
+                    ExSheet.Cells[lastcell.Row-1, 4].Value.ToString()
+                                       +"\n"+
+                    pathC.ToString()+"\n"+(lastcell.Row + DTR.Count - 1).ToString()+" 4:\n"+
+                    ExSheet.Cells[lastcell.Row + DTR.Count-1, 4].Value.ToString()
+                    );
+                exBook.Close(true);
                 exApp.Quit();
                 File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
                 File.Delete(pathC);
@@ -290,6 +300,55 @@ namespace SvodExcel
                         i++;
                     }
                 }
+            }
+        }
+
+        private void buttonDebug_Click(object sender, RoutedEventArgs e)
+        {
+            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            ClearHang();
+            if (File.Exists(pathB))
+            {
+                MessageBox.Show("К сожалению, на данный момент обновление невозможено - другой пользователь уже начал оновлять общий файл!\nПопробуйте еще раз чуть позже");
+            }
+            else
+            {
+                string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
+                if (File.Exists(pathC))
+                {
+                    File.Delete(pathC);
+                }
+                string pathA = Properties.Settings.Default.PathToGlobalData;
+                File.Copy(pathA, pathC);
+                var exApp = new Microsoft.Office.Interop.Excel.Application();
+                var exBook = exApp.Workbooks.Open(pathC);
+                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                int BlinkEnd = 0;
+                string FormulCalculate = ExSheet.Cells[16, 8].Value;
+                MessageBox.Show(FormulCalculate);
+                /*var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
+                if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
+                    BlinkEnd = 1;
+                for (int i = BlinkEnd; i < (DTR.Count + BlinkEnd); i++)
+                {
+                    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i].Date;
+                    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i].Time;
+                    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i].Teacher;
+                    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i].Group;
+                    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i].Category;
+                    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i].Place;
+                }
+                MessageBox.Show(
+                    exBook.Path.ToString() + "\\" + exBook.Name.ToString() + "\n" + (lastcell.Row - 1).ToString() + " 4:\n" +
+                    ExSheet.Cells[lastcell.Row - 1, 4].Value.ToString()
+                                       + "\n" +
+                    pathC.ToString() + "\n" + (lastcell.Row + DTR.Count - 1).ToString() + " 4:\n" +
+                    ExSheet.Cells[lastcell.Row + DTR.Count - 1, 4].Value.ToString()
+                    );
+                    */
+                exBook.Close(true);
+                exApp.Quit();
+                File.Delete(pathC);
             }
         }
     }

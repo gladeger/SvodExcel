@@ -12,7 +12,7 @@ namespace SvodExcel.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.3.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,7 +25,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Илья\\Source\\Repos\\gladeger\\SvodExcel\\РАСП.xlsx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\TimeRepos\\SvodExcel\\РАСП.xlsx")]
         public string PathToGlobalData {
             get {
                 return ((string)(this["PathToGlobalData"]));
@@ -52,7 +52,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Илья\\Source\\Repos\\gladeger\\SvodExcel\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\TimeRepos\\SvodExcel")]
         public string PathToGlobal {
             get {
                 return ((string)(this["PathToGlobal"]));

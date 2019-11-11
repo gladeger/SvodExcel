@@ -144,6 +144,7 @@
             <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" />
             <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" />
             <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click"/>
+            <Button x:Name="buttonDebug" IsEnabled="True" Width="26"  Margin="10,0,0,0" Click="buttonDebug_Click" Content="Debug"/>
         </StackPanel>
 
         <TabControl x:Name="tabControl" Margin="0,61,0,0">
@@ -170,5 +171,5 @@
             </TabItem>
         </TabControl>
     </Grid>
-
+<!---->
 </Window>
