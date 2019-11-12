@@ -34,7 +34,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\Users\\\\Илья\\\\Source\\\\Repos\\\\SvodExcel\\\\РАСП.xlsx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx")]
         public string PathVariable1 {
             get {
                 return ((string)(this["PathVariable1"]));
@@ -43,7 +43,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\Users\\\\Администратор ОК\\\\source\\\\repos\\\\SvodExcel\\\\РАСП.xlsx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx")]
         public string PathVariable2 {
             get {
                 return ((string)(this["PathVariable2"]));
