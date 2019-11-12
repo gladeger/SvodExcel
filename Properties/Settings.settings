@@ -27,7 +27,10 @@
       <Value Profile="(Default)">15</Value>
     </Setting>
     <Setting Name="PathVariable3" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\\Users\\Илья\\Source\\Repos\\gladeger\\SvodExcel\\РАСП.xlsx</Value>
+      <Value Profile="(Default)">C:\Users\Илья\Source\Repos\gladeger\SvodExcel\РАСП.xlsx</Value>
+    </Setting>
+    <Setting Name="TimeTemp" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

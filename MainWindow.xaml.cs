@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 
 namespace SvodExcel
 {
@@ -27,7 +28,18 @@ namespace SvodExcel
             public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace)
             {
                 Date = inputDate;
-                Time = inputTime.Replace(':','.');
+                if(inputTime[0]=='0')
+                {
+                    Time = inputTime.Substring(1).Replace(':', '.');
+                }
+                else
+                {
+                    Time = inputTime.Replace(':', '.');
+                }            
+                if(Time[Time.IndexOf("-")+1]=='0')
+                {
+                    Time = Time.Substring(0, Time.IndexOf("-")+1)+ Time.Substring(Time.IndexOf("-")+2);
+                }
                 Teacher = inputTeacher;
                 Group = inputGroup;
                 Category = inputCategory;
@@ -66,7 +78,7 @@ namespace SvodExcel
             dataGridExport.Columns[3].MaxWidth = 120;
 
             // example data
-            AddNewItem(new DataTableRow("06.11.2019","08.40-12.00", "Пронина Л.Н.", "","******","!@#$%&"));
+            AddNewItem(new DataTableRow("06.11.2019","08.40-09.40", "Пронина Л.Н.", "","******","!@#$%&"));
             AddNewItem(new DataTableRow("07.11.2019", "09.20-13.00", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             //----exmpla data
@@ -147,8 +159,17 @@ namespace SvodExcel
             }
             f.DatePicker_Date.Text = DTR[SI].Date;
             f.comboBoxTeacher.Text = DTR[SI].Teacher;
+
             f.MaskedTextBoxStartTime.Text = DTR[SI].Time.Substring(0, 5).Replace('.',':');
-            f.MaskedTextBoxEndTime.Text = DTR[SI].Time.Substring(6, 5).Replace('.', ':');
+            if(f.MaskedTextBoxStartTime.Text[0]=='_')
+            {
+                f.MaskedTextBoxStartTime.Text = "0"+DTR[SI].Time.Substring(0, 4).Replace('.', ':');
+            }
+            f.MaskedTextBoxEndTime.Text = DTR[SI].Time.Substring(DTR[SI].Time.Length-5, 5).Replace('.', ':');
+            if (f.MaskedTextBoxEndTime.Text[0] == '_')
+            {
+                f.MaskedTextBoxEndTime.Text = "0" + DTR[SI].Time.Substring(DTR[SI].Time.Length - 4, 4).Replace('.', ':');
+            }
             f.comboBoxTeacher.SelectedIndex = f.comboBoxTeacher.Items.IndexOf(DTR[SI].Teacher);
             f.textBoxCategory.Text = DTR[SI].Category;
             f.textBoxPlace.Text = DTR[SI].Place;
@@ -323,32 +344,22 @@ namespace SvodExcel
                 var exApp = new Microsoft.Office.Interop.Excel.Application();
                 var exBook = exApp.Workbooks.Open(pathC);
                 var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                int BlinkEnd = 0;
-                string FormulCalculate = ExSheet.Cells[16, 8].Value;
-                MessageBox.Show(FormulCalculate);
-                /*var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
-                    BlinkEnd = 1;
-                for (int i = BlinkEnd; i < (DTR.Count + BlinkEnd); i++)
-                {
-                    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i].Date;
-                    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i].Time;
-                    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i].Teacher;
-                    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i].Group;
-                    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i].Category;
-                    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i].Place;
-                }
-                MessageBox.Show(
-                    exBook.Path.ToString() + "\\" + exBook.Name.ToString() + "\n" + (lastcell.Row - 1).ToString() + " 4:\n" +
-                    ExSheet.Cells[lastcell.Row - 1, 4].Value.ToString()
-                                       + "\n" +
-                    pathC.ToString() + "\n" + (lastcell.Row + DTR.Count - 1).ToString() + " 4:\n" +
-                    ExSheet.Cells[lastcell.Row + DTR.Count - 1, 4].Value.ToString()
-                    );
-                    */
+                string FormulCalculate = ExSheet.Cells[16, 8].Formula;
                 exBook.Close(true);
                 exApp.Quit();
                 File.Delete(pathC);
+                //MessageBox.Show(FormulCalculate);
+                List<string> TimeTemplate = new List<string>();
+                //@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$"
+                Regex regex = new Regex(@"\d{1,2}\.\d{2}\-\d{1,2}\.\d{2}");
+                MatchCollection matchList = regex.Matches(FormulCalculate);
+                for(int i=0;i<matchList.Count;i++)
+                {
+                    TimeTemplate.Add(matchList[i].Value);
+                }
+                //TimeTemplate = regex.Matches(FormulCalculate).Val;
+                //if (regex.IsMatch(Teacher))
+                //List<int> TimeTemplateIndexs = ;
             }
         }
     }

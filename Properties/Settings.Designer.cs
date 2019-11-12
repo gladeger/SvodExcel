@@ -97,13 +97,25 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\Users\\\\Илья\\\\Source\\\\Repos\\\\gladeger\\\\SvodExcel\\\\РАСП.xlsx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Илья\\Source\\Repos\\gladeger\\SvodExcel\\РАСП.xlsx")]
         public string PathVariable3 {
             get {
                 return ((string)(this["PathVariable3"]));
             }
             set {
                 this["PathVariable3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TimeTemp {
+            get {
+                return ((string)(this["TimeTemp"]));
+            }
+            set {
+                this["TimeTemp"] = value;
             }
         }
     }

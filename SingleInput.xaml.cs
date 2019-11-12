@@ -22,12 +22,14 @@ namespace SvodExcel
         private bool itisclose = false;
         private List<string> NotCheckTeacher=new List<string>();
         private bool itisnotstart = false;
+        List<string> TimeTemplate = new List<string>();
         public SingleInput()
         {
             InitializeComponent();
             GridCalcTime.Visibility = Visibility.Hidden;
             DefaultTimes = MaskedTextBoxStartTime.Text;
             StartListTeacher();
+            StartListTimes();
             System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
             checkBoxAutoEdit.IsChecked = true;
             NotCheckTeacher.Add(ButtonNewTeacher.Name);
@@ -288,8 +290,82 @@ namespace SvodExcel
                     comboBoxTeacher.Items.Add(Teachers[i]);
                 }
             }
-        }        
+        }
+        private void StartListTimes()
+        {
+            string pathT = @".\ListTime.dat";
 
+            if (!File.Exists(pathT))
+            {
+                    File.WriteAllText(pathT, "10:00-16:40");
+                    File.AppendAllText(pathT, "\n" + "12:00-18:40");
+            }
+
+            TimeTemplate.Clear();
+            TimeTemplate = File.ReadAllLines(pathT).ToList<string>();
+        }
+        private void UpdateListTimes()
+        {
+            string pathT = @".\ListTime.dat";
+
+                string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+                if (File.Exists(pathB))
+                {
+                    MessageBox.Show("К сожалению обновление списка сейчас невозможно, обновляется общий сводный файл.\nПопробуйте чуть позже.");
+                }
+                else
+                {
+                    string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
+                    if (File.Exists(pathC))
+                    {
+                        File.Delete(pathC);
+                    }
+                    string pathA = Properties.Settings.Default.PathToGlobalData;
+                    File.Copy(pathA, pathC);
+                    var exApp = new Microsoft.Office.Interop.Excel.Application();
+                    var exBook = exApp.Workbooks.Open(pathC);
+                    var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                    string FormulCalculate = ExSheet.Cells[16, 8].Formula;
+                    exBook.Close(true);
+                    exApp.Quit();
+                    File.Delete(pathC);
+                    //MessageBox.Show(FormulCalculate);
+                    //@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$"
+                    Regex regex = new Regex(@"\d{1,2}\.\d{2}\-\d{1,2}\.\d{2}");
+                    MatchCollection matchList = regex.Matches(FormulCalculate);
+                    File.WriteAllText(pathT, "10:00-16:40");
+                    for (int i = 1; i < matchList.Count; i++)
+                    {
+                        string tempstring = matchList[i].Value.Replace('.', ':');
+                        switch (tempstring.Length)
+                        {
+                            case 10:
+                                if (matchList[i].Value.IndexOf('.') == 2)
+                                {
+                                    File.AppendAllText(pathT, "\n" + matchList[i].Value.Substring(0, 6).Replace('.', ':') + "0" + matchList[i].Value.Substring(6, 4).Replace('.', ':'));
+                                }
+                                else
+                                {
+                                    File.AppendAllText(pathT, "\n" + "0" + matchList[i].Value.Replace('.', ':'));
+                                }
+                                break;
+                            case 9:
+                                File.AppendAllText(pathT, "\n" + "0" + matchList[i].Value.Substring(0, 5).Replace('.', ':') + "0" + matchList[i].Value.Substring(5, 4).Replace('.', ':'));
+                                break;
+                            default:
+                                File.AppendAllText(pathT, "\n" + matchList[i].Value.Replace('.', ':'));
+                                break;
+                        }
+
+                    }
+                    //TimeTemplate = regex.Matches(FormulCalculate).Val;
+                    //if (regex.IsMatch(Teacher))
+                    //List<int> TimeTemplateIndexs = ;
+                }
+
+            TimeTemplate.Clear();
+            TimeTemplate = File.ReadAllLines(pathT).ToList<string>();
+        }
         private void ButtonWriteAndStop_Click(object sender, RoutedEventArgs e)
         {
             //MessageBox.Show("Кнопка пока не работает");
@@ -644,6 +720,18 @@ namespace SvodExcel
         private void DatePicker_Date_GotFocus(object sender, RoutedEventArgs e)
         {
             GridDate.Background = null;
+        }
+
+        private void buttonUpdateTimeTemplates_Click(object sender, RoutedEventArgs e)
+        {
+            WinEffectON();
+            MessageBoxResult DR = MessageBox.Show("Сейчас программа попытается обновить список возможного времени занятия. Этот процесс может занять несколько минут. \nВнимание! Новые проподаватели, еще не загруженные в общий доступ, будут удалены.\nПродолжить?", "Начать обновление списка преподавателей", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK);
+            if (DR == MessageBoxResult.OK)
+            {
+                UpdateListTimes();
+            }
+            this.Effect = null;
+            
         }
     }
 }

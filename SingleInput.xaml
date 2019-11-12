@@ -42,10 +42,13 @@
                 <Label x:Name="label_start_time_Copy" HorizontalAlignment="Left" Margin="305,8,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="конец - " FontSize="14"/>
                 <CheckBox x:Name="checkBoxAutoEdit" Content="Включить автоматическую правку опечаток" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" FontSize="14" Checked="CheckBoxAutoEdit_Checked"/>
 
-                <Grid x:Name="GridCalcTime" Height="81" Margin="458,0,0,0" VerticalAlignment="Top">
+                <Grid x:Name="GridCalcTime" Height="81" Margin="497,0,0,0" VerticalAlignment="Top">
                     <Label x:Name="labelTextCalcTime" Content="подсчитанное время занятия" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" FontStyle="Italic"/>
                     <Label x:Name="labelCalcTime" Content="00" Margin="0,13,0,0" VerticalAlignment="Top" Height="68" FontSize="48" FontWeight="Bold"/>
                 </Grid>
+                <Button x:Name="buttonUpdateTimeTemplates" HorizontalAlignment="Left" Margin="467,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="buttonUpdateTimeTemplates_Click">
+                    <Image Source="update.png" />
+                </Button>
 
             </Grid>
         </Border>
