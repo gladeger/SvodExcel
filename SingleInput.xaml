@@ -27,26 +27,48 @@
         <Border BorderBrush="Black" BorderThickness="1" Height="57" Margin="10,77,10,0" VerticalAlignment="Top">
             <Grid x:Name="GridDate" Margin="0">
                 <Label x:Name="label_date" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Дата проведения:" FontSize="14"/>
-                <DatePicker x:Name="DatePicker_Date" HorizontalAlignment="Left" VerticalAlignment="Top" Height="31" Width="169" Text="Дата проведения" RenderTransformOrigin="-0.243,0.494" Margin="167,10,0,0" FontSize="14"/>
+                <DatePicker x:Name="DatePicker_Date" HorizontalAlignment="Left" VerticalAlignment="Top" Height="31" Width="169" Text="Дата проведения" RenderTransformOrigin="-0.243,0.494" Margin="167,10,0,0" FontSize="14" ToolTip="Внесите вручную или выберите дату проведения занятия"/>
             </Grid>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" Height="83" Margin="10,139,10,0" VerticalAlignment="Top">
             <Grid x:Name="GridTime" Margin="0">
                 <Label x:Name="label_time" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Время проведения:" FontSize="14"/>
-                <xctk:MaskedTextBox x:Name="MaskedTextBoxStartTime" HorizontalAlignment="Left" Height="22" Margin="236,14,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="44"
-                             Mask="00:00" FontSize="14" GotFocus="MaskedTextBoxStartTime_GotFocus" SelectionChanged="MaskedTextBoxStartTime_SelectionChanged" TextAlignment="Center" LostFocus="MaskedTextBoxStartTime_LostFocus" TextChanged="MaskedTextBoxStartTime_TextChanged" />
+                <xctk:MaskedTextBox x:Name="MaskedTextBoxStartTime" HorizontalAlignment="Left" Height="22" Margin="236,14,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="44" 
+                             Mask="00:00" FontSize="14" GotFocus="MaskedTextBoxStartTime_GotFocus" SelectionChanged="MaskedTextBoxStartTime_SelectionChanged" TextAlignment="Center" LostFocus="MaskedTextBoxStartTime_LostFocus" TextChanged="MaskedTextBoxStartTime_TextChanged">
+                    <xctk:MaskedTextBox.ToolTip>
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock Text="Укажите время начала занятия."/>
+                            <TextBlock Text="Временной интервал должен соответсвовать одному из заранее заданных шаблонов времени проведения занятий."/>
+                            <TextBlock Text="8 и 9 часов утра записывайте как 08 и 09 соответсвенно."/>
+                        </StackPanel>
+                    </xctk:MaskedTextBox.ToolTip>
+                </xctk:MaskedTextBox>
                 <Label x:Name="label_start_time" HorizontalAlignment="Left" Margin="167
                        ,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="начало - " FontSize="14"/>
                 <xctk:MaskedTextBox x:Name="MaskedTextBoxEndTime" HorizontalAlignment="Left" Height="22" Margin="367,15,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="44"
-                    Mask="00:00" FontSize="14" TextAlignment="Center" GotFocus="MaskedTextBoxEndTime_GotFocus" SelectionChanged="MaskedTextBoxEndTime_SelectionChanged" LostFocus="MaskedTextBoxEndTime_LostFocus" TextChanged="MaskedTextBoxEndTime_TextChanged"/>
+                    Mask="00:00" FontSize="14" TextAlignment="Center" GotFocus="MaskedTextBoxEndTime_GotFocus" SelectionChanged="MaskedTextBoxEndTime_SelectionChanged" LostFocus="MaskedTextBoxEndTime_LostFocus" TextChanged="MaskedTextBoxEndTime_TextChanged">
+                    <xctk:MaskedTextBox.ToolTip>
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock Text="Укажите время завершения занятия."/>
+                            <TextBlock Text="Временной интервал должен соответсвовать одному из заранее заданных шаблонов времени проведения занятий."/>
+                            <TextBlock Text="8 и 9 часов утра записывайте как 08 и 09 соответсвенно."/>
+                        </StackPanel>
+                    </xctk:MaskedTextBox.ToolTip>
+                </xctk:MaskedTextBox>
                 <Label x:Name="label_start_time_Copy" HorizontalAlignment="Left" Margin="305,8,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="конец - " FontSize="14"/>
-                <CheckBox x:Name="checkBoxAutoEdit" Content="Включить автоматическую правку опечаток" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" FontSize="14" Checked="CheckBoxAutoEdit_Checked"/>
-
+                <CheckBox x:Name="checkBoxAutoEdit" Content="Включить автоматическую правку опечаток" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" FontSize="14" Checked="CheckBoxAutoEdit_Checked" >
+                    <CheckBox.ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="Отключите эту опцию, если не хотите чтобы система автоматически"/>
+                            <TextBlock Text="исправляла опечатки и недочеты распозноваемые системой"/>
+                        </StackPanel>
+                    </CheckBox.ToolTip>
+                </CheckBox>
                 <Grid x:Name="GridCalcTime" Height="81" Margin="497,0,0,0" VerticalAlignment="Top">
                     <Label x:Name="labelTextCalcTime" Content="подсчитанное время занятия" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" FontStyle="Italic"/>
                     <Label x:Name="labelCalcTime" Content="00" Margin="0,13,0,0" VerticalAlignment="Top" Height="68" FontSize="48" FontWeight="Bold"/>
                 </Grid>
-                <Button x:Name="buttonUpdateTimeTemplates" HorizontalAlignment="Left" Margin="467,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="buttonUpdateTimeTemplates_Click">
+                <Button x:Name="buttonUpdateTimeTemplates" HorizontalAlignment="Left" Margin="467,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="buttonUpdateTimeTemplates_Click" ToolTip="Обновить список шаблонов времени занятии из общего файла">
                     <Image Source="update.png" />
                 </Button>
 
@@ -55,11 +77,20 @@
         <Border BorderBrush="Black" BorderThickness="1" Height="57" Margin="10,227,10,0" VerticalAlignment="Top">
             <Grid x:Name="GridTeacher" Margin="0">
                 <Label x:Name="label_teacher" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Преподаватель:" FontSize="14"/>
-                <ComboBox x:Name="comboBoxTeacher" HorizontalAlignment="Left" Margin="167,14,0,0" VerticalAlignment="Top" Width="294" FontSize="14" IsEditable="True" LostFocus="comboBoxTeacher_LostFocus" MouseEnter="comboBoxTeacher_MouseEnter" MouseLeave="comboBoxTeacher_MouseLeave" GotFocus="comboBoxTeacher_GotFocus"/>
-                <Button x:Name="buttonUpdate" HorizontalAlignment="Left" Margin="466,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="ButtonUpdate_Click">
+                <ComboBox x:Name="comboBoxTeacher" HorizontalAlignment="Left" Margin="167,14,0,0" VerticalAlignment="Top" Width="294" FontSize="14" IsEditable="True" LostFocus="comboBoxTeacher_LostFocus" MouseEnter="comboBoxTeacher_MouseEnter" MouseLeave="comboBoxTeacher_MouseLeave" GotFocus="comboBoxTeacher_GotFocus">
+                    <ComboBox.ToolTip>
+                        <StackPanel HorizontalAlignment="Left" >
+                            <TextBlock Text="Выберите преподавателя, проводившего занятия. "/>
+                            <TextBlock Text="Если преподаватель ранее не проводил занятия, запишите его;"/>
+                            <TextBlock Text="после добавления записей в общей файл, обновите"/>
+                            <TextBlock Text="список и введный преподаватель появится в списке."/>
+                        </StackPanel>
+                    </ComboBox.ToolTip>
+                </ComboBox>
+                <Button x:Name="buttonUpdate" HorizontalAlignment="Left" Margin="466,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="ButtonUpdate_Click" ToolTip="Обновить список преподавателей из общего файла">
                     <Image Source="update.png" />
                 </Button>
-                <Button x:Name="ButtonNewTeacher" Content="Добавить нового" Margin="0,0,10,15" HorizontalAlignment="Right" Width="120" Height="30" VerticalAlignment="Bottom" IsEnabled="False" Click="ButtonNewTeacher_Click"/>
+                <Button x:Name="ButtonNewTeacher" Content="Добавить нового" Margin="0,0,10,15" HorizontalAlignment="Right" Width="120" Height="30" VerticalAlignment="Bottom" IsEnabled="False" Click="ButtonNewTeacher_Click" ToolTip="Добавить введного преподавателя в список как нового преподавателя."/>
             </Grid>
         </Border>
         <Grid Margin="10,284,10,45">
@@ -80,9 +111,9 @@
                 </Grid>
             </Border>
         </Grid>
-        <Button x:Name="ButtonWriteAndContinue" Content="Записать и продолжить" HorizontalAlignment="Left" Margin="10,0,0,10" Width="150" IsDefault="True" Height="30" VerticalAlignment="Bottom" Click="ButtonWriteAndContinue_Click"/>
-        <Button x:Name="ButtonWriteAndStop" Content="Записать и остановиться" Margin="0,0,0,10" Height="30" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Center" Click="ButtonWriteAndStop_Click"/>
-        <Button x:Name="ButtonCancel" Content="Отмена" Margin="0,0,10,10" IsCancel="True" HorizontalAlignment="Right" Width="150" Height="30" VerticalAlignment="Bottom"/>
+        <Button x:Name="ButtonWriteAndContinue" Content="Записать и продолжить" HorizontalAlignment="Left" Margin="10,0,0,10" Width="150" IsDefault="True" Height="30" VerticalAlignment="Bottom" Click="ButtonWriteAndContinue_Click" ToolTip="Добавить текущие данные и сразу перейти к заполнению новых"/>
+        <Button x:Name="ButtonWriteAndStop" Content="Записать и остановиться" Margin="0,0,0,10" Height="30" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Center" Click="ButtonWriteAndStop_Click" ToolTip="Записать текущие данные и закрыть форму внесения данных"/>
+        <Button x:Name="ButtonCancel" Content="Отмена" Margin="0,0,10,10" IsCancel="True" HorizontalAlignment="Right" Width="150" Height="30" VerticalAlignment="Bottom" ToolTip="Отменить внесение данных"/>
         <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
         <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,46,10,0" VerticalAlignment="Top"/>
     </Grid>

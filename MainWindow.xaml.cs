@@ -78,8 +78,8 @@ namespace SvodExcel
             dataGridExport.Columns[3].MaxWidth = 120;
 
             // example data
-            AddNewItem(new DataTableRow("06.11.2019","08.40-09.40", "Пронина Л.Н.", "","******","!@#$%&"));
-            AddNewItem(new DataTableRow("07.11.2019", "09.20-13.00", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
+            AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","******","!@#$%&"));
+            AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             //----exmpla data
 

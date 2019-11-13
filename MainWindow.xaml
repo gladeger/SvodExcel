@@ -15,6 +15,8 @@
         <Image x:Key="MultiInput_disable" Source="MultiInput_disable.png"></Image>
         <Image x:Key="Upload_enable" Source="Upload.png"></Image>
         <Image x:Key="Upload_disable" Source="Upload_disable.png"></Image>
+        <Image x:Key="View_enable" Source="Upload.png"></Image>
+        <Image x:Key="View_disable" Source="Upload_disable.png"></Image>
         <Image x:Key="DeleteRecord_enable" Source="DeleteRecord.png"></Image>
         <Image x:Key="DeleteRecord_disable" Source="DeleteRecord_disable.png"></Image>
         <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="280" >
@@ -25,7 +27,14 @@
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
             <Image Source="Upload_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
-
+        <Grid x:Key="View_enable_grid"  Margin="0,0,0,0" Width="280" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
+            <Image Source="View.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="View_disable_grid"  Margin="0,0,0,0" Width="280" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
+            <Image Source="View_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
         <Style TargetType="{x:Type Button}" x:Key="excel_import_button">
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="True">
@@ -102,6 +111,28 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type Button}" x:Key="View_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="View_enable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="View_disable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <DataTrigger Binding="{Binding ElementName=dataGridExport, Path=AddingNewItem}">
+                    <Setter Property="IsEnabled"
+                            Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="{x:Type Button}" x:Key="DeleteRecord_button">
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="True">
@@ -135,20 +166,21 @@
                 <MenuItem Header="Импорт из Excel" IsEnabled="False"/>
                 <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False"/>
             </MenuItem>
+            <MenuItem Header="Настройки..." IsEnabled="False"/> 
             <MenuItem Header="Справка">
                 <MenuItem Header="О программе" Click="MenuItem_Click"/>
             </MenuItem>
         </Menu>
         <StackPanel x:Name="menu_Hot" Height="28" VerticalAlignment="Top" Margin="0,28,0,0" Orientation="Horizontal" >
-            <Button x:Name="buttonExportHot" Width="26" Margin="10,0,0,0" Style="{StaticResource excel_import_button}" IsEnabled="False" Click="buttonExportHot_Click"/>
-            <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" />
-            <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" />
-            <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click"/>
-            <Button x:Name="buttonDebug" IsEnabled="True" Width="26"  Margin="10,0,0,0" Click="buttonDebug_Click" Content="Debug"/>
+            <Button x:Name="buttonExportHot" Width="26" Margin="10,0,0,0" Style="{StaticResource excel_import_button}" IsEnabled="False" Click="buttonExportHot_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
+            <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip="Добавить новую запись Занятия для экспорта в общий файл"/>
+            <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных из Excel для экспорта в общий файл"/>
+            <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых"/>
+            <Button x:Name="buttonDebug" IsEnabled="True" Width="26"  Margin="10,0,0,0" Click="buttonDebug_Click" Content="Debug" ToolTip="Кнопка Debug, для (что характерно) Debug"/>
         </StackPanel>
 
         <TabControl x:Name="tabControl" Margin="0,61,0,0">
-            <TabItem x:Name="ExportTab1" Header="Экспорт">
+            <TabItem x:Name="ExportTab" Header="Экспорт">
                 <Grid x:Name="gridDataGridExport" Background="#FFE5E5E5">
                     <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False">
                        <!-- <DataGrid.Columns>
@@ -161,13 +193,13 @@
                         </DataGrid.Columns>
                         -->
                     </DataGrid>
-                    <Button x:Name="buttonExport"  Margin="0,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Upload_button}" HorizontalAlignment="Center" IsEnabled="False" Click="buttonExport_Click"/>
+                    <Button x:Name="buttonExport"  Margin="0,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Upload_button}" HorizontalAlignment="Center" IsEnabled="False" Click="buttonExport_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
                     <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,41" Height="26" VerticalAlignment="Bottom"/>
                     <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,41" Height="26" VerticalAlignment="Bottom"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="ExportTab" Header="Просмотр всех данных" IsEnabled="False">
-                <Grid Background="#FFE5E5E5"/>
+            <TabItem x:Name="ViewTab" Header="Просмотр всех данных">
+                <Button x:Name="buttonView"  Margin="241,0,241,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource View_button}" HorizontalAlignment="Center" ToolTip='Скачать для просмотра данные (см. в таблице "Просмотр всех данных") из общего сводного файла расписания'/>
             </TabItem>
         </TabControl>
     </Grid>

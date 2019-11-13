@@ -375,8 +375,16 @@ namespace SvodExcel
                     MessageBox.Show("Ошибка во введенных данных");
                     break;
                 case 1:
-                    NewRecord();
-                    this.Close();
+                    if (ConfirmTime())
+                    {
+                        NewRecord();
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Введенное время занятия не соответсвует возможным диапазонам.\nПроверьте еще раз времена начала и завершения занятий");
+                    }
+                    
                     break;
                 case 2:
                     MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
@@ -514,9 +522,16 @@ namespace SvodExcel
                 case 0:
                     MessageBox.Show("Ошибка во введенных данных");
                     break;
-                case 1:                    
-                    NewRecord();
-                    ClearData();
+                case 1:         
+                    if(ConfirmTime())
+                    {
+                        NewRecord();
+                        ClearData();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Введенное время занятия не соответсвует возможным диапазонам.\nПроверьте еще раз времена начала и завершения занятий");
+                    }
                     break;
                 case 2:
                     MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
@@ -732,6 +747,14 @@ namespace SvodExcel
             }
             this.Effect = null;
             
+        }
+        public bool ConfirmTime()
+        {
+            if(TimeTemplate.IndexOf(MaskedTextBoxStartTime.Text+"-"+ MaskedTextBoxEndTime.Text)>=0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
