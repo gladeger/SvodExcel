@@ -201,8 +201,11 @@ namespace SvodExcel
                     var exBook = exApp.Workbooks.Open(path);
                     var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                    List<string> ListExcel = new List<string>();
-                    for (int j = 15; j < lastcell.Row; j++)
+                    int BlinkEnd = 0;
+                if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
+                    BlinkEnd = 1;
+                List<string> ListExcel = new List<string>();    
+                    for (int j = 15; j < lastcell.Row+BlinkEnd; j++)
                     {
                         if (ExSheet.Cells[j + 1, 4].Value != null)
                         {

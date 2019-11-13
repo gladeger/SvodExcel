@@ -56,27 +56,22 @@ namespace SvodExcel
             }
         }
         public List<DataTableRow> DTR = new List<DataTableRow>();
+        public List<DataTableRow> vDTR = new List<DataTableRow>();
 
         public MainWindow()
         {
             InitializeComponent();
             DTR.Clear();
+            vDTR.Clear();
+
             dataGridExport.ItemsSource = DTR;
+            dataGridView.ItemsSource = vDTR;
         }
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
         {
             DTR.Clear();
-            dataGridExport.Columns[0].Header = "Дата проведения";
-            dataGridExport.Columns[1].Header = "Время проведения";
-            dataGridExport.Columns[2].Header = "Преподаватель";
-            dataGridExport.Columns[3].Header = "Номер группы";
-            dataGridExport.Columns[4].Header = "Категория слушателей";
-            dataGridExport.Columns[5].Header = "Место проведения";
-            dataGridExport.Columns[0].MaxWidth = 120;
-            dataGridExport.Columns[1].MaxWidth = 120;
-            dataGridExport.Columns[2].MaxWidth = 200;
-            dataGridExport.Columns[3].MaxWidth = 120;
-
+            vDTR.Clear();
+ 
             // example data
             AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","******","!@#$%&"));
             AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
@@ -84,6 +79,7 @@ namespace SvodExcel
             //----exmpla data
 
             ClearHang();
+            buttonDebug.Visibility = Visibility.Collapsed;
         }
         private void SvodExcel_Closed(object sender, EventArgs e)
         {
@@ -260,7 +256,13 @@ namespace SvodExcel
                 string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
                 if (File.Exists(pathC))
                 {
-                    File.Delete(pathC);
+                    try { File.Delete(pathC); }
+                    catch
+                    {
+                        MessageBox.Show("Ошибка обращения к локальной копии сводного документа.\nПерезапустите компьютер");
+                        return;
+                    }
+                    
                 }
                 StreamWriter sw = File.CreateText(pathB);
                 String host = System.Net.Dns.GetHostName();
@@ -278,25 +280,29 @@ namespace SvodExcel
                     BlinkEnd = 1;
                 for (int i= BlinkEnd; i<(DTR.Count+BlinkEnd); i++)
                 {
-                    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i].Date;
-                    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i].Time;
-                    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i].Teacher;
-                    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i].Group;
-                    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i].Category;
-                    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i].Place;
+                    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i-BlinkEnd].Date;
+                    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
+                    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
+                    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
+                    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
+                    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
                 }
-                MessageBox.Show(
+                /*
+                 MessageBox.Show(
                     exBook.Path.ToString()+"\\"+exBook.Name.ToString()+ "\n" + (lastcell.Row -1).ToString() + " 4:\n" +
                     ExSheet.Cells[lastcell.Row-1, 4].Value.ToString()
                                        +"\n"+
                     pathC.ToString()+"\n"+(lastcell.Row + DTR.Count - 1).ToString()+" 4:\n"+
                     ExSheet.Cells[lastcell.Row + DTR.Count-1, 4].Value.ToString()
                     );
+                    */
                 exBook.Close(true);
                 exApp.Quit();
                 File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
                 File.Delete(pathC);
                 File.Delete(pathB);
+                DTR.Clear();
+                CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             }
         }
         public void ClearHang()
@@ -330,7 +336,7 @@ namespace SvodExcel
             ClearHang();
             if (File.Exists(pathB))
             {
-                MessageBox.Show("К сожалению, на данный момент обновление невозможено - другой пользователь уже начал оновлять общий файл!\nПопробуйте еще раз чуть позже");
+                MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь уже начал обновлять общий файл!\nПопробуйте еще раз чуть позже");
             }
             else
             {
@@ -348,19 +354,141 @@ namespace SvodExcel
                 exBook.Close(true);
                 exApp.Quit();
                 File.Delete(pathC);
-                //MessageBox.Show(FormulCalculate);
                 List<string> TimeTemplate = new List<string>();
-                //@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$"
                 Regex regex = new Regex(@"\d{1,2}\.\d{2}\-\d{1,2}\.\d{2}");
                 MatchCollection matchList = regex.Matches(FormulCalculate);
                 for(int i=0;i<matchList.Count;i++)
                 {
                     TimeTemplate.Add(matchList[i].Value);
                 }
-                //TimeTemplate = regex.Matches(FormulCalculate).Val;
-                //if (regex.IsMatch(Teacher))
-                //List<int> TimeTemplateIndexs = ;
             }
+        }
+
+        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch(tabControl.SelectedIndex)
+            {
+                case 0:
+                    menu_Hot.IsEnabled = true;
+                    break;
+                default:
+                    menu_Hot.IsEnabled = false;
+                    break;
+            }
+        }
+
+        private void buttonView_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            objBlur.Radius = 4;
+            this.Effect = objBlur;
+                double This_TH2 = this.Top + this.Height / 2.0;
+                double This_LW2 = this.Left + this.Width / 2.0;
+                SvodExcel.ProgressBar PB = new SvodExcel.ProgressBar();
+                PB.Top = This_TH2 - PB.Height / 2.0;
+                PB.Left = This_LW2 - PB.Width / 2.0;
+                PB.Topmost = true;
+                PB.Show();
+            UpdateView();
+                PB.Close();
+            this.Effect = null;
+
+        }
+        public void UpdateView()
+        {
+            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            if (File.Exists(pathB))
+            {
+                MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
+            }
+            else
+            {
+                string pathA = Properties.Settings.Default.PathToGlobalData;
+                string pathC = Directory.GetCurrentDirectory() + "\\" + "View_"+Properties.Settings.Default.GlobalData;
+                if (File.Exists(pathC))
+                {
+                    FileInfo localdata = new FileInfo(pathC);
+                    FileInfo globaldata = new FileInfo(pathA);
+                    if(globaldata.LastWriteTime.ToLocalTime() > localdata.LastWriteTime.ToLocalTime())
+                    {
+                        File.Delete(pathC);
+                        File.Copy(pathA, pathC);
+                        localdata.IsReadOnly = true;
+                        CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+                    }
+                    else
+                    {
+                        if(dataGridView.Items.Count>0)
+                        return;
+                    }                    
+                }
+                else
+                {
+                    File.Copy(pathA, pathC);
+                    FileInfo localdata = new FileInfo(pathC);
+                    localdata.IsReadOnly = true;
+                    
+                }
+                /*var exApp = new Microsoft.Office.Interop.Excel.Application();
+                var exBook = exApp.Workbooks.Open(pathC);
+                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                exBook.Close(true);
+                exApp.Quit();
+                */
+                vDTR.Clear();
+                var exApp = new Microsoft.Office.Interop.Excel.Application();
+                var exBook = exApp.Workbooks.Open(pathC);
+                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
+                int BlinkEnd = 0;
+                if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
+                    BlinkEnd = 1;
+                for (int j = 15; j < lastcell.Row; j++)
+                    {
+                    vDTR.Add(new DataTableRow(ExSheet.Cells[j + 1, 2].Value.ToString(), ExSheet.Cells[j + 1, 3].Value.ToString(), ExSheet.Cells[j + 1, 4].Value.ToString(), ExSheet.Cells[j + 1, 5].Value.ToString(), ExSheet.Cells[j + 1, 6].Value.ToString(), ExSheet.Cells[j + 1, 7].Value.ToString()));
+                    //ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
+                }
+                exBook.Close(false);
+                exApp.Quit();
+                CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+            }
+        }
+
+        private void dataGridView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (dataGridView.Columns.Count > 0)
+            {
+                dataGridView.Columns[0].Header = "Дата проведения";
+                dataGridView.Columns[1].Header = "Время проведения";
+                dataGridView.Columns[2].Header = "Преподаватель";
+                dataGridView.Columns[3].Header = "Номер группы";
+                dataGridView.Columns[4].Header = "Категория слушателей";
+                dataGridView.Columns[5].Header = "Место проведения";
+                dataGridView.Columns[0].MaxWidth = 120;
+                dataGridView.Columns[1].MaxWidth = 120;
+                dataGridView.Columns[2].MaxWidth = 200;
+                dataGridView.Columns[3].MaxWidth = 120;
+            }
+            CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+
+        }
+
+        private void dataGridExport_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(dataGridExport.Columns.Count>0)
+            {
+                dataGridExport.Columns[0].Header = "Дата проведения";
+                dataGridExport.Columns[1].Header = "Время проведения";
+                dataGridExport.Columns[2].Header = "Преподаватель";
+                dataGridExport.Columns[3].Header = "Номер группы";
+                dataGridExport.Columns[4].Header = "Категория слушателей";
+                dataGridExport.Columns[5].Header = "Место проведения";
+                dataGridExport.Columns[0].MaxWidth = 120;
+                dataGridExport.Columns[1].MaxWidth = 120;
+                dataGridExport.Columns[2].MaxWidth = 200;
+                dataGridExport.Columns[3].MaxWidth = 120;
+            }
+            CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }
     }
 }

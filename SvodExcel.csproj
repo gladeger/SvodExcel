@@ -250,6 +250,10 @@
     <Resource Include="DeleteRecord.png" />
     <Resource Include="DeleteRecord_disable.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View.png" />
+    <Resource Include="View_disable.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
