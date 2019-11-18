@@ -23,6 +23,7 @@ namespace SvodExcel
         private List<string> NotCheckTeacher=new List<string>();
         private bool itisnotstart = false;
         List<string> TimeTemplate = new List<string>();
+        Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
         public SingleInput()
         {
             InitializeComponent();
@@ -197,7 +198,7 @@ namespace SvodExcel
                     File.Copy(pathA, pathB);
                     while (!File.Exists(pathB)) { };
                     //Microsoft.Office.Interop.Excel.XLCel
-                    var exApp = new Microsoft.Office.Interop.Excel.Application();
+
                     var exBook = exApp.Workbooks.Open(path);
                     var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
@@ -213,7 +214,7 @@ namespace SvodExcel
                         }
                     }
                     exBook.Close(false);
-                    exApp.Quit();
+                    //exApp.Quit();
                     File.Delete(pathB);
 
                     List<string> ListTeacher = new List<string>(ListExcel.Distinct());
@@ -325,12 +326,12 @@ namespace SvodExcel
                     }
                     string pathA = Properties.Settings.Default.PathToGlobalData;
                     File.Copy(pathA, pathC);
-                    var exApp = new Microsoft.Office.Interop.Excel.Application();
+                    
                     var exBook = exApp.Workbooks.Open(pathC);
                     var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     string FormulCalculate = ExSheet.Cells[16, 8].Formula;
                     exBook.Close(true);
-                    exApp.Quit();
+                    //exApp.Quit();
                     File.Delete(pathC);
                     //MessageBox.Show(FormulCalculate);
                     //@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$"
@@ -610,7 +611,8 @@ namespace SvodExcel
 
         private void Single_manual_entry_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-                itisclickcombobox = false;
+            exApp.Quit();
+            itisclickcombobox = false;
             itisclose = true;
         }
         

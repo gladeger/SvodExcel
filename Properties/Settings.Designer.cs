@@ -25,7 +25,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\TimeRepos\\SvodExcel\\РАСП.xlsx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel\\РАСП.xlsx")]
         public string PathToGlobalData {
             get {
                 return ((string)(this["PathToGlobalData"]));
@@ -52,7 +52,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\TimeRepos\\SvodExcel")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
         public string PathToGlobal {
             get {
                 return ((string)(this["PathToGlobal"]));
@@ -116,6 +116,30 @@ namespace SvodExcel.Properties {
             }
             set {
                 this["TimeTemp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
+        public string PathNet {
+            get {
+                return ((string)(this["PathNet"]));
+            }
+            set {
+                this["PathNet"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("РАСП.xlsx")]
+        public string NameSvodExcel {
+            get {
+                return ((string)(this["NameSvodExcel"]));
+            }
+            set {
+                this["NameSvodExcel"] = value;
             }
         }
     }
