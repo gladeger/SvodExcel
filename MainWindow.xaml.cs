@@ -147,7 +147,7 @@ namespace SvodExcel
             //----exmpla data
 
             ClearHang();
-            buttonDebug.Visibility = Visibility.Collapsed;
+            //buttonDebug.Visibility = Visibility.Collapsed;
         }
         private void SvodExcel_Closed(object sender, EventArgs e)
         {
@@ -544,32 +544,47 @@ namespace SvodExcel
                 int BlinkEnd = 0;
                 if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
                     BlinkEnd = 1;
-                if(lastcell.Row>100)
+                bool flag = true;
+                if (lastcell.Row > 100)
                 {
-                    if (MessageBox.Show("Вы действительно хотите просмотреть данные из общего файла?\nЭто может занять несколько ДЕСЯТКОВ минут.\nВсего записей - "+ (lastcell.Row+BlinkEnd -15).ToString(),"Просмотр общих данных БОЛЬШОГО ОБЪЕМА", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                    if (MessageBox.Show("Вы действительно хотите просмотреть данные из общего файла?\nЭто может занять несколько ДЕСЯТКОВ минут.\nВсего записей - " + (lastcell.Row + BlinkEnd - 15).ToString(), "Просмотр общих данных БОЛЬШОГО ОБЪЕМА", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
                     {
-                        for (int j = 15; j < lastcell.Row + BlinkEnd - 1; j++)
-                        {
-                            try
-                            {
-                                vDTR.Add(new DataViewTableRow(ExSheet.Cells[j + 1, 2].Value == null ? "" : ExSheet.Cells[j + 1, 2].Value.ToString(),
-                                    ExSheet.Cells[j + 1, 3].Value == null ? "" : ExSheet.Cells[j + 1, 3].Value.ToString(),
-                                    ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString(),
-                                    ExSheet.Cells[j + 1, 5].Value == null ? "" : ExSheet.Cells[j + 1, 5].Value.ToString(),
-                                    ExSheet.Cells[j + 1, 6].Value == null ? "" : ExSheet.Cells[j + 1, 6].Value.ToString(),
-                                    ExSheet.Cells[j + 1, 7].Value == null ? "" : ExSheet.Cells[j + 1, 7].Value.ToString(),
-                                    ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString()
-                                    ));
-                            }
-                            catch
-                            {
-
-                            }
-                            CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
-                            //ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
-                        }
+                        flag=false;
                     }
-                }            
+                }
+                if (flag)
+                {
+                    for (int j = 15; j < lastcell.Row + BlinkEnd - 1; j++)
+                    {
+                        try
+                        {
+                            /*
+                            vDTR.Add(new DataViewTableRow(ExSheet.Cells[j + 1, 2].Value == null ? "" : ExSheet.Cells[j + 1, 2].Value.ToString()
+                                ,ExSheet.Cells[j + 1, 3].Value == null ? "" : ExSheet.Cells[j + 1, 3].Value.ToString()
+                                ,ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString()
+                                ,ExSheet.Cells[j + 1, 5].Value == null ? "" : ExSheet.Cells[j + 1, 5].Value.ToString()
+                                ,ExSheet.Cells[j + 1, 6].Value == null ? "" : ExSheet.Cells[j + 1, 6].Value.ToString()
+                                ,ExSheet.Cells[j + 1, 7].Value == null ? "" : ExSheet.Cells[j + 1, 7].Value.ToString()
+                                ,ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString()
+                                ));
+                             */
+                            vDTR.Add(new DataViewTableRow(ExSheet.Cells[j + 1, 2].Value == null ? "" : ExSheet.Cells[j + 1, 2].Value.ToString()
+                               , ExSheet.Cells[j + 1, 3].Value == null ? "" : ExSheet.Cells[j + 1, 3].Value.ToString()
+                               , ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString()
+                               , ExSheet.Cells[j + 1, 5].Value == null ? "" : ExSheet.Cells[j + 1, 5].Value.ToString()
+                               , ExSheet.Cells[j + 1, 6].Value == null ? "" : ExSheet.Cells[j + 1, 6].Value.ToString()
+                               , ExSheet.Cells[j + 1, 7].Value == null ? "" : ExSheet.Cells[j + 1, 7].Value.ToString()
+                               , "Технические работы"));
+                        }
+                        catch
+                        {
+
+                        }
+                        CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+                        //ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
+                    }
+                }
+                          
                 exBook.Close(false);
                 //exApp.Quit();
                 CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
