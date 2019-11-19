@@ -16,133 +16,31 @@ namespace SvodExcel
     public partial class MainWindow : Window
     {
         Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
-        public class DataTableRow
-        {
-            public string Date{ get; set; }
-            public string Time { get; set; }
-            public string Teacher { get; set; }
-            public string Group { get; set; }
-            public string Category { get; set; }
-            public string Place { get; set; }
-
-            public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace)
-            {
-                Date = inputDate;
-                if (inputTime.Length > 0)
-                {
-                    if (inputTime[0] == '0')
-                    {
-                        Time = inputTime.Substring(1).Replace(':', '.');
-                    }
-                    else
-                    {
-                        Time = inputTime.Replace(':', '.');
-                    }
-                    if (Time[Time.IndexOf("-") + 1] == '0')
-                    {
-                        Time = Time.Substring(0, Time.IndexOf("-") + 1) + Time.Substring(Time.IndexOf("-") + 2);
-                    }
-                }
-                else
-                {
-                    Time = null;
-                }
-                
-                Teacher = inputTeacher;
-                Group = inputGroup;
-                Category = inputCategory;
-                Place = inputPlace;
-            }
-            public DataTableRow()
-            {
-                Date = null;
-                Time = null;
-                Teacher = null;
-                Group = null;
-                Category = null;
-                Place = null;
-            }
-        }
-        public class DataViewTableRow
-        {
-            public string Date { get; set; }
-            public string Time { get; set; }
-            public string Teacher { get; set; }
-            public string Group { get; set; }
-            public string Category { get; set; }
-            public string Place { get; set; }
-            public string Result { get; set; }
-
-            public DataViewTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace, string inputResult=null)
-            {
-                Date = inputDate;
-                if (inputTime.Length > 0)
-                {
-                    if (inputTime[0] == '0')
-                    {
-                        Time = inputTime.Substring(1).Replace(':', '.');
-                    }
-                    else
-                    {
-                        Time = inputTime.Replace(':', '.');
-                    }
-                    if (Time[Time.IndexOf("-") + 1] == '0')
-                    {
-                        Time = Time.Substring(0, Time.IndexOf("-") + 1) + Time.Substring(Time.IndexOf("-") + 2);
-                    }
-                }
-                else
-                {
-                    Time = null;
-                }
-
-                Teacher = inputTeacher;
-                Group = inputGroup;
-                Category = inputCategory;
-                Place = inputPlace;
-                Result = inputResult;
-            }
-            public DataViewTableRow()
-            {
-                Date = null;
-                Time = null;
-                Teacher = null;
-                Group = null;
-                Category = null;
-                Place = null;
-                Result = null;
-            }
-            public DataViewTableRow(DataTableRow InputData)
-            {
-                Date = InputData.Date;
-                Time = InputData.Time;
-                Teacher = InputData.Teacher;
-                Group = InputData.Group;
-                Category = InputData.Category;
-                Place = InputData.Place;
-                Result = null;
-            }
-        }
+        
         public List<DataTableRow> DTR = new List<DataTableRow>();
         public List<DataViewTableRow> vDTR = new List<DataViewTableRow>();
+        public List<DataViewFastTableRow> vfDTR = new List<DataViewFastTableRow>();
 
         public MainWindow()
         {
             InitializeComponent();
             DTR.Clear();
             vDTR.Clear();
+            vfDTR.Clear();
 
             dataGridExport.ItemsSource = DTR;
             dataGridView.ItemsSource = vDTR;
+            dataGridViewFast.ItemsSource = vfDTR;
         }
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
         {
             DTR.Clear();
             vDTR.Clear();
- 
+            vfDTR.Clear();
+
             // example data
-           //AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","******","!@#$%&"));
-           // AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
+            //AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","******","!@#$%&"));
+            // AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             //----exmpla data
 
@@ -453,6 +351,13 @@ namespace SvodExcel
                     menu_Hot_Export.Visibility = Visibility.Visible;
                     menu_Hot_View.Visibility = Visibility.Collapsed;
                     break;
+                case 1:
+                    menu_Hot_Export.IsEnabled = false;
+                    menu_Hot_View.IsEnabled = true;
+
+                    menu_Hot_Export.Visibility = Visibility.Collapsed;
+                    menu_Hot_View.Visibility = Visibility.Visible;
+                    break;
                 case 2:
                     menu_Hot_Export.IsEnabled = false;
                     menu_Hot_View.IsEnabled = true;
@@ -492,13 +397,129 @@ namespace SvodExcel
                 newWindowThread.SetApartmentState(ApartmentState.STA);
                 newWindowThread.IsBackground = true;
                 newWindowThread.Start();
-                UpdateView();
+                switch(tabControl.SelectedIndex)
+                {
+                    case 1:
+                        UpdateViewFast();
+                        break;
+                    case 2:
+                        UpdateView();
+                        break;
+                    default:
+                        break;
+                }
+                
                 newWindowThread.Abort();
             }           
             this.Effect = null;
             UpdateLayout();
 
         }
+        public void UpdateViewFast()
+        {
+            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            if (File.Exists(pathB))
+            {
+                MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
+            }
+            else
+            {
+                string pathA = Properties.Settings.Default.PathToGlobalData;
+                string pathFast = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.ViewFast;
+                string pathC = Directory.GetCurrentDirectory() + "\\" + "View_" + Properties.Settings.Default.GlobalData;
+                if (File.Exists(pathC))
+                {
+                    FileInfo localdata = new FileInfo(pathC);
+                    FileInfo globaldata = new FileInfo(pathA);
+                    if (globaldata.LastWriteTime.ToLocalTime() > localdata.LastWriteTime.ToLocalTime())
+                    {
+                        localdata.IsReadOnly = false;
+                        File.Delete(pathC);
+                        File.Copy(pathA, pathC);
+                        localdata.IsReadOnly = true;
+                        CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+                    }
+                    else
+                    {
+                        if (dataGridViewFast.Items.Count > 0)
+                            return;
+                    }
+                }
+                else
+                {
+                    File.Copy(pathA, pathC);
+                    FileInfo localdata = new FileInfo(pathC);
+                    localdata.IsReadOnly = true;
+
+                }
+
+                vfDTR.Clear();
+                if(File.Exists(pathFast))
+                {
+
+                }
+                else
+                {
+                    var exBook = exApp.Workbooks.Open(pathC);
+                    var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                    var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
+                    int BlinkEnd = 0;
+                    if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
+                        BlinkEnd = 1;
+                    bool flag = true;
+                    if (lastcell.Row > 100)
+                    {
+                        if (MessageBox.Show("Вы действительно хотите просмотреть данные из общего файла?\nЭто может занять несколько ДЕСЯТКОВ минут.\nВсего записей - " + (lastcell.Row + BlinkEnd - 15).ToString(), "Просмотр общих данных БОЛЬШОГО ОБЪЕМА", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+                        {
+                            flag = false;
+                        }
+                    }
+                    if (flag)
+                    {
+                        string BufStringExcel;
+                        List<string> TeacherList = new List<string>();
+                        for (int j = 15; j < lastcell.Row + BlinkEnd - 1; j++)
+                        {
+                            try
+                            {
+                                BufStringExcel = ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString();
+                                if (TeacherList.IndexOf(BufStringExcel) < 0)
+                                {
+                                    TeacherList.Add(BufStringExcel);
+                                    vfDTR.Add(new DataViewFastTableRow(
+                                    BufStringExcel
+                                   , ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString()
+                                   ));
+                                }
+
+                            }
+                            catch
+                            {
+                                //MessageBox.Show("Error view string "+ (j+1).ToString(), "Error view", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+                            }
+                            CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+                            //ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
+                        }
+                    }
+
+                    exBook.Close(false);
+                    
+                    exBook = exApp.Workbooks.Open(pathFast);
+                    ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                    for(int i=0;i<vfDTR.Count;i++)
+                    {
+                        ExSheet.Cells[i + 1, 1].Value = vfDTR[i].Teacher;
+                        ExSheet.Cells[i + 1, 2].Value = vfDTR[i].Result;
+                    }
+                    exBook.Close(false);
+                }
+                
+                //exApp.Quit();
+                CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+            }
+        }
+
+
         public void UpdateView()
         {
             string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;

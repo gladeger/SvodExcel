@@ -45,6 +45,22 @@
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные из общего файла</TextBlock>
             <Image Source="Images\View_download_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
+        <Grid x:Key="ViewFast_enable_grid"  Margin="0,0,0,0" Width="280" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Промотреть данные из общего файла</TextBlock>
+            <Image Source="Images\View.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="ViewFast_disable_grid"  Margin="0,0,0,0" Width="280" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Просмотреть данные из общего файла</TextBlock>
+            <Image Source="Images\View_disable.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="ViewFast_download_enable_grid"  Margin="0,0,0,0" Width="280" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные из общего файла</TextBlock>
+            <Image Source="Images\View_download.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="ViewFast_download_disable_grid"  Margin="0,0,0,0" Width="280" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные из общего файла</TextBlock>
+            <Image Source="Images\View_download_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
         <Style TargetType="{x:Type Button}" x:Key="excel_import_button">
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="True">
@@ -157,6 +173,42 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type Button}" x:Key="ViewFast_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="ViewFast_enable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="ViewFast_disable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="ViewFast_button_download">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="ViewFast_download_enable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="ViewFast_download_disable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="{x:Type Button}" x:Key="DeleteRecord_button">
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="True">
@@ -221,7 +273,14 @@
                     <Button x:Name="buttonExport"  Margin="0,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Upload_button}" HorizontalAlignment="Center" IsEnabled="False" Click="buttonExport_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="ViewSmallTab" Header="Просмотр краткой сводки" IsEnabled="False"/>
+            <TabItem x:Name="ViewSmallTab" Header="Просмотр краткой сводки">
+                <Grid x:Name="gridDataGridViewFast" Background="#FFE5E5E5">
+                    <DataGrid x:Name="dataGridViewFast" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridView_Loaded">
+                    </DataGrid>
+                    <Button x:Name="buttonViewFast"  Margin="85,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewFast_button}" HorizontalAlignment="Left" ToolTip='Загрузить и просмотреть данные из общего сводного файла расписания' Click="buttonView_Click"/>
+                    <Button x:Name="buttonViewFast_Download"  Margin="0,0,85,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewFast_button_download}" HorizontalAlignment="Right" ToolTip='Скачать данные из общего сводного файла расписания в отдельный файл на компьютер' Click="buttonView_Download_Click"/>
+                </Grid>
+            </TabItem>
             <TabItem x:Name="ViewTab" Header="Просмотр всех данных">
                 <Grid x:Name="gridDataGridView" Background="#FFE5E5E5">
                     <DataGrid x:Name="dataGridView" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridView_Loaded">
@@ -231,8 +290,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,0" Height="115" VerticalAlignment="Bottom" Width="79"/>
-        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,0" Height="115" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right"/>
+        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,0" Height="97" VerticalAlignment="Bottom" Width="79"/>
+        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,0" Height="97" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right"/>
     </Grid>
     <!---->
 </Window>

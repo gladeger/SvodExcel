@@ -142,5 +142,17 @@ namespace SvodExcel.Properties {
                 this["NameSvodExcel"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ViewFast.xlsx")]
+        public string ViewFast {
+            get {
+                return ((string)(this["ViewFast"]));
+            }
+            set {
+                this["ViewFast"] = value;
+            }
+        }
     }
 }

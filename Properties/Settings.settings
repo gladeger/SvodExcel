@@ -38,5 +38,8 @@
     <Setting Name="NameSvodExcel" Type="System.String" Scope="User">
       <Value Profile="(Default)">РАСП.xlsx</Value>
     </Setting>
+    <Setting Name="ViewFast" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ViewFast.xlsx</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

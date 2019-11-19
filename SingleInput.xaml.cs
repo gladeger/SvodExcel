@@ -721,10 +721,10 @@ namespace SvodExcel
         {
             MainWindow home = Application.Current.MainWindow as MainWindow;
             if(RowIndex==-1)
-                home.AddNewItem(new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
+                home.AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
             else
             {
-                home.EditItem(RowIndex,new MainWindow.DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
+                home.EditItem(RowIndex,new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
             }
         }
         private void ClearData()
