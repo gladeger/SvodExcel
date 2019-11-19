@@ -554,6 +554,8 @@ namespace SvodExcel
                 }
                 if (flag)
                 {
+                    List<string> TeacherList = new List<string>();
+                    List<string> ResultList = new List<string>();
                     for (int j = 15; j < lastcell.Row + BlinkEnd - 1; j++)
                     {
                         try
@@ -575,10 +577,21 @@ namespace SvodExcel
                                , ExSheet.Cells[j + 1, 6].Value == null ? "" : ExSheet.Cells[j + 1, 6].Value.ToString()
                                , ExSheet.Cells[j + 1, 7].Value == null ? "" : ExSheet.Cells[j + 1, 7].Value.ToString()
                                , "Технические работы"));
+                            if (TeacherList.IndexOf(vDTR[j-15].Teacher) < 0)
+                            {
+                                TeacherList.Add(vDTR[j-15].Teacher);
+                                ResultList.Add((ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString()));
+                                vDTR[j-15].Result = (ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString());
+                            }
+                            else
+                            {
+                                vDTR[j-15].Result = ResultList[TeacherList.IndexOf(vDTR[j].Teacher)];
+                            }
+                            
                         }
                         catch
                         {
-
+                            //MessageBox.Show("Error view string "+ (j+1).ToString(), "Error view", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
                         }
                         CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
                         //ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
