@@ -147,7 +147,7 @@ namespace SvodExcel
             //----exmpla data
 
             ClearHang();
-            //buttonDebug.Visibility = Visibility.Collapsed;
+            buttonDebug.Visibility = Visibility.Collapsed;
         }
         private void SvodExcel_Closed(object sender, EventArgs e)
         {
@@ -560,16 +560,6 @@ namespace SvodExcel
                     {
                         try
                         {
-                            /*
-                            vDTR.Add(new DataViewTableRow(ExSheet.Cells[j + 1, 2].Value == null ? "" : ExSheet.Cells[j + 1, 2].Value.ToString()
-                                ,ExSheet.Cells[j + 1, 3].Value == null ? "" : ExSheet.Cells[j + 1, 3].Value.ToString()
-                                ,ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString()
-                                ,ExSheet.Cells[j + 1, 5].Value == null ? "" : ExSheet.Cells[j + 1, 5].Value.ToString()
-                                ,ExSheet.Cells[j + 1, 6].Value == null ? "" : ExSheet.Cells[j + 1, 6].Value.ToString()
-                                ,ExSheet.Cells[j + 1, 7].Value == null ? "" : ExSheet.Cells[j + 1, 7].Value.ToString()
-                                ,ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString()
-                                ));
-                             */
                             vDTR.Add(new DataViewTableRow(ExSheet.Cells[j + 1, 2].Value == null ? "" : ExSheet.Cells[j + 1, 2].Value.ToString()
                                , ExSheet.Cells[j + 1, 3].Value == null ? "" : ExSheet.Cells[j + 1, 3].Value.ToString()
                                , ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString()
@@ -585,7 +575,7 @@ namespace SvodExcel
                             }
                             else
                             {
-                                vDTR[j-15].Result = ResultList[TeacherList.IndexOf(vDTR[j].Teacher)];
+                                vDTR[j-15].Result = ResultList[TeacherList.IndexOf(vDTR[j-15].Teacher)];
                             }
                             
                         }
