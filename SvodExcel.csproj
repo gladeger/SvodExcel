@@ -31,7 +31,7 @@
     <TargetCulture>ru</TargetCulture>
     <PublisherName>ИПК и Гладких</PublisherName>
     <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>1.1.1811.%2a</ApplicationVersion>
+    <ApplicationVersion>1.4.1811.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -298,6 +298,13 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View_download.png" />
+    <Resource Include="View_download_disable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Images\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

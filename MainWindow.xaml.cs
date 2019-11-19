@@ -288,6 +288,7 @@ namespace SvodExcel
             System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
             objBlur.Radius = 4;
             this.Effect = objBlur;
+            UpdateLayout();
             if (MessageBox.Show("Вы действительно хотите добавить в общий файл все созданные ранее записи?\nВсего записей для экспорта: " + DTR.Count, "Экспот данных в общий файл", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
                 double This_TH2 = this.Top + this.Height / 2.0;
@@ -308,6 +309,7 @@ namespace SvodExcel
                 newWindowThread.Abort();
             }
             this.Effect = null;
+            UpdateLayout();
         }
         private void buttonExport_Click(object sender, RoutedEventArgs e)
         {
@@ -457,6 +459,8 @@ namespace SvodExcel
         {
             System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
             objBlur.Radius = 4;
+            this.Effect = objBlur;
+            UpdateLayout();
             if (MessageBox.Show("Вы действительно хотите скачать и посмотреть данные из общего файла?\nЭто может занять несколько минут.", "Просмотр общих данных",MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
                 double This_TH2 = this.Top + this.Height / 2.0;
@@ -477,6 +481,7 @@ namespace SvodExcel
                 newWindowThread.Abort();
             }           
             this.Effect = null;
+            UpdateLayout();
 
         }
         public void UpdateView()
@@ -593,6 +598,52 @@ namespace SvodExcel
                 dataGridExport.Columns[3].MaxWidth = 120;
             }
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+        }
+
+        private void buttonView_Download_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            objBlur.Radius = 4;
+            this.Effect = objBlur;
+            UpdateLayout();
+            SaveExcel();
+            this.Effect = null;
+            UpdateLayout();
+        }
+
+        public void SaveExcel()
+        {
+            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            if (File.Exists(pathB))
+            {
+                MessageBox.Show("К сожалению, на данный момент скачивание невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = "Общий файл расписания (только для просмотра)";
+                dlg.DefaultExt = ".xlsx";
+                dlg.Filter = "Книга Excel(.xlsx)|*.xlsx";
+
+                Nullable<bool> result = dlg.ShowDialog();
+
+                if (result == true)
+                {
+                    string pathSave = dlg.FileName;
+                    string pathA = Properties.Settings.Default.PathToGlobalData;
+                    FileInfo localdata;
+                    FileInfo globaldata = new FileInfo(pathA);
+                    if (File.Exists(pathSave))
+                    {
+                        localdata = new FileInfo(pathSave);
+                        localdata.IsReadOnly = false;
+                        File.Delete(pathSave);
+                    }
+                    File.Copy(pathA, pathSave);
+                    localdata = new FileInfo(pathSave);
+                    localdata.IsReadOnly = true;
+                }
+            }
         }
     }
 }
