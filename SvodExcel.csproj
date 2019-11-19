@@ -56,7 +56,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>excel_import.ico</ApplicationIcon>
+    <ApplicationIcon>Images\excel_import.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>2E841EBDF7959DF11DE45068437979B648438FF7</ManifestCertificateThumbprint>
@@ -225,7 +225,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="excel_import.ico">
+    <Resource Include="Images\excel_import.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -259,33 +259,33 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="update.png" />
+    <Resource Include="Images\update.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="SingleInput.png" />
+    <Resource Include="Images\SingleInput.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MultiInput.png" />
+    <Resource Include="Images\MultiInput.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Upload.png" />
+    <Resource Include="Images\Upload.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="excel_import.png" />
-    <Resource Include="excel_import_disable.png" />
+    <Resource Include="Images\excel_import.png" />
+    <Resource Include="Images\excel_import_disable.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MultiInput_disable.png" />
-    <Resource Include="SingleInput_disable.png" />
-    <Resource Include="Upload_disable.png" />
+    <Resource Include="Images\MultiInput_disable.png" />
+    <Resource Include="Images\SingleInput_disable.png" />
+    <Resource Include="Images\Upload_disable.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="DeleteRecord.png" />
-    <Resource Include="DeleteRecord_disable.png" />
+    <Resource Include="Images\DeleteRecord.png" />
+    <Resource Include="Images\DeleteRecord_disable.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="View.png" />
-    <Resource Include="View_disable.png" />
+    <Resource Include="Images\View.png" />
+    <Resource Include="Images\View_disable.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -300,12 +300,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="View_download.png" />
-    <Resource Include="View_download_disable.png" />
+    <Resource Include="Images\View_download.png" />
+    <Resource Include="Images\View_download_disable.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Images\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

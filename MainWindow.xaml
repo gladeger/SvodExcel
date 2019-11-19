@@ -5,45 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Сonsolidated Excel" Height="450" Width="800" Icon="excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded">
+        Title="Сonsolidated Excel" Height="450" Width="800" Icon="Images\excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded">
     <Window.Resources>
-        <Image x:Key="excel_import_enable" Source="excel_import.png"></Image>
-        <Image x:Key="excel_import_disable" Source="excel_import_disable.png"></Image>
-        <Image x:Key="SingleInput_enable" Source="SingleInput.png"></Image>
-        <Image x:Key="SingleInput_disable" Source="SingleInput_disable.png"></Image>
-        <Image x:Key="MultiInput_enable" Source="MultiInput.png"></Image>
-        <Image x:Key="MultiInput_disable" Source="MultiInput_disable.png"></Image>
-        <Image x:Key="Upload_enable" Source="Upload.png"></Image>
-        <Image x:Key="Upload_disable" Source="Upload_disable.png"></Image>
-        <Image x:Key="View_enable" Source="View.png"></Image>
-        <Image x:Key="View_disable" Source="View_disable.png"></Image>
-        <Image x:Key="View_download_enable" Source="View_download.png"></Image>
-        <Image x:Key="View_download_disable" Source="View_download_disable.png"></Image>
-        <Image x:Key="DeleteRecord_enable" Source="DeleteRecord.png"></Image>
-        <Image x:Key="DeleteRecord_disable" Source="DeleteRecord_disable.png"></Image>
+        <Image x:Key="excel_import_enable" Source="Images\excel_import.png"></Image>
+        <Image x:Key="excel_import_disable" Source="Images\excel_import_disable.png"></Image>
+        <Image x:Key="SingleInput_enable" Source="Images\SingleInput.png"></Image>
+        <Image x:Key="SingleInput_disable" Source="Images\SingleInput_disable.png"></Image>
+        <Image x:Key="MultiInput_enable" Source="Images\MultiInput.png"></Image>
+        <Image x:Key="MultiInput_disable" Source="Images\MultiInput_disable.png"></Image>
+        <Image x:Key="Upload_enable" Source="Images\Upload.png"></Image>
+        <Image x:Key="Upload_disable" Source="Images\Upload_disable.png"></Image>
+        <Image x:Key="View_enable" Source="Images\View.png"></Image>
+        <Image x:Key="View_disable" Source="Images\View_disable.png"></Image>
+        <Image x:Key="View_download_enable" Source="Images\View_download.png"></Image>
+        <Image x:Key="View_download_disable" Source="Images\View_download_disable.png"></Image>
+        <Image x:Key="DeleteRecord_enable" Source="Images\DeleteRecord.png"></Image>
+        <Image x:Key="DeleteRecord_disable" Source="Images\DeleteRecord_disable.png"></Image>
         <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
-            <Image Source="Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <Image Source="Images\Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Grid x:Key="Upload_disable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
-            <Image Source="Upload_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <Image Source="Images\Upload_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Grid x:Key="View_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Промотреть данные из общего файла</TextBlock>
-            <Image Source="View.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <Image Source="Images\View.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Grid x:Key="View_disable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Просмотреть данные из общего файла</TextBlock>
-            <Image Source="View_disable.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <Image Source="Images\View_disable.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Grid x:Key="View_download_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные из общего файла</TextBlock>
-            <Image Source="View_download.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <Image Source="Images\View_download.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Grid x:Key="View_download_disable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные из общего файла</TextBlock>
-            <Image Source="View_download_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <Image Source="Images\View_download_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Style TargetType="{x:Type Button}" x:Key="excel_import_button">
             <Style.Triggers>
