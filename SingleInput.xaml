@@ -7,7 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Ручной ввод по одному" Height="660" Width="800" Icon="excel_import.ico" MinWidth="700" MinHeight="500" Closing="Single_manual_entry_Closing">
+        Title="Ручной ввод по одному" Height="660" Width="800" Icon="Images/excel_import.ico" MinWidth="700" MinHeight="500" Closing="Single_manual_entry_Closing">
     <Window.Resources>
         <Style x:Key="MaskedTextBoxStyle"
                TargetType="TextBox">
@@ -69,7 +69,7 @@
                     <Label x:Name="labelCalcTime" Content="00" Margin="0,13,0,0" VerticalAlignment="Top" Height="68" FontSize="48" FontWeight="Bold"/>
                 </Grid>
                 <Button x:Name="buttonUpdateTimeTemplates" HorizontalAlignment="Left" Margin="467,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="buttonUpdateTimeTemplates_Click" ToolTip="Обновить список шаблонов времени занятии из общего файла">
-                    <Image Source="update.png" />
+                    <Image Source="Images\update.png" />
                 </Button>
 
             </Grid>
@@ -88,7 +88,7 @@
                     </ComboBox.ToolTip>
                 </ComboBox>
                 <Button x:Name="buttonUpdate" HorizontalAlignment="Left" Margin="466,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="ButtonUpdate_Click" ToolTip="Обновить список преподавателей из общего файла">
-                    <Image Source="update.png" />
+                    <Image Source="Images\update.png" />
                 </Button>
                 <Button x:Name="ButtonNewTeacher" Content="Добавить нового" Margin="0,0,10,15" HorizontalAlignment="Right" Width="120" Height="30" VerticalAlignment="Bottom" IsEnabled="False" Click="ButtonNewTeacher_Click" ToolTip="Добавить введного преподавателя в список как нового преподавателя."/>
             </Grid>

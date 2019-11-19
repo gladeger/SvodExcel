@@ -24,6 +24,8 @@ namespace SvodExcel
         private bool itisnotstart = false;
         List<string> TimeTemplate = new List<string>();
         Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
+        System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+        
         public SingleInput()
         {
             InitializeComponent();
@@ -31,7 +33,8 @@ namespace SvodExcel
             DefaultTimes = MaskedTextBoxStartTime.Text;
             StartListTeacher();
             StartListTimes();
-            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            // = new System.Windows.Media.Effects.BlurEffect();     
+            objBlur.Radius = 4;
             checkBoxAutoEdit.IsChecked = true;
             NotCheckTeacher.Add(ButtonNewTeacher.Name);
             NotCheckTeacher.Add(buttonUpdate.Name);
@@ -241,13 +244,13 @@ namespace SvodExcel
                 UpdateListTeacher();
             }
             this.Effect = null;
+            UpdateLayout();
 
         }
         private void WinEffectON()
         {
-            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
-            objBlur.Radius = 4;
             this.Effect = objBlur;
+            UpdateLayout();
         }
         private void UpdateListTeacher()
         {
@@ -751,7 +754,8 @@ namespace SvodExcel
                 UpdateListTimes();
             }
             this.Effect = null;
-            
+            UpdateLayout();
+
         }
         public bool ConfirmTime()
         {

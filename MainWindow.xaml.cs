@@ -447,10 +447,25 @@ namespace SvodExcel
             switch(tabControl.SelectedIndex)
             {
                 case 0:
-                    menu_Hot.IsEnabled = true;
+                    menu_Hot_Export.IsEnabled = true;
+                    menu_Hot_View.IsEnabled = false;
+
+                    menu_Hot_Export.Visibility = Visibility.Visible;
+                    menu_Hot_View.Visibility = Visibility.Collapsed;
+                    break;
+                case 2:
+                    menu_Hot_Export.IsEnabled = false;
+                    menu_Hot_View.IsEnabled = true;
+
+                    menu_Hot_Export.Visibility = Visibility.Collapsed;
+                    menu_Hot_View.Visibility = Visibility.Visible;
                     break;
                 default:
-                    menu_Hot.IsEnabled = false;
+                    menu_Hot_Export.IsEnabled = false;
+                    menu_Hot_View.IsEnabled = false;
+
+                    menu_Hot_Export.Visibility = Visibility.Visible;
+                    menu_Hot_View.Visibility = Visibility.Visible;
                     break;
             }
         }
@@ -642,6 +657,21 @@ namespace SvodExcel
                     File.Copy(pathA, pathSave);
                     localdata = new FileInfo(pathSave);
                     localdata.IsReadOnly = true;
+                }
+            }
+        }
+
+        private void SvodExcel_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(dataGridExport.Items.Count>0)
+            {
+                if(MessageBox.Show("В подготовленных для экспорта остались не отправленные записи ("+ dataGridExport.Items.Count.ToString() + ").\nВы действительно хотите закрыть приложение не отправив новые записи в общий файл?","Закрытие программы с неотправленными данными",MessageBoxButton.OKCancel,MessageBoxImage.Exclamation,MessageBoxResult.Cancel)== MessageBoxResult.OK)
+                {
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
                 }
             }
         }
