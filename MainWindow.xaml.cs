@@ -347,30 +347,38 @@ namespace SvodExcel
                 case 0:
                     menu_Hot_Export.IsEnabled = true;
                     menu_Hot_View.IsEnabled = false;
+                    menu_Hot_ViewFast.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Visible;
                     menu_Hot_View.Visibility = Visibility.Collapsed;
+                    menu_Hot_ViewFast.Visibility = Visibility.Collapsed;
                     break;
                 case 1:
                     menu_Hot_Export.IsEnabled = false;
                     menu_Hot_View.IsEnabled = true;
+                    menu_Hot_ViewFast.IsEnabled = true;
 
                     menu_Hot_Export.Visibility = Visibility.Collapsed;
                     menu_Hot_View.Visibility = Visibility.Visible;
+                    menu_Hot_ViewFast.Visibility = Visibility.Visible;
                     break;
                 case 2:
                     menu_Hot_Export.IsEnabled = false;
                     menu_Hot_View.IsEnabled = true;
+                    menu_Hot_ViewFast.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Collapsed;
                     menu_Hot_View.Visibility = Visibility.Visible;
+                    menu_Hot_ViewFast.Visibility = Visibility.Collapsed;
                     break;
                 default:
                     menu_Hot_Export.IsEnabled = false;
                     menu_Hot_View.IsEnabled = false;
+                    menu_Hot_ViewFast.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Visible;
                     menu_Hot_View.Visibility = Visibility.Visible;
+                    menu_Hot_ViewFast.Visibility = Visibility.Visible;
                     break;
             }
         }
@@ -733,6 +741,33 @@ namespace SvodExcel
                     e.Cancel = true;
                 }
             }
+        }
+
+        private void dataGridViewFast_AddingNewItem(object sender, AddingNewItemEventArgs e)
+        {
+            buttonSaveFast.IsEnabled = true;
+        }
+
+        private void dataGridViewFast_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (dataGridViewFast.Items.Count > 0)
+                buttonSaveFast.IsEnabled = true;
+            else
+                buttonSaveFast.IsEnabled = false;
+        }
+
+        private void dataGridExport_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (dataGridExport.Items.Count > 0)
+            {
+                buttonExportHot.IsEnabled = true;
+                buttonExport.IsEnabled = true;
+            }                
+            else
+            {
+                buttonSaveFast.IsEnabled = false;
+                buttonExport.IsEnabled = false;
+            }                
         }
     }
 }

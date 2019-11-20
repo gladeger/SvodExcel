@@ -16,6 +16,8 @@
         <Image x:Key="Upload_enable" Source="Images\Upload.png"></Image>
         <Image x:Key="Upload_disable" Source="Images\Upload_disable.png"></Image>
         <Image x:Key="View_enable" Source="Images\View.png"></Image>
+        <Image x:Key="Save_disable" Source="Images\Save_disable.png"></Image>
+        <Image x:Key="Save_enable" Source="Images\Save.png"></Image>
         <Image x:Key="View_disable" Source="Images\View_disable.png"></Image>
         <Image x:Key="View_download_enable" Source="Images\View_download.png"></Image>
         <Image x:Key="View_download_disable" Source="Images\View_download_disable.png"></Image>
@@ -227,14 +229,38 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type Button}" x:Key="FastDownload_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Save_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Save_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="{x:Type DataGridCell}">
             <EventSetter Event="MouseDoubleClick"    Handler="DataGridCell_PreviewMouseLeftButtonDown" />
         </Style>
 
     </Window.Resources>
+
     <Grid x:Name="MainGrid">
         <Menu x:Name="menu" Height="28" VerticalAlignment="Top">
             <MenuItem Header="Файл">
+                <MenuItem Header="Выгрузить общий файл..." Click="buttonView_Download_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Images\View_download.png" Width="auto" Height="20"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Выход" Click="MenuItem_Click_Exit"/>
             </MenuItem>
             <MenuItem Header="Ввод данных">
@@ -254,20 +280,23 @@
                 <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных из Excel для экспорта в общий файл"/>
                 <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых"/>
             </StackPanel>
+            <StackPanel x:Name="menu_Hot_ViewFast"  Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
+                <Button x:Name="buttonSaveFast"  Margin="10,0,0,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="28" ToolTip="Сохранить общую сводку в файл" Style="{StaticResource FastDownload_button}" IsEnabled="False"/>
+            </StackPanel>
             <StackPanel x:Name="menu_Hot_View"  Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
                 <Button x:Name="buttonUpdate"  Margin="10,0,0,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="28" ToolTip="Загрузить и просмотреть данные из общего сводного файла расписания" Click="buttonView_Click">
-                    <Image Source="Images\update.png" />
-                </Button>
-                <Button x:Name="buttonSave"  Margin="10,0,0,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="28" ToolTip="Скачать данные из общего сводного файла расписания в отдельный файл на компьютер" Click="buttonView_Download_Click" >
-                    <Image Source="Images\View_download.png" />
+                    <Image Source="Images\Update.png" />
                 </Button>
             </StackPanel>
+            <Button x:Name="buttonSave"  Margin="10,0,0,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="28" ToolTip="Скачать данные из общего сводного файла расписания в отдельный файл на компьютер" Click="buttonView_Download_Click" >
+                <Image Source="Images\View_download.png" />
+            </Button>
             <Button x:Name="buttonDebug" IsEnabled="True" Width="26"  Margin="10,0,0,0" Click="buttonDebug_Click" Content="Debug" ToolTip="Кнопка Debug, для (что характерно) Debug"/>
         </StackPanel>
         <TabControl x:Name="tabControl" Margin="0,61,0,0" SelectionChanged="tabControl_SelectionChanged">
             <TabItem x:Name="ExportTab" Header="Экспорт">
                 <Grid x:Name="gridDataGridExport" Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded">
+                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded" LayoutUpdated="dataGridExport_LayoutUpdated">
 
                     </DataGrid>
                     <Button x:Name="buttonExport"  Margin="0,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Upload_button}" HorizontalAlignment="Center" IsEnabled="False" Click="buttonExport_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
@@ -275,7 +304,7 @@
             </TabItem>
             <TabItem x:Name="ViewSmallTab" Header="Просмотр краткой сводки">
                 <Grid x:Name="gridDataGridViewFast" Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridViewFast" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridView_Loaded">
+                    <DataGrid x:Name="dataGridViewFast" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridView_Loaded" AddingNewItem="dataGridViewFast_AddingNewItem" LayoutUpdated="dataGridViewFast_LayoutUpdated">
                     </DataGrid>
                     <Button x:Name="buttonViewFast"  Margin="85,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewFast_button}" HorizontalAlignment="Left" ToolTip='Загрузить и просмотреть данные из общего сводного файла расписания' Click="buttonView_Click"/>
                     <Button x:Name="buttonViewFast_Download"  Margin="0,0,85,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewFast_button_download}" HorizontalAlignment="Right" ToolTip='Скачать данные из общего сводного файла расписания в отдельный файл на компьютер' Click="buttonView_Download_Click"/>
