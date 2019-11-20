@@ -19,9 +19,24 @@ namespace SvodExcel
     /// </summary>
     public partial class ProgressBar : Window
     {
+        bool flagActive = true;
         public ProgressBar()
         {
             InitializeComponent();
+            flagActive = true;
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            /*
+            if (flagActive)
+            {
+                (this.Parent as Window).Activate();
+                flagActive = false;
+            }
+            else
+                flagActive = true;
+                */
         }
     }
 }

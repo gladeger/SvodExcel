@@ -417,6 +417,8 @@ namespace SvodExcel
         }
         public void UpdateViewFast()
         {
+            labelTech2.Content = "Tech data";
+            labelTech.Content = "Tech data";
             string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
             if (File.Exists(pathB))
             {
@@ -438,6 +440,12 @@ namespace SvodExcel
                         File.Copy(pathA, pathC);
                         localdata.IsReadOnly = true;
                         CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+                        if (File.Exists(pathFast))
+                        {
+                            FileInfo localfastdata = new FileInfo(pathFast);
+                            localfastdata.IsReadOnly = false;
+                            File.Delete(pathFast);
+                        }
                     }
                     else
                     {
@@ -450,12 +458,32 @@ namespace SvodExcel
                     File.Copy(pathA, pathC);
                     FileInfo localdata = new FileInfo(pathC);
                     localdata.IsReadOnly = true;
-
+                    if(File.Exists(pathFast))
+                    {
+                        FileInfo localfastdata = new FileInfo(pathFast);
+                        localfastdata.IsReadOnly =false;
+                        File.Delete(pathFast);
+                    }
                 }
 
                 vfDTR.Clear();
-                if(File.Exists(pathFast))
+                labelTech2.Content = "Ready fast";
+                if (File.Exists(pathFast))
                 {
+                    var exBook = exApp.Workbooks.Open(pathFast);
+                    var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                    var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
+                    int BlinkEnd = 0;
+                    if (ExSheet.Cells[lastcell.Row, 1].Value != null || ExSheet.Cells[lastcell.Row, 2].Value != null)
+                        BlinkEnd = 1;
+                    List<string> TeacherList = new List<string>();
+                    for (int j = 1; j <lastcell.Row + BlinkEnd; j++)
+                    {   vfDTR.Add(new DataViewFastTableRow(
+                            ExSheet.Cells[j, 1].Value == null ? "" : ExSheet.Cells[j, 1].Value.ToString()
+                           , ExSheet.Cells[j, 2].Value== null ? "" : ExSheet.Cells[j, 2].Value.ToString()
+                           ));
+                        //CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+                    }
 
                 }
                 else
@@ -466,22 +494,19 @@ namespace SvodExcel
                     int BlinkEnd = 0;
                     if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
                         BlinkEnd = 1;
-                    bool flag = true;
                     if (lastcell.Row > 100)
                     {
                         if (MessageBox.Show("Вы действительно хотите просмотреть данные из общего файла?\nЭто может занять несколько ДЕСЯТКОВ минут.\nВсего записей - " + (lastcell.Row + BlinkEnd - 15).ToString(), "Просмотр общих данных БОЛЬШОГО ОБЪЕМА", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
                         {
-                            flag = false;
+                            return;
                         }
                     }
-                    if (flag)
+                   //читаем excel
                     {
                         string BufStringExcel;
                         List<string> TeacherList = new List<string>();
                         for (int j = 15; j < lastcell.Row + BlinkEnd - 1; j++)
                         {
-                            try
-                            {
                                 BufStringExcel = ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString();
                                 if (TeacherList.IndexOf(BufStringExcel) < 0)
                                 {
@@ -491,32 +516,27 @@ namespace SvodExcel
                                    , ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString()
                                    ));
                                 }
-
-                            }
-                            catch
-                            {
-                                //MessageBox.Show("Error view string "+ (j+1).ToString(), "Error view", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
-                            }
                             CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
-                            //ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
                         }
                     }
-
                     exBook.Close(false);
-                    
-                    exBook = exApp.Workbooks.Open(pathFast);
+                    exBook = exApp.Workbooks.Add(Type.Missing);
+                    exBook.Sheets.Add();
                     ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     for(int i=0;i<vfDTR.Count;i++)
                     {
                         ExSheet.Cells[i + 1, 1].Value = vfDTR[i].Teacher;
                         ExSheet.Cells[i + 1, 2].Value = vfDTR[i].Result;
                     }
+                    labelTech2.Content = exBook.Name.ToString();
+                    exBook.SaveAs(pathFast);
                     exBook.Close(false);
-                }
-                
+                    FileInfo localfastdata = new FileInfo(pathFast);
+                    localfastdata.IsReadOnly = true;
+                }                
                 //exApp.Quit();
-                CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
             }
+            CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
         }
 
 
@@ -579,7 +599,7 @@ namespace SvodExcel
                     List<string> ResultList = new List<string>();
                     for (int j = 15; j < lastcell.Row + BlinkEnd - 1; j++)
                     {
-                        try
+                       // try
                         {
                             vDTR.Add(new DataViewTableRow(ExSheet.Cells[j + 1, 2].Value == null ? "" : ExSheet.Cells[j + 1, 2].Value.ToString()
                                , ExSheet.Cells[j + 1, 3].Value == null ? "" : ExSheet.Cells[j + 1, 3].Value.ToString()
@@ -600,9 +620,9 @@ namespace SvodExcel
                             }
                             
                         }
-                        catch
+                       // catch
                         {
-                            //MessageBox.Show("Error view string "+ (j+1).ToString(), "Error view", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+                       //     MessageBox.Show("Error view string "+ (j+1).ToString(), "Error view", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
                         }
                         CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
                         //ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
