@@ -51,7 +51,9 @@ namespace SvodExcel
         {
             ClearHang();
             exApp.Quit();
+            exApp = null;
             System.Windows.Application.Current.Shutdown();
+            GC.Collect();
         }
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
@@ -83,7 +85,7 @@ namespace SvodExcel
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             buttonExport.IsEnabled = true;
             buttonExportHot.IsEnabled = true;
-            buttonDeleteHot.IsEnabled = true;
+            //buttonDeleteHot.IsEnabled = true;
         }
 
 
@@ -114,6 +116,9 @@ namespace SvodExcel
                             case 2:
                                 f.comboBoxTeacher.Focus();
                                 break;
+                            case 3:
+                                f.textboxGroup.Focus();
+                                break;
                             case 4:
                                 f.textBoxCategory.Focus();
                                 break;
@@ -138,6 +143,7 @@ namespace SvodExcel
                             f.MaskedTextBoxEndTime.Text = "0" + DTR[SI].Time.Substring(DTR[SI].Time.Length - 4, 4).Replace('.', ':');
                         }
                         f.comboBoxTeacher.SelectedIndex = f.comboBoxTeacher.Items.IndexOf(DTR[SI].Teacher);
+                        f.textboxGroup.Text = DTR[SI].Group;
                         f.textBoxCategory.Text = DTR[SI].Category;
                         f.textBoxPlace.Text = DTR[SI].Place;
                         f.Title = "Редактирование записи \"" + DTR[SI].Date + " " + DTR[SI].Time + " " + DTR[SI].Teacher + "\"";
@@ -425,8 +431,6 @@ namespace SvodExcel
         }
         public void UpdateViewFast()
         {
-            labelTech2.Content = "Tech data";
-            labelTech.Content = "Tech data";
             string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
             if (File.Exists(pathB))
             {
@@ -475,7 +479,6 @@ namespace SvodExcel
                 }
 
                 vfDTR.Clear();
-                labelTech2.Content = "Ready fast";
                 if (File.Exists(pathFast))
                 {
                     var exBook = exApp.Workbooks.Open(pathFast);
@@ -536,7 +539,6 @@ namespace SvodExcel
                         ExSheet.Cells[i + 1, 1].Value = vfDTR[i].Teacher;
                         ExSheet.Cells[i + 1, 2].Value = vfDTR[i].Result;
                     }
-                    labelTech2.Content = exBook.Name.ToString();
                     exBook.SaveAs(pathFast);
                     exBook.Close(false);
                     FileInfo localfastdata = new FileInfo(pathFast);
@@ -745,15 +747,20 @@ namespace SvodExcel
 
         private void dataGridViewFast_AddingNewItem(object sender, AddingNewItemEventArgs e)
         {
-            buttonSaveFast.IsEnabled = true;
+            //buttonSaveFast.IsEnabled = true;
         }
 
         private void dataGridViewFast_LayoutUpdated(object sender, EventArgs e)
         {
             if (dataGridViewFast.Items.Count > 0)
-                buttonSaveFast.IsEnabled = true;
+            { buttonSaveFast.IsEnabled = true;
+                MenuItemSaveFast.IsEnabled = true;
+            }              
             else
-                buttonSaveFast.IsEnabled = false;
+            {
+                MenuItemSaveFast.IsEnabled = false;
+                buttonSaveFast.IsEnabled = false; }
+              
         }
 
         private void dataGridExport_LayoutUpdated(object sender, EventArgs e)
@@ -765,9 +772,50 @@ namespace SvodExcel
             }                
             else
             {
-                buttonSaveFast.IsEnabled = false;
+                buttonExportHot.IsEnabled = false;
                 buttonExport.IsEnabled = false;
             }                
+        }
+        private void DataGridCell_PreviewSelected(object sender, RoutedEventArgs e)
+        {
+            if (tabControl.SelectedIndex == 0 && dataGridExport.SelectedIndex>=0)
+                buttonDeleteHot.IsEnabled = true;
+            else
+                buttonDeleteHot.IsEnabled = false;
+        }
+
+        private void buttonSaveFast_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFastResult();  
+        }
+        public void SaveFastResult()
+        {
+            string pathFast = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.ViewFast;
+            if (File.Exists(pathFast))
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = "Краткая сводка по общему файлу (только для просмотра)";
+                dlg.DefaultExt = ".xlsx";
+                dlg.Filter = "Книга Excel(.xlsx)|*.xlsx";
+
+                Nullable<bool> result = dlg.ShowDialog();
+
+                if (result == true)
+                {
+                    string pathSave = dlg.FileName;
+                    FileInfo localdata;
+                    FileInfo globaldata = new FileInfo(pathFast);
+                    if (File.Exists(pathSave))
+                    {
+                        localdata = new FileInfo(pathSave);
+                        localdata.IsReadOnly = false;
+                        File.Delete(pathSave);
+                    }
+                    File.Copy(pathFast, pathSave);
+                    localdata = new FileInfo(pathSave);
+                    localdata.IsReadOnly = true;
+                }
+            }            
         }
     }
 }

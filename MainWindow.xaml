@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Сonsolidated Excel" Height="450" Width="800" Icon="Images\excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded" Closing="SvodExcel_Closing">
+        Title="Общие расписание" Height="450" Width="800" Icon="Images\excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded" Closing="SvodExcel_Closing" ResizeMode="CanResizeWithGrip">
     <Window.Resources>
         <Image x:Key="excel_import_enable" Source="Images\excel_import.png"></Image>
         <Image x:Key="excel_import_disable" Source="Images\excel_import_disable.png"></Image>
@@ -18,6 +18,8 @@
         <Image x:Key="View_enable" Source="Images\View.png"></Image>
         <Image x:Key="Save_disable" Source="Images\Save_disable.png"></Image>
         <Image x:Key="Save_enable" Source="Images\Save.png"></Image>
+        <Image x:Key="Save_disable_m" Source="Images\Save_disable.png"></Image>
+        <Image x:Key="Save_enable_m" Source="Images\Save.png"></Image>
         <Image x:Key="View_disable" Source="Images\View_disable.png"></Image>
         <Image x:Key="View_download_enable" Source="Images\View_download.png"></Image>
         <Image x:Key="View_download_disable" Source="Images\View_download_disable.png"></Image>
@@ -247,20 +249,46 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="FastSave_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="Save_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="Save_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="{x:Type DataGridCell}">
             <EventSetter Event="MouseDoubleClick"    Handler="DataGridCell_PreviewMouseLeftButtonDown" />
+            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
         </Style>
+        <Style TargetType="{x:Type DataGridRow}">
+            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
+        </Style>
+        <!--<Style TargetType="{x:Type DataGridCell}">
+            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
+        </Style>-->
 
     </Window.Resources>
 
     <Grid x:Name="MainGrid">
-        <Menu x:Name="menu" Height="28" VerticalAlignment="Top">
+        <Menu x:Name="menu" Height="22" VerticalAlignment="Top">
             <MenuItem Header="Файл">
                 <MenuItem Header="Выгрузить общий файл..." Click="buttonView_Download_Click">
                     <MenuItem.Icon>
                         <Image Source="Images\View_download.png" Width="auto" Height="20"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem x:Name="MenuItemSaveFast"  Header="Сохранить краткую сводку..." Click="buttonSaveFast_Click"  Style="{StaticResource FastSave_MenuItem}" IsEnabled="False"/>
                 <MenuItem Header="Выход" Click="MenuItem_Click_Exit"/>
             </MenuItem>
             <MenuItem Header="Ввод данных">
@@ -281,7 +309,7 @@
                 <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых"/>
             </StackPanel>
             <StackPanel x:Name="menu_Hot_ViewFast"  Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
-                <Button x:Name="buttonSaveFast"  Margin="10,0,0,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="28" ToolTip="Сохранить общую сводку в файл" Style="{StaticResource FastDownload_button}" IsEnabled="False"/>
+                <Button x:Name="buttonSaveFast"  Margin="10,0,0,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="28" ToolTip="Сохранить краткую сводку в файл" Style="{StaticResource FastDownload_button}" IsEnabled="False" Click="buttonSaveFast_Click"/>
             </StackPanel>
             <StackPanel x:Name="menu_Hot_View"  Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
                 <Button x:Name="buttonUpdate"  Margin="10,0,0,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="28" ToolTip="Загрузить и просмотреть данные из общего сводного файла расписания" Click="buttonView_Click">
@@ -297,7 +325,6 @@
             <TabItem x:Name="ExportTab" Header="Экспорт">
                 <Grid x:Name="gridDataGridExport" Background="#FFE5E5E5">
                     <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded" LayoutUpdated="dataGridExport_LayoutUpdated">
-
                     </DataGrid>
                     <Button x:Name="buttonExport"  Margin="0,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Upload_button}" HorizontalAlignment="Center" IsEnabled="False" Click="buttonExport_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
                 </Grid>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -615,6 +616,8 @@ namespace SvodExcel
         private void Single_manual_entry_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             exApp.Quit();
+            exApp = null;
+            GC.Collect();
             itisclickcombobox = false;
             itisclose = true;
         }
@@ -721,10 +724,10 @@ namespace SvodExcel
         {
             MainWindow home = Application.Current.MainWindow as MainWindow;
             if(RowIndex==-1)
-                home.AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
+                home.AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
             else
             {
-                home.EditItem(RowIndex,new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, " ", textBoxCategory.Text, textBoxPlace.Text));
+                home.EditItem(RowIndex,new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
             }
         }
         private void ClearData()

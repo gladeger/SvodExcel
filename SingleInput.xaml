@@ -7,7 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Ручной ввод по одному" Height="660" Width="800" Icon="Images/excel_import.ico" MinWidth="700" MinHeight="500" Closing="Single_manual_entry_Closing">
+        Title="Ручной ввод по одному" Height="624.5" Width="800" Icon="Images/excel_import.ico" MinWidth="700" MinHeight="500" Closing="Single_manual_entry_Closing">
     <Window.Resources>
         <Style x:Key="MaskedTextBoxStyle"
                TargetType="TextBox">
@@ -95,16 +95,23 @@
         </Border>
         <Grid Margin="10,284,10,45">
             <Grid.RowDefinitions>
+                <RowDefinition Height="57"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Border BorderBrush="Black" BorderThickness="1" Margin="0,10" Grid.Row="0">
+            <Border BorderBrush="Black" BorderThickness="1" Margin="0,10,0,0" Grid.Row="0">
+                <Grid x:Name="GridGroup" Margin="0">
+                    <Label x:Name="label_Group" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Номер группы:" FontSize="14"/>
+                    <TextBox x:Name="textboxGroup" HorizontalAlignment="Left" Margin="167,14,0,0" VerticalAlignment="Top" Width="294" FontSize="14" Height="22" />
+                </Grid>
+            </Border>
+            <Border BorderBrush="Black" BorderThickness="1" Margin="0,10" Grid.Row="1">
                 <Grid Margin="0">
                     <Label x:Name="label_Category" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Категория слушателей:" FontSize="14"/>
                     <TextBox x:Name="textBoxCategory" Margin="167,10,10,10" TextWrapping="Wrap" UndoLimit="0" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" AcceptsReturn="True"/>
                 </Grid>
             </Border>
-            <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Margin="0,0,0,10">
+            <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2" Margin="0,0,0,10">
                 <Grid Margin="0">
                     <Label x:Name="label_Place" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.43,-7.653" Content="Место проведения:" FontSize="14"/>
                     <TextBox x:Name="textBoxPlace" Margin="167,10,10,10" TextWrapping="Wrap" UndoLimit="0" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" AcceptsReturn="True"/>
