@@ -495,6 +495,8 @@ namespace SvodExcel
                            ));
                         //CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
                     }
+                    exBook.Close(false);
+                    //Provider = Microsoft.Jet.OLEDB.4.0; Data Source = C:\MyExcel.xls; Extended Properties = "Excel 8.0;HDR=Yes;IMEX=1";
 
                 }
                 else
