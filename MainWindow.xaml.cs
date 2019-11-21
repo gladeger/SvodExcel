@@ -7,6 +7,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.OleDb;
 
 namespace SvodExcel
 {
@@ -45,7 +48,7 @@ namespace SvodExcel
             //----exmpla data
 
             ClearHang();
-            buttonDebug.Visibility = Visibility.Collapsed;
+            //buttonDebug.Visibility = Visibility.Collapsed;
         }
         private void SvodExcel_Closed(object sender, EventArgs e)
         {
@@ -314,36 +317,18 @@ namespace SvodExcel
 
         private void buttonDebug_Click(object sender, RoutedEventArgs e)
         {
-            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
-            ClearHang();
-            if (File.Exists(pathB))
-            {
-                MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь уже начал обновлять общий файл!\nПопробуйте еще раз чуть позже");
-            }
-            else
-            {
-                string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
-                if (File.Exists(pathC))
-                {
-                    File.Delete(pathC);
-                }
-                string pathA = Properties.Settings.Default.PathToGlobalData;
-                File.Copy(pathA, pathC);
-                //var exApp = new Microsoft.Office.Interop.Excel.Application();
-                var exBook = exApp.Workbooks.Open(pathC);
-                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                string FormulCalculate = ExSheet.Cells[16, 8].Formula;
-                exBook.Close(true);
-                //exApp.Quit();
-                File.Delete(pathC);
-                List<string> TimeTemplate = new List<string>();
-                Regex regex = new Regex(@"\d{1,2}\.\d{2}\-\d{1,2}\.\d{2}");
-                MatchCollection matchList = regex.Matches(FormulCalculate);
-                for(int i=0;i<matchList.Count;i++)
-                {
-                    TimeTemplate.Add(matchList[i].Value);
-                }
-            }
+            string pathFast = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.ViewFast;
+            String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                     //String Command = "Select * from [sheets$]";
+                     String Command = "Select * from [Sheet_1$]";
+                     OleDbConnection con = new OleDbConnection(connection);
+                     con.Open();
+                     OleDbCommand cmd = new OleDbCommand(Command, con);
+                     OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                     DataTable dt = new DataTable();
+                     db.Fill(dt);
+                     dataGridViewFast.ItemsSource = dt.AsDataView();
+                     
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -481,7 +466,8 @@ namespace SvodExcel
                 vfDTR.Clear();
                 if (File.Exists(pathFast))
                 {
-                    var exBook = exApp.Workbooks.Open(pathFast);
+                    /*
+                     * var exBook = exApp.Workbooks.Open(pathFast);
                     var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
                     int BlinkEnd = 0;
@@ -496,7 +482,20 @@ namespace SvodExcel
                         //CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
                     }
                     exBook.Close(false);
+                    */
                     //Provider = Microsoft.Jet.OLEDB.4.0; Data Source = C:\MyExcel.xls; Extended Properties = "Excel 8.0;HDR=Yes;IMEX=1";
+                    //String filename = @"D:\dem.xlsx";
+                    
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                    //String Command = "Select * from [sheets$]";
+                    String Command = "Select * from [Sheet_1$]";
+                    OleDbConnection con = new OleDbConnection(connection);
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand(Command, con);
+                    OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    db.Fill(dt);
+                    dataGridViewFast.ItemsSource = dt.AsDataView();
 
                 }
                 else
@@ -534,9 +533,12 @@ namespace SvodExcel
                     }
                     exBook.Close(false);
                     exBook = exApp.Workbooks.Add(Type.Missing);
-                    exBook.Sheets.Add();
+                    //exBook.Sheets.Add();
                     ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                    for(int i=0;i<vfDTR.Count;i++)
+                    ExSheet.Name = "Sheet_1";
+                    ExSheet.Cells[1, 1].Value = "Преподаватель";
+                    ExSheet.Cells[1, 2].Value = "Всего часов";
+                    for (int i=1;i<vfDTR.Count;i++)
                     {
                         ExSheet.Cells[i + 1, 1].Value = vfDTR[i].Teacher;
                         ExSheet.Cells[i + 1, 2].Value = vfDTR[i].Result;
