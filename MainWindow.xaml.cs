@@ -11,6 +11,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Data.OleDb;
 
+
 namespace SvodExcel
 {
     /// <summary>
@@ -485,9 +486,10 @@ namespace SvodExcel
                     */
                     //Provider = Microsoft.Jet.OLEDB.4.0; Data Source = C:\MyExcel.xls; Extended Properties = "Excel 8.0;HDR=Yes;IMEX=1";
                     //String filename = @"D:\dem.xlsx";
-                    
+
                     String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
-                    //String Command = "Select * from [sheets$]";
+                    //String connection = @"Provider="+ Directory.GetCurrentDirectory()+ "\\ACEOLEDB.DLL" + ";Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                    //String connection = @"Driver=" + Directory.GetCurrentDirectory() + "\\ACEOLEDB.DLL;" +@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     String Command = "Select * from [Sheet_1$]";
                     OleDbConnection con = new OleDbConnection(connection);
                     con.Open();
@@ -545,6 +547,29 @@ namespace SvodExcel
                     }
                     exBook.SaveAs(pathFast);
                     exBook.Close(false);
+                    
+                    /*
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                    String Command = "Select * from [Sheet_1$]";
+                    OleDbConnection con = new OleDbConnection(connection);
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand(Command, con);
+                    OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    db.Fill(dt);
+                    dataGridViewFast.ItemsSource = dt.AsDataView();
+                    */ 
+                    /*
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1;\"";
+                    string a, b;
+                    a = "Преподаватель";
+                    b = "Всего часов";
+                    String Command = "insert into [sheets$](Name,age) values('" + a + "','" + b + "')";
+                    OleDbConnection con = new OleDbConnection(connection);
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand(Command, con);
+                    cmd.ExecuteNonQuery();
+                    */
                     FileInfo localfastdata = new FileInfo(pathFast);
                     localfastdata.IsReadOnly = true;
                 }                
