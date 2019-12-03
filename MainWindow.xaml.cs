@@ -10,6 +10,9 @@ using System.Text.RegularExpressions;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.OleDb;
+using System.Runtime.InteropServices;
+
+
 
 
 namespace SvodExcel
@@ -19,6 +22,7 @@ namespace SvodExcel
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
         
         public List<DataTableRow> DTR = new List<DataTableRow>();
@@ -415,6 +419,7 @@ namespace SvodExcel
             UpdateLayout();
 
         }
+        
         public void UpdateViewFast()
         {
             string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
@@ -486,12 +491,14 @@ namespace SvodExcel
                     */
                     //Provider = Microsoft.Jet.OLEDB.4.0; Data Source = C:\MyExcel.xls; Extended Properties = "Excel 8.0;HDR=Yes;IMEX=1";
                     //String filename = @"D:\dem.xlsx";
-
-                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                    
+                    
+                    //String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     //String connection = @"Provider="+ Directory.GetCurrentDirectory()+ "\\ACEOLEDB.DLL" + ";Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
-                    //String connection = @"Driver=" + Directory.GetCurrentDirectory() + "\\ACEOLEDB.DLL;" +@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                    String connection = @"Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=path to xls/xlsx/xlsm/xlsb file;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     String Command = "Select * from [Sheet_1$]";
                     OleDbConnection con = new OleDbConnection(connection);
+                    
                     con.Open();
                     OleDbCommand cmd = new OleDbCommand(Command, con);
                     OleDbDataAdapter db = new OleDbDataAdapter(cmd);

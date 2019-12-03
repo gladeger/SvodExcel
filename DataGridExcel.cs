@@ -8,12 +8,18 @@ namespace SvodExcel
 {
     public class DataTableRow
     {
+        
         public string Date { get; set; }
         public string Time { get; set; }
         public string Teacher { get; set; }
         public string Group { get; set; }
         public string Category { get; set; }
         public string Place { get; set; }
+        
+        static void FileAsDataBase()
+        {
+
+        }
 
         public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace)
         {
