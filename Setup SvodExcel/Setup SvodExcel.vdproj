@@ -1683,6 +1683,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D35692807ED449E49FD1EA1FE084CB4A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D47FD5297B0DF1091FA469A6A7BC2890"
         "OwnerKey" = "8:_A9327EC6F8304FB780BCA0F3A1DAC714"
         "MsmSig" = "8:_UNDEFINED"
@@ -5778,6 +5784,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D35692807ED449E49FD1EA1FE084CB4A"
+            {
+            "SourcePath" = "8:..\\Images\\excel_import.ico"
+            "TargetName" = "8:excel_import.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_101E41B2FD334B3C86BC123D90DEA779"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D47FD5297B0DF1091FA469A6A7BC2890"
             {
             "AssemblyRegister" = "3:1"
@@ -6499,11 +6525,11 @@
         "ARPHELPLINK" = "8:"
         "Title" = "8:Setup SvodExcel"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Default Company Name"
+        "ARPCONTACT" = "8:Гладких И.Ю."
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:"
+        "ARPPRODUCTICON" = "8:_D35692807ED449E49FD1EA1FE084CB4A"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -6606,6 +6632,48 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_319A20F044E2476D986707D6B6D4AB8D"
+            {
+            "Name" = "8:SvodExcel"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_5807235991944F4BA7516E9FCC8F379B"
+            "Folder" = "8:_5807235991944F4BA7516E9FCC8F379B"
+            "WorkingFolder" = "8:_5807235991944F4BA7516E9FCC8F379B"
+            "Icon" = "8:_D35692807ED449E49FD1EA1FE084CB4A"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E409FCE9D2E7495A935D74C4B69CC7D5"
+            {
+            "Name" = "8:SvodExcel"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_06AE7690F6F64C8B8DBC9A6E23A7763E"
+            "Folder" = "8:_06AE7690F6F64C8B8DBC9A6E23A7763E"
+            "WorkingFolder" = "8:_06AE7690F6F64C8B8DBC9A6E23A7763E"
+            "Icon" = "8:_D35692807ED449E49FD1EA1FE084CB4A"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_FB665DA8E758400BACDA4F94BDFD3E6C"
+            {
+            "Name" = "8:SvodExcel"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_101E41B2FD334B3C86BC123D90DEA779"
+            "Folder" = "8:_101E41B2FD334B3C86BC123D90DEA779"
+            "WorkingFolder" = "8:_101E41B2FD334B3C86BC123D90DEA779"
+            "Icon" = "8:_D35692807ED449E49FD1EA1FE084CB4A"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
