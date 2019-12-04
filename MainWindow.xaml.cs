@@ -205,6 +205,7 @@ namespace SvodExcel
             {
                 double This_TH2 = this.Top + this.Height / 2.0;
                 double This_LW2 = this.Left + this.Width / 2.0;
+                /*
                 Thread newWindowThread = new Thread(new ThreadStart(() =>
                 {
                     SvodExcel.ProgressBar PB = new SvodExcel.ProgressBar();
@@ -217,8 +218,9 @@ namespace SvodExcel
                 newWindowThread.SetApartmentState(ApartmentState.STA);
                 newWindowThread.IsBackground = true;
                 newWindowThread.Start();
+                */
                 ExportData();
-                newWindowThread.Abort();
+                //newWindowThread.Abort();
             }
             this.Effect = null;
             UpdateLayout();
@@ -389,6 +391,7 @@ namespace SvodExcel
             {
                 double This_TH2 = this.Top + this.Height / 2.0;
                 double This_LW2 = this.Left + this.Width / 2.0;
+               /* 
                 Thread newWindowThread = new Thread(new ThreadStart(() =>
                 {
                     SvodExcel.ProgressBar PB = new SvodExcel.ProgressBar();
@@ -401,6 +404,7 @@ namespace SvodExcel
                 newWindowThread.SetApartmentState(ApartmentState.STA);
                 newWindowThread.IsBackground = true;
                 newWindowThread.Start();
+                */
                 switch(tabControl.SelectedIndex)
                 {
                     case 1:
@@ -413,7 +417,7 @@ namespace SvodExcel
                         break;
                 }
                 
-                newWindowThread.Abort();
+                //newWindowThread.Abort();
             }           
             this.Effect = null;
             UpdateLayout();
@@ -493,9 +497,9 @@ namespace SvodExcel
                     //String filename = @"D:\dem.xlsx";
                     
                     
-                    //String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     //String connection = @"Provider="+ Directory.GetCurrentDirectory()+ "\\ACEOLEDB.DLL" + ";Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
-                    String connection = @"Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=path to xls/xlsx/xlsm/xlsb file;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                    //String connection = @"Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=path to xls/xlsx/xlsm/xlsb file;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     String Command = "Select * from [Sheet_1$]";
                     OleDbConnection con = new OleDbConnection(connection);
                     
@@ -547,13 +551,14 @@ namespace SvodExcel
                     ExSheet.Name = "Sheet_1";
                     ExSheet.Cells[1, 1].Value = "Преподаватель";
                     ExSheet.Cells[1, 2].Value = "Всего часов";
-                    for (int i=1;i<vfDTR.Count;i++)
+                    for (int i=0;i<vfDTR.Count;i++)
                     {
-                        ExSheet.Cells[i + 1, 1].Value = vfDTR[i].Teacher;
-                        ExSheet.Cells[i + 1, 2].Value = vfDTR[i].Result;
+                        ExSheet.Cells[i + 2, 1].Value = vfDTR[i].Teacher;
+                        ExSheet.Cells[i + 2, 2].Value = vfDTR[i].Result;
                     }
                     exBook.SaveAs(pathFast);
                     exBook.Close(false);
+
                     
                     /*
                     String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
@@ -579,6 +584,8 @@ namespace SvodExcel
                     */
                     FileInfo localfastdata = new FileInfo(pathFast);
                     localfastdata.IsReadOnly = true;
+                    dataGridViewFast.Columns[0].Header = "Преподаватель";
+                    dataGridViewFast.Columns[1].Header = "Всего часов";
                 }                
                 //exApp.Quit();
             }
