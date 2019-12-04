@@ -547,8 +547,10 @@ namespace SvodExcel
                     exBook.Close(false);
                     exBook = exApp.Workbooks.Add(Type.Missing);
                     //exBook.Sheets.Add();
+                    
                     ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     ExSheet.Name = "Sheet_1";
+                    /*
                     ExSheet.Cells[1, 1].Value = "Преподаватель";
                     ExSheet.Cells[1, 2].Value = "Всего часов";
                     for (int i=0;i<vfDTR.Count;i++)
@@ -556,6 +558,7 @@ namespace SvodExcel
                         ExSheet.Cells[i + 2, 1].Value = vfDTR[i].Teacher;
                         ExSheet.Cells[i + 2, 2].Value = vfDTR[i].Result;
                     }
+                    */
                     exBook.SaveAs(pathFast);
                     exBook.Close(false);
 
@@ -571,17 +574,18 @@ namespace SvodExcel
                     db.Fill(dt);
                     dataGridViewFast.ItemsSource = dt.AsDataView();
                     */ 
-                    /*
-                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1;\"";
+                    
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=NO;IMEX=1\"";
                     string a, b;
                     a = "Преподаватель";
                     b = "Всего часов";
-                    String Command = "insert into [sheets$](Name,age) values('" + a + "','" + b + "')";
+                    //String Command = "insert into [Sheet_1$]({1},{2}) values('" + a + "','" + b + "')";                    
+                    String Command = "insert into [Sheet_1$] values('Teacher','Result')";
                     OleDbConnection con = new OleDbConnection(connection);
                     con.Open();
                     OleDbCommand cmd = new OleDbCommand(Command, con);
-                    cmd.ExecuteNonQuery();
-                    */
+                     cmd.ExecuteNonQuery();
+                    
                     FileInfo localfastdata = new FileInfo(pathFast);
                     localfastdata.IsReadOnly = true;
                     dataGridViewFast.Columns[0].Header = "Преподаватель";
