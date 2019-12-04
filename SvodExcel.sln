@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvodExcel", "SvodExcel.csproj", "{4095395D-6B2C-4A69-8658-B178C1ED5CD2}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup SvodExcel", "Setup SvodExcel\Setup SvodExcel.vdproj", "{8A768B70-3C82-4F14-993E-9DBBCD39869F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,14 +19,6 @@ Global
 		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.Release|x64.ActiveCfg = Release|x64
-		{8A768B70-3C82-4F14-993E-9DBBCD39869F}.Debug|Any CPU.ActiveCfg = Debug
-		{8A768B70-3C82-4F14-993E-9DBBCD39869F}.Debug|Any CPU.Build.0 = Debug
-		{8A768B70-3C82-4F14-993E-9DBBCD39869F}.Debug|x64.ActiveCfg = Debug
-		{8A768B70-3C82-4F14-993E-9DBBCD39869F}.Debug|x64.Build.0 = Debug
-		{8A768B70-3C82-4F14-993E-9DBBCD39869F}.Release|Any CPU.ActiveCfg = Release
-		{8A768B70-3C82-4F14-993E-9DBBCD39869F}.Release|Any CPU.Build.0 = Release
-		{8A768B70-3C82-4F14-993E-9DBBCD39869F}.Release|x64.ActiveCfg = Release
-		{8A768B70-3C82-4F14-993E-9DBBCD39869F}.Release|x64.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
