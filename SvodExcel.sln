@@ -7,12 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvodExcel", "SvodExcel.cspr
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		All|Any CPU = All|Any CPU
+		All|x64 = All|x64
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.All|Any CPU.Build.0 = Release|Any CPU
+		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.All|x64.ActiveCfg = Release|x64
+		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.All|x64.Build.0 = Release|x64
 		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.Debug|x64.ActiveCfg = Debug|x64
 		{4095395D-6B2C-4A69-8658-B178C1ED5CD2}.Debug|x64.Build.0 = Debug|x64
