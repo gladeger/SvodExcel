@@ -545,11 +545,11 @@ namespace SvodExcel
                         }
                     }
                     exBook.Close(false);
-                    exBook = exApp.Workbooks.Add(Type.Missing);
-                    //exBook.Sheets.Add();
-                    
-                    ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                    ExSheet.Name = "Sheet_1";
+                    //exBook = exApp.Workbooks.Add(Type.Missing);
+                    ///*exBook.Sheets.Add();*/
+
+                    //ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                    //ExSheet.Name = "Sheet_1";
                     /*
                     ExSheet.Cells[1, 1].Value = "Преподаватель";
                     ExSheet.Cells[1, 2].Value = "Всего часов";
@@ -559,8 +559,15 @@ namespace SvodExcel
                         ExSheet.Cells[i + 2, 2].Value = vfDTR[i].Result;
                     }
                     */
-                    exBook.SaveAs(pathFast);
-                    exBook.Close(false);
+                    //exBook.SaveAs(pathFast);
+                    //exBook.Close(false);
+                    DataSet ds = new DataSet();
+                    DataTable dt = new DataTable();
+                    ds.Tables.Add(dt);
+                    dt.Columns.Add("Teacher", Type.GetType("System.String"));
+                    dt.Columns.Add("Result", Type.GetType("System.String"));
+
+                    ExcelLibrary.DataSetHelper.CreateWorkbook(pathFast, ds);
 
                     
                     /*
