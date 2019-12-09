@@ -145,7 +145,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ViewFast.xlsx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ViewFast.xls")]
         public string ViewFast {
             get {
                 return ((string)(this["ViewFast"]));

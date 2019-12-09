@@ -50,6 +50,7 @@ namespace SvodExcel
             //AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","******","!@#$%&"));
             // AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+            CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
             //----exmpla data
 
             ClearHang();
@@ -424,7 +425,7 @@ namespace SvodExcel
 
         }
         
-        public void UpdateViewFast()
+        public void UpdateViewFast()//Обновление быстрого просмотра сводной таблицы
         {
             string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
             if (File.Exists(pathB))
@@ -495,9 +496,23 @@ namespace SvodExcel
                     */
                     //Provider = Microsoft.Jet.OLEDB.4.0; Data Source = C:\MyExcel.xls; Extended Properties = "Excel 8.0;HDR=Yes;IMEX=1";
                     //String filename = @"D:\dem.xlsx";
+
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                    switch (Properties.Settings.Default.ViewFast.Substring(Properties.Settings.Default.ViewFast.LastIndexOf('.')))
+                    {
+                        case ".xls":
+                            connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                            break;
+                        case ".xlsx":
+                            connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                            break;
+                        default:
+                            MessageBox.Show("Ошибка неизвестного формата файла "+ Properties.Settings.Default.ViewFast.Substring(Properties.Settings.Default.ViewFast.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                            break;
+                    }
                     
                     
-                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     //String connection = @"Provider="+ Directory.GetCurrentDirectory()+ "\\ACEOLEDB.DLL" + ";Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     //String connection = @"Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=path to xls/xlsx/xlsm/xlsb file;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     String Command = "Select * from [Sheet_1$]";
@@ -508,8 +523,19 @@ namespace SvodExcel
                     OleDbDataAdapter db = new OleDbDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     db.Fill(dt);
-                    dataGridViewFast.ItemsSource = dt.AsDataView();
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        if (dt.Rows[i].ItemArray.GetValue(0).ToString().Length==0)
+                        {
+                            dt.Rows[i].Delete();
+                            
+                            //i -= 1;
+                        }
 
+                    }
+                    dt.AcceptChanges();
+                    dataGridViewFast.ItemsSource = dt.AsDataView();
+                    
                 }
                 else
                 {
@@ -545,60 +571,27 @@ namespace SvodExcel
                         }
                     }
                     exBook.Close(false);
-                    //exBook = exApp.Workbooks.Add(Type.Missing);
-                    ///*exBook.Sheets.Add();*/
-
-                    //ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                    //ExSheet.Name = "Sheet_1";
-                    /*
-                    ExSheet.Cells[1, 1].Value = "Преподаватель";
-                    ExSheet.Cells[1, 2].Value = "Всего часов";
-                    for (int i=0;i<vfDTR.Count;i++)
-                    {
-                        ExSheet.Cells[i + 2, 1].Value = vfDTR[i].Teacher;
-                        ExSheet.Cells[i + 2, 2].Value = vfDTR[i].Result;
-                    }
-                    */
-                    //exBook.SaveAs(pathFast);
-                    //exBook.Close(false);
+                   
                     DataSet ds = new DataSet();
-                    DataTable dt = new DataTable();
+                    DataTable dt = new DataTable("Sheet_1");
                     ds.Tables.Add(dt);
                     dt.Columns.Add("Teacher", Type.GetType("System.String"));
                     dt.Columns.Add("Result", Type.GetType("System.String"));
-
+                    int i;
+                    for (i=0;i<vfDTR.Count;i++)
+                    {
+                        dt.Rows.Add(vfDTR[i].Teacher, vfDTR[i].Result);
+                    }
+                    for(;i<=100;i++)
+                    {
+                        dt.Rows.Add("","");
+                    }
                     ExcelLibrary.DataSetHelper.CreateWorkbook(pathFast, ds);
-
-                    
-                    /*
-                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
-                    String Command = "Select * from [Sheet_1$]";
-                    OleDbConnection con = new OleDbConnection(connection);
-                    con.Open();
-                    OleDbCommand cmd = new OleDbCommand(Command, con);
-                    OleDbDataAdapter db = new OleDbDataAdapter(cmd);
-                    DataTable dt = new DataTable();
-                    db.Fill(dt);
-                    dataGridViewFast.ItemsSource = dt.AsDataView();
-                    */ 
-                    
-                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=NO;IMEX=1\"";
-                    string a, b;
-                    a = "Преподаватель";
-                    b = "Всего часов";
-                    //String Command = "insert into [Sheet_1$]({1},{2}) values('" + a + "','" + b + "')";                    
-                    String Command = "insert into [Sheet_1$] values('Teacher','Result')";
-                    OleDbConnection con = new OleDbConnection(connection);
-                    con.Open();
-                    OleDbCommand cmd = new OleDbCommand(Command, con);
-                     cmd.ExecuteNonQuery();
-                    
-                    FileInfo localfastdata = new FileInfo(pathFast);
-                    localfastdata.IsReadOnly = true;
-                    dataGridViewFast.Columns[0].Header = "Преподаватель";
-                    dataGridViewFast.Columns[1].Header = "Всего часов";
-                }                
+                   
+                }
                 //exApp.Quit();
+                dataGridViewFast.Columns[0].Header = "Преподаватель";
+                dataGridViewFast.Columns[1].Header = "Всего часов";
             }
             CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
         }
@@ -719,7 +712,16 @@ namespace SvodExcel
             CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
 
         }
-
+        private void dataGridViewFast_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+            if (dataGridView.Columns.Count > 0)
+            {
+                dataGridViewFast.Columns[0].Header = "Преподаватель";
+                dataGridViewFast.Columns[1].Header = "Всего часов";
+            }
+            CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+        }
         private void dataGridExport_Loaded(object sender, RoutedEventArgs e)
         {
             if(dataGridExport.Columns.Count>0)
@@ -823,6 +825,8 @@ namespace SvodExcel
             {
                 buttonExportHot.IsEnabled = true;
                 buttonExport.IsEnabled = true;
+                dataGridViewFast.Columns[0].Header = "Преподаватель";
+                dataGridViewFast.Columns[1].Header = "Всего часов";
             }                
             else
             {
@@ -842,15 +846,17 @@ namespace SvodExcel
         {
             SaveFastResult();  
         }
-        public void SaveFastResult()
+        public void SaveFastResult()//Сохранение краткой сводки
         {
             string pathFast = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.ViewFast;
             if (File.Exists(pathFast))
             {
                 Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = "Краткая сводка по общему файлу (только для просмотра)";
-                dlg.DefaultExt = ".xlsx";
-                dlg.Filter = "Книга Excel(.xlsx)|*.xlsx";
+                dlg.DefaultExt = Properties.Settings.Default.ViewFast.Substring(Properties.Settings.Default.ViewFast.LastIndexOf('.'));
+                //dlg.DefaultExt = ".xlsx";
+                //dlg.Filter = "Книга Excel(.xlsx)|*.xlsx";
+                dlg.Filter = "Книга Excel(."+ dlg.DefaultExt + ")|*."+ dlg.DefaultExt;
 
                 Nullable<bool> result = dlg.ShowDialog();
 
@@ -871,5 +877,6 @@ namespace SvodExcel
                 }
             }            
         }
+
     }
 }
