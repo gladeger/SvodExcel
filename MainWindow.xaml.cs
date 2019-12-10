@@ -11,7 +11,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Data.OleDb;
 using System.Runtime.InteropServices;
-
+using ExcelLibrary;
 
 
 
@@ -477,26 +477,6 @@ namespace SvodExcel
                 vfDTR.Clear();
                 if (File.Exists(pathFast))
                 {
-                    /*
-                     * var exBook = exApp.Workbooks.Open(pathFast);
-                    var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                    var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                    int BlinkEnd = 0;
-                    if (ExSheet.Cells[lastcell.Row, 1].Value != null || ExSheet.Cells[lastcell.Row, 2].Value != null)
-                        BlinkEnd = 1;
-                    List<string> TeacherList = new List<string>();
-                    for (int j = 1; j <lastcell.Row + BlinkEnd; j++)
-                    {   vfDTR.Add(new DataViewFastTableRow(
-                            ExSheet.Cells[j, 1].Value == null ? "" : ExSheet.Cells[j, 1].Value.ToString()
-                           , ExSheet.Cells[j, 2].Value== null ? "" : ExSheet.Cells[j, 2].Value.ToString()
-                           ));
-                        //CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
-                    }
-                    exBook.Close(false);
-                    */
-                    //Provider = Microsoft.Jet.OLEDB.4.0; Data Source = C:\MyExcel.xls; Extended Properties = "Excel 8.0;HDR=Yes;IMEX=1";
-                    //String filename = @"D:\dem.xlsx";
-
                     String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
                     switch (Properties.Settings.Default.ViewFast.Substring(Properties.Settings.Default.ViewFast.LastIndexOf('.')))
                     {
@@ -511,10 +491,6 @@ namespace SvodExcel
                             return;
                             break;
                     }
-                    
-                    
-                    //String connection = @"Provider="+ Directory.GetCurrentDirectory()+ "\\ACEOLEDB.DLL" + ";Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
-                    //String connection = @"Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=path to xls/xlsx/xlsm/xlsb file;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                     String Command = "Select * from [Sheet_1$]";
                     OleDbConnection con = new OleDbConnection(connection);
                     
@@ -539,45 +515,65 @@ namespace SvodExcel
                 }
                 else
                 {
-                    var exBook = exApp.Workbooks.Open(pathC);
-                    var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                    var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                    int BlinkEnd = 0;
-                    if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
-                        BlinkEnd = 1;
-                    if (lastcell.Row > 100)
-                    {
-                        if (MessageBox.Show("Вы действительно хотите просмотреть данные из общего файла?\nЭто может занять несколько ДЕСЯТКОВ минут.\nВсего записей - " + (lastcell.Row + BlinkEnd - 15).ToString(), "Просмотр общих данных БОЛЬШОГО ОБЪЕМА", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
-                        {
-                            return;
-                        }
-                    }
-                   //читаем excel
-                    {
-                        string BufStringExcel;
-                        List<string> TeacherList = new List<string>();
-                        for (int j = 15; j < lastcell.Row + BlinkEnd - 1; j++)
-                        {
-                                BufStringExcel = ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString();
-                                if (TeacherList.IndexOf(BufStringExcel) < 0)
-                                {
-                                    TeacherList.Add(BufStringExcel);
-                                    vfDTR.Add(new DataViewFastTableRow(
-                                    BufStringExcel
-                                   , ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString()
-                                   ));
-                                }
-                            CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
-                        }
-                    }
-                    exBook.Close(false);
                    
+                    int i;
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                    switch (pathC.Substring(pathC.LastIndexOf('.')))
+                    {
+                        case ".xls":
+                            connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                            break;
+                        case ".xlsx":
+                            connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                            break;
+                        default:
+                            MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                            break;
+                    }
+                    String Command = "Select * from [Лист1$A15:H]";
+                    OleDbConnection con = new OleDbConnection(connection);
+
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand(Command, con);
+                    OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                    DataTable dt_input = new DataTable();
+                    db.Fill(dt_input);
+                    
+                    for (i = 0; i < dt_input.Rows.Count; i++)
+                    {
+                        if (dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length == 0 && dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length == 0)
+                        {
+
+                            dt_input.Rows[i].Delete();
+                            //i -= 1;
+                        }
+
+                    }
+                    dt_input.AcceptChanges();
+                    //dataGridViewFast.ItemsSource = dt_input.AsDataView();
+
+                    string BufStringExcel;
+                    List<string> TeacherList = new List<string>();
+                    for (int j = 0; j < dt_input.Rows.Count; j++)
+                    {
+                        BufStringExcel = dt_input.Rows[j].ItemArray.GetValue(3).ToString();
+                        if (TeacherList.IndexOf(BufStringExcel) < 0)
+                        {
+                            TeacherList.Add(BufStringExcel);
+                            vfDTR.Add(new DataViewFastTableRow(
+                            BufStringExcel
+                           , dt_input.Rows[j].ItemArray.GetValue(7).ToString()
+                           ));
+                        }
+                        CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+                    }
+                    
                     DataSet ds = new DataSet();
                     DataTable dt = new DataTable("Sheet_1");
                     ds.Tables.Add(dt);
                     dt.Columns.Add("Teacher", Type.GetType("System.String"));
                     dt.Columns.Add("Result", Type.GetType("System.String"));
-                    int i;
                     for (i=0;i<vfDTR.Count;i++)
                     {
                         dt.Rows.Add(vfDTR[i].Teacher, vfDTR[i].Result);
@@ -635,7 +631,7 @@ namespace SvodExcel
                 }
 
                 vDTR.Clear();
-                
+                /*
                 var exBook = exApp.Workbooks.Open(pathC);
                 var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                 var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
@@ -687,6 +683,53 @@ namespace SvodExcel
                 }
                           
                 exBook.Close(false);
+                */
+                int i;
+                String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                switch (pathC.Substring(pathC.LastIndexOf('.')))
+                {
+                    case ".xls":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                        break;
+                    case ".xlsx":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                        break;
+                    default:
+                        MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                        break;
+                }
+                String Command = "Select * from [Лист1$A15:H]";
+                OleDbConnection con = new OleDbConnection(connection);
+
+                con.Open();
+                OleDbCommand cmd = new OleDbCommand(Command, con);
+                OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                DataTable dt_input = new DataTable();
+                db.Fill(dt_input);
+
+                for (i = 0; i < dt_input.Rows.Count; i++)
+                {
+                    if (dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length == 0 && dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length == 0)
+                    {
+                        dt_input.Rows[i].Delete();
+                        //i -= 1;
+                    }
+                }
+                dt_input.AcceptChanges();
+                for (i = 0; i < dt_input.Rows.Count; i++)
+                {
+                    vDTR.Add(new DataViewTableRow(
+                            dt_input.Rows[i].ItemArray.GetValue(1).ToString(),
+                            dt_input.Rows[i].ItemArray.GetValue(2).ToString(),
+                            dt_input.Rows[i].ItemArray.GetValue(3).ToString(),
+                            dt_input.Rows[i].ItemArray.GetValue(4).ToString(),
+                            dt_input.Rows[i].ItemArray.GetValue(5).ToString(),
+                            dt_input.Rows[i].ItemArray.GetValue(6).ToString(),
+                            dt_input.Rows[i].ItemArray.GetValue(7).ToString()
+                            ));
+                }
+                //dataGridViewFast.ItemsSource = dt_input.AsDataView();
                 //exApp.Quit();
                 CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
             }
