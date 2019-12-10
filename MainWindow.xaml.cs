@@ -234,7 +234,7 @@ namespace SvodExcel
         {
             Export_Click();
         }
-        public void ExportData()
+        public void ExportData()//вставляем в общий файл данные
         {           
             string pathB = Properties.Settings.Default.PathToGlobal+Properties.Settings.Default.GlobalMarker;
             ClearHang();
@@ -263,6 +263,9 @@ namespace SvodExcel
                 string pathA = Properties.Settings.Default.PathToGlobalData;
                 File.Copy(pathA, pathC);
                 //var exApp = new Microsoft.Office.Interop.Excel.Application();
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                /*
                 var exBook = exApp.Workbooks.Open(pathC);
                 var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                 int BlinkEnd = 0;
@@ -278,17 +281,35 @@ namespace SvodExcel
                     ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
                     ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
                 }
-                /*
-                 MessageBox.Show(
-                    exBook.Path.ToString()+"\\"+exBook.Name.ToString()+ "\n" + (lastcell.Row -1).ToString() + " 4:\n" +
-                    ExSheet.Cells[lastcell.Row-1, 4].Value.ToString()
-                                       +"\n"+
-                    pathC.ToString()+"\n"+(lastcell.Row + DTR.Count - 1).ToString()+" 4:\n"+
-                    ExSheet.Cells[lastcell.Row + DTR.Count-1, 4].Value.ToString()
-                    );
-                    */
+    
                 exBook.Close(true);
-                //exApp.Quit();
+                */
+
+                String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                switch (pathC.Substring(pathC.LastIndexOf('.')))
+                {
+                    case ".xls":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                        break;
+                    case ".xlsx":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                        break;
+                    default:
+                        MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                        break;
+                }
+                String Command = "Select * from [Лист1$A15:H]";
+                OleDbConnection con = new OleDbConnection(connection);
+
+                con.Open();
+                OleDbCommand cmd = new OleDbCommand(Command, con);
+                OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                DataTable dt_input = new DataTable();
+                db.Fill(dt_input);
+                con.Close();
+
+
                 File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + DateTime.Now.ToString().Replace(':', '_') + ".xlsx");
                 File.Copy(pathC, pathA);
                 //File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
@@ -336,7 +357,7 @@ namespace SvodExcel
                      DataTable dt = new DataTable();
                      db.Fill(dt);
                      dataGridViewFast.ItemsSource = dt.AsDataView();
-                     
+            con.Close();
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -511,7 +532,7 @@ namespace SvodExcel
                     }
                     dt.AcceptChanges();
                     dataGridViewFast.ItemsSource = dt.AsDataView();
-                    
+                    con.Close();
                 }
                 else
                 {
@@ -568,7 +589,8 @@ namespace SvodExcel
                         }
                         CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
                     }
-                    
+                    con.Close();
+
                     DataSet ds = new DataSet();
                     DataTable dt = new DataTable("Sheet_1");
                     ds.Tables.Add(dt);
@@ -729,7 +751,9 @@ namespace SvodExcel
                             dt_input.Rows[i].ItemArray.GetValue(7).ToString()
                             ));
                 }
+
                 //dataGridViewFast.ItemsSource = dt_input.AsDataView();
+                con.Close();
                 //exApp.Quit();
                 CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
             }
