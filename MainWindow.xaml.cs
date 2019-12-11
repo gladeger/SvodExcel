@@ -47,7 +47,7 @@ namespace SvodExcel
             vfDTR.Clear();
 
             // example data
-            AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","******","!@#$%&"));
+            AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","-----","-----"));
             // AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
@@ -300,7 +300,7 @@ namespace SvodExcel
                         return;
                         break;
                 }
-                String Command_in = "Select * from [Лист1$A15:H] limit 1";
+                String Command_in = "Select * from [Лист1$]";
                 OleDbConnection con_in = new OleDbConnection(connection_in);
 
                 con_in.Open();
@@ -308,26 +308,28 @@ namespace SvodExcel
                 OleDbDataAdapter db_in = new OleDbDataAdapter(cmd_in);
                 DataTable dt_input = new DataTable();
                 db_in.Fill(dt_input);
-
+                //MessageBox.Show(dt_input.Columns[4].DataType.ToString());
                 List<string> ColName = new List<string>();
                 for(int i=0;i<dt_input.Columns.Count;i++)
                 {
                     ColName.Add(dt_input.Columns[i].ColumnName);
                 }
-                cmd_in.Dispose();
+                cmd_in.Dispose();                
                 con_in.Close();
                 con_in.Dispose();
+               
 
                 String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                //String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
                 switch (pathC.Substring(pathC.LastIndexOf('.')))
                 {
                     case ".xls":
-                        //connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"TypeGuessRows=0;ImportMixedTypes=Text;";
-                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;\"";
+                        //connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
                         break;
                     case ".xlsx":
-                        //connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"TypeGuessRows=0;ImportMixedTypes=Text;";
-                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;\"";
+                        //connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                         break;
                     default:
                         MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -335,14 +337,38 @@ namespace SvodExcel
                         break;
                 }
                 //String Command = "Select * from [Лист1$A15:H]";
-                String Command = "INSERT INTO [Лист1$A15:H]('Дата проведения ','Время проведения','Преподаватель','Номер группы','Категория слушателей') VALUES('1','2','3','4','5')";
+                //String Command = "INSERT INTO [Лист1$](b) VALUE ('1')";
+                //String Command = "INSERT INTO [Лист1$] ( a, b ) VALUES ( ?, ? )";
+                String Command = "INSERT INTO [Лист1$] ( [" + ColName[1]+"]";
+                for (int i = 2; i <=6 ; i++)
+                {
+                    Command += ", [" + ColName[i]+"]";
+                }
+                //ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
+                //ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
+                //ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
+                //ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
+                //ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
+                //ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
+                //Command += " ) VALUES('"+DTR[0].Date+"', '"+ DTR[0].Time + "', '" + DTR[0].Teacher + "', '" + DTR[0].Group + "', '" + DTR[0].Category + "', '" + DTR[0].Place+"')";    
+                //Command += " ) VALUES('" + DTR[0].Date + "', '" + DTR[0].Time + "', '"+ DTR[0].Teacher + "', '" + " " + "' )";
+                Command += " ) VALUES('" + DTR[0].Date + "', '" + DTR[0].Time + "', '" + DTR[0].Teacher + "', '" + DTR[0].Group + "', '" + DTR[0].Category + "', '" + DTR[0].Place + "' )";
+
+                //"01.01.1900','2','3','4','5','6')";
+                //Command += "]) VALUES('1')";
+
                 OleDbConnection con = new OleDbConnection(connection);
                 con.Open();
                 OleDbCommand cmd = new OleDbCommand(Command, con);
                 /*OleDbDataAdapter db = new OleDbDataAdapter(cmd);
                 DataTable dt_input = new DataTable();
                 db.Fill(dt_input);*/
-                cmd.ExecuteNonQuery();
+
+                //cmd.Parameters.AddWithValue("a", "1");
+                //cmd.Parameters.AddWithValue("b", "2");
+                //cmd.Parameters[4].GetType().ToString();
+                
+                cmd.ExecuteNonQuery();//поля:дата,текст,текст, текст (может быть по умолчанию числом),текст,текст
                 cmd.Dispose();
                 con.Close();
                 con.Dispose();
@@ -697,59 +723,7 @@ namespace SvodExcel
                 }
 
                 vDTR.Clear();
-                /*
-                var exBook = exApp.Workbooks.Open(pathC);
-                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                int BlinkEnd = 0;
-                if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
-                    BlinkEnd = 1;
-                bool flag = true;
-                if (lastcell.Row > 100)
-                {
-                    if (MessageBox.Show("Вы действительно хотите просмотреть данные из общего файла?\nЭто может занять несколько ДЕСЯТКОВ минут.\nВсего записей - " + (lastcell.Row + BlinkEnd - 15).ToString(), "Просмотр общих данных БОЛЬШОГО ОБЪЕМА", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
-                    {
-                        flag=false;
-                    }
-                }
-                if (flag)
-                {
-                    List<string> TeacherList = new List<string>();
-                    List<string> ResultList = new List<string>();
-                    for (int j = 15; j < lastcell.Row + BlinkEnd - 1; j++)
-                    {
-                       // try
-                        {
-                            vDTR.Add(new DataViewTableRow(ExSheet.Cells[j + 1, 2].Value == null ? "" : ExSheet.Cells[j + 1, 2].Value.ToString()
-                               , ExSheet.Cells[j + 1, 3].Value == null ? "" : ExSheet.Cells[j + 1, 3].Value.ToString()
-                               , ExSheet.Cells[j + 1, 4].Value == null ? "" : ExSheet.Cells[j + 1, 4].Value.ToString()
-                               , ExSheet.Cells[j + 1, 5].Value == null ? "" : ExSheet.Cells[j + 1, 5].Value.ToString()
-                               , ExSheet.Cells[j + 1, 6].Value == null ? "" : ExSheet.Cells[j + 1, 6].Value.ToString()
-                               , ExSheet.Cells[j + 1, 7].Value == null ? "" : ExSheet.Cells[j + 1, 7].Value.ToString()
-                               , "Технические работы"));
-                            if (TeacherList.IndexOf(vDTR[j-15].Teacher) < 0)
-                            {
-                                TeacherList.Add(vDTR[j-15].Teacher);
-                                ResultList.Add((ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString()));
-                                vDTR[j-15].Result = (ExSheet.Cells[j + 1, 8].Value == null ? "" : ExSheet.Cells[j + 1, 8].Value.ToString());
-                            }
-                            else
-                            {
-                                vDTR[j-15].Result = ResultList[TeacherList.IndexOf(vDTR[j-15].Teacher)];
-                            }
-                            
-                        }
-                       // catch
-                        {
-                       //     MessageBox.Show("Error view string "+ (j+1).ToString(), "Error view", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
-                        }
-                        CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
-                        //ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
-                    }
-                }
-                          
-                exBook.Close(false);
-                */
+               
                 int i;
                 String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
                 switch (pathC.Substring(pathC.LastIndexOf('.')))
@@ -786,7 +760,7 @@ namespace SvodExcel
                 for (i = 0; i < dt_input.Rows.Count; i++)
                 {
                     vDTR.Add(new DataViewTableRow(
-                            dt_input.Rows[i].ItemArray.GetValue(1).ToString(),
+                            dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString().Substring(0, dt_input.Rows[i].ItemArray.GetValue(1).ToString().IndexOf(' ')) : "",
                             dt_input.Rows[i].ItemArray.GetValue(2).ToString(),
                             dt_input.Rows[i].ItemArray.GetValue(3).ToString(),
                             dt_input.Rows[i].ItemArray.GetValue(4).ToString(),
