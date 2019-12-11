@@ -47,7 +47,7 @@ namespace SvodExcel
             vfDTR.Clear();
 
             // example data
-            //AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","******","!@#$%&"));
+            AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","******","!@#$%&"));
             // AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
@@ -234,6 +234,7 @@ namespace SvodExcel
         {
             Export_Click();
         }
+
         public void ExportData()//вставляем в общий файл данные
         {           
             string pathB = Properties.Settings.Default.PathToGlobal+Properties.Settings.Default.GlobalMarker;
@@ -285,13 +286,47 @@ namespace SvodExcel
                 exBook.Close(true);
                 */
 
+                String connection_in = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                switch (pathC.Substring(pathC.LastIndexOf('.')))
+                {
+                    case ".xls":
+                        connection_in = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                        break;
+                    case ".xlsx":
+                        connection_in = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                        break;
+                    default:
+                        MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                        break;
+                }
+                String Command_in = "Select * from [Лист1$A15:H] limit 1";
+                OleDbConnection con_in = new OleDbConnection(connection_in);
+
+                con_in.Open();
+                OleDbCommand cmd_in = new OleDbCommand(Command_in, con_in);
+                OleDbDataAdapter db_in = new OleDbDataAdapter(cmd_in);
+                DataTable dt_input = new DataTable();
+                db_in.Fill(dt_input);
+
+                List<string> ColName = new List<string>();
+                for(int i=0;i<dt_input.Columns.Count;i++)
+                {
+                    ColName.Add(dt_input.Columns[i].ColumnName);
+                }
+                cmd_in.Dispose();
+                con_in.Close();
+                con_in.Dispose();
+
                 String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
                 switch (pathC.Substring(pathC.LastIndexOf('.')))
                 {
                     case ".xls":
+                        //connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"TypeGuessRows=0;ImportMixedTypes=Text;";
                         connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
                         break;
                     case ".xlsx":
+                        //connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"TypeGuessRows=0;ImportMixedTypes=Text;";
                         connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
                         break;
                     default:
@@ -299,15 +334,18 @@ namespace SvodExcel
                         return;
                         break;
                 }
-                String Command = "Select * from [Лист1$A15:H]";
+                //String Command = "Select * from [Лист1$A15:H]";
+                String Command = "INSERT INTO [Лист1$A15:H]('Дата проведения ','Время проведения','Преподаватель','Номер группы','Категория слушателей') VALUES('1','2','3','4','5')";
                 OleDbConnection con = new OleDbConnection(connection);
-
                 con.Open();
                 OleDbCommand cmd = new OleDbCommand(Command, con);
-                OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                /*OleDbDataAdapter db = new OleDbDataAdapter(cmd);
                 DataTable dt_input = new DataTable();
-                db.Fill(dt_input);
+                db.Fill(dt_input);*/
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
                 con.Close();
+                con.Dispose();
 
 
                 File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + DateTime.Now.ToString().Replace(':', '_') + ".xlsx");
@@ -357,7 +395,9 @@ namespace SvodExcel
                      DataTable dt = new DataTable();
                      db.Fill(dt);
                      dataGridViewFast.ItemsSource = dt.AsDataView();
+            cmd.Dispose();
             con.Close();
+            con.Dispose();
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -532,7 +572,9 @@ namespace SvodExcel
                     }
                     dt.AcceptChanges();
                     dataGridViewFast.ItemsSource = dt.AsDataView();
+                    cmd.Dispose();
                     con.Close();
+                    con.Dispose();
                 }
                 else
                 {
@@ -589,7 +631,9 @@ namespace SvodExcel
                         }
                         CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
                     }
+                    cmd.Dispose();
                     con.Close();
+                    con.Dispose();
 
                     DataSet ds = new DataSet();
                     DataTable dt = new DataTable("Sheet_1");
@@ -753,7 +797,9 @@ namespace SvodExcel
                 }
 
                 //dataGridViewFast.ItemsSource = dt_input.AsDataView();
+                cmd.Dispose();
                 con.Close();
+                con.Dispose();
                 //exApp.Quit();
                 CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
             }
@@ -878,6 +924,8 @@ namespace SvodExcel
             if (dataGridViewFast.Items.Count > 0)
             { buttonSaveFast.IsEnabled = true;
                 MenuItemSaveFast.IsEnabled = true;
+                dataGridViewFast.Columns[0].Header = "Преподаватель";
+                dataGridViewFast.Columns[1].Header = "Всего часов";
             }              
             else
             {
@@ -892,8 +940,7 @@ namespace SvodExcel
             {
                 buttonExportHot.IsEnabled = true;
                 buttonExport.IsEnabled = true;
-                dataGridViewFast.Columns[0].Header = "Преподаватель";
-                dataGridViewFast.Columns[1].Header = "Всего часов";
+
             }                
             else
             {
