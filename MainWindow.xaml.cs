@@ -281,8 +281,7 @@ namespace SvodExcel
                     ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
                     ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
                     ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
-                }
-    
+                }    
                 exBook.Close(true);
                 */
 
@@ -310,6 +309,7 @@ namespace SvodExcel
                 db_in.Fill(dt_input);
                 //MessageBox.Show(dt_input.Columns[4].DataType.ToString());
                 List<string> ColName = new List<string>();
+                string bufFormula =dt_input.Rows[1].Val
                 for(int i=0;i<dt_input.Columns.Count;i++)
                 {
                     ColName.Add(dt_input.Columns[i].ColumnName);
