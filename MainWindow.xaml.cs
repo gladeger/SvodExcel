@@ -309,7 +309,6 @@ namespace SvodExcel
                 db_in.Fill(dt_input);
                 //MessageBox.Show(dt_input.Columns[4].DataType.ToString());
                 List<string> ColName = new List<string>();
-                string bufFormula =dt_input.Rows[1].Val
                 for(int i=0;i<dt_input.Columns.Count;i++)
                 {
                     ColName.Add(dt_input.Columns[i].ColumnName);
@@ -339,37 +338,43 @@ namespace SvodExcel
                 //String Command = "Select * from [Лист1$A15:H]";
                 //String Command = "INSERT INTO [Лист1$](b) VALUE ('1')";
                 //String Command = "INSERT INTO [Лист1$] ( a, b ) VALUES ( ?, ? )";
-                String Command = "INSERT INTO [Лист1$] ( [" + ColName[1]+"]";
-                for (int i = 2; i <=6 ; i++)
-                {
-                    Command += ", [" + ColName[i]+"]";
-                }
-                //ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
-                //ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
-                //ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
-                //ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
-                //ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
-                //ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
-                //Command += " ) VALUES('"+DTR[0].Date+"', '"+ DTR[0].Time + "', '" + DTR[0].Teacher + "', '" + DTR[0].Group + "', '" + DTR[0].Category + "', '" + DTR[0].Place+"')";    
-                //Command += " ) VALUES('" + DTR[0].Date + "', '" + DTR[0].Time + "', '"+ DTR[0].Teacher + "', '" + " " + "' )";
-                Command += " ) VALUES('" + DTR[0].Date + "', '" + DTR[0].Time + "', '" + DTR[0].Teacher + "', '" + DTR[0].Group + "', '" + DTR[0].Category + "', '" + DTR[0].Place + "' )";
-
-                //"01.01.1900','2','3','4','5','6')";
-                //Command += "]) VALUES('1')";
-
                 OleDbConnection con = new OleDbConnection(connection);
                 con.Open();
-                OleDbCommand cmd = new OleDbCommand(Command, con);
-                /*OleDbDataAdapter db = new OleDbDataAdapter(cmd);
-                DataTable dt_input = new DataTable();
-                db.Fill(dt_input);*/
+                for (int j=0;j<DTR.Count;j++)
+                {
+                    String Command = "INSERT INTO [Лист1$] ( [" + ColName[1] + "]";
+                    for (int i = 2; i <= 6; i++)
+                    {
+                        Command += ", [" + ColName[i] + "]";
+                    }
+                    //ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
+                    //ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
+                    //ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
+                    //ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
+                    //ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
+                    //ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
+                    //Command += " ) VALUES('"+DTR[0].Date+"', '"+ DTR[0].Time + "', '" + DTR[0].Teacher + "', '" + DTR[0].Group + "', '" + DTR[0].Category + "', '" + DTR[0].Place+"')";    
+                    //Command += " ) VALUES('" + DTR[0].Date + "', '" + DTR[0].Time + "', '"+ DTR[0].Teacher + "', '" + " " + "' )";
+                    Command += " ) VALUES('" + DTR[j].Date + "', '" + DTR[j].Time + "', '" + DTR[j].Teacher + "', '" + DTR[j].Group + "', '" + DTR[j].Category + "', '" + DTR[j].Place + "' )";
 
-                //cmd.Parameters.AddWithValue("a", "1");
-                //cmd.Parameters.AddWithValue("b", "2");
-                //cmd.Parameters[4].GetType().ToString();
-                
-                cmd.ExecuteNonQuery();//поля:дата,текст,текст, текст (может быть по умолчанию числом),текст,текст
-                cmd.Dispose();
+                    //"01.01.1900','2','3','4','5','6')";
+                    //Command += "]) VALUES('1')";
+
+                    
+                    OleDbCommand cmd = new OleDbCommand(Command, con);
+                    /*OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                    DataTable dt_input = new DataTable();
+                    db.Fill(dt_input);*/
+
+                    //cmd.Parameters.AddWithValue("a", "1");
+                    //cmd.Parameters.AddWithValue("b", "2");
+                    //cmd.Parameters[4].GetType().ToString();
+
+                    cmd.ExecuteNonQuery();//поля:дата,текст,текст, текст (может быть по умолчанию числом),текст,текст
+                    cmd.Dispose();
+                    
+                }
+
                 con.Close();
                 con.Dispose();
 
