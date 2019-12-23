@@ -7,8 +7,8 @@
     <ProjectGuid>{CD544247-A373-46D7-B923-574CE23FA3E9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ExcelLibrary</RootNamespace>
-    <AssemblyName>ExcelLibrary</AssemblyName>
+    <RootNamespace>ExcelLibraryXLSX</RootNamespace>
+    <AssemblyName>ExcelLibraryXLSX</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

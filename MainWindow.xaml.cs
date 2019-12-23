@@ -14,6 +14,7 @@ using System.Data.SqlClient;
 using System.Data.OleDb;
 using System.Runtime.InteropServices;
 using ExcelLibrary;
+using ExcelLibraryXLSX;
 
 
 
@@ -380,9 +381,8 @@ namespace SvodExcel
                 con.Close();
                 con.Dispose();
                 
-               // Workbook WB_insert = new Workbook();
-               // WB_insert.Open(pathC);
                
+               //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + DateTime.Now.ToString().Replace(':', '_') + ".xlsx");
                 File.Copy(pathC, pathA);
@@ -420,20 +420,42 @@ namespace SvodExcel
 
         private void buttonDebug_Click(object sender, RoutedEventArgs e)
         {
-            string pathFast = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.ViewFast;
-            String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathFast + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
-                     //String Command = "Select * from [sheets$]";
-                     String Command = "Select * from [Sheet_1$]";
-                     OleDbConnection con = new OleDbConnection(connection);
-                     con.Open();
-                     OleDbCommand cmd = new OleDbCommand(Command, con);
-                     OleDbDataAdapter db = new OleDbDataAdapter(cmd);
-                     DataTable dt = new DataTable();
-                     db.Fill(dt);
-                     dataGridViewFast.ItemsSource = dt.AsDataView();
-            cmd.Dispose();
-            con.Close();
-            con.Dispose();
+
+            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            ClearHang();
+            if (File.Exists(pathB))
+            {
+                MessageBox.Show("К сожалению, на данный момент экспорт невозможен - другой пользователь уже начал оновлять общий файл!\nПопробуйте еще раз чуть позже");
+            }
+            else
+            {
+                string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
+                if (File.Exists(pathC))
+                {
+                    try { File.Delete(pathC); }
+                    catch
+                    {
+                        MessageBox.Show("Ошибка обращения к локальной копии сводного документа.\nПерезапустите компьютер");
+                        return;
+                    }
+
+                }
+                StreamWriter sw = File.CreateText(pathB);
+                String host = System.Net.Dns.GetHostName();
+                System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList[0];
+                sw.WriteLine(ip.ToString());
+                sw.Close();
+                string pathA = Properties.Settings.Default.PathToGlobalData;
+                File.Copy(pathA, pathC);
+
+                Workbook WB_insert = new Workbook();
+
+                File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + DateTime.Now.ToString().Replace(':', '_') + ".xlsx");
+                File.Copy(pathC, pathA);
+                //File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
+                File.Delete(pathC);
+                File.Delete(pathB);
+            }           
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
