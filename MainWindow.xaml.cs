@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.IO.Compression;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
@@ -48,7 +50,7 @@ namespace SvodExcel
 
             // example data
             AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","-----","-----"));
-            // AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
+            AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
             //----exmpla data
@@ -313,6 +315,7 @@ namespace SvodExcel
                 {
                     ColName.Add(dt_input.Columns[i].ColumnName);
                 }
+                int OriginalRowsCount = dt_input.Rows.Count;
                 cmd_in.Dispose();                
                 con_in.Close();
                 con_in.Dispose();
@@ -335,9 +338,7 @@ namespace SvodExcel
                         return;
                         break;
                 }
-                //String Command = "Select * from [Лист1$A15:H]";
-                //String Command = "INSERT INTO [Лист1$](b) VALUE ('1')";
-                //String Command = "INSERT INTO [Лист1$] ( a, b ) VALUES ( ?, ? )";
+
                 OleDbConnection con = new OleDbConnection(connection);
                 con.Open();
                 for (int j=0;j<DTR.Count;j++)
@@ -356,6 +357,7 @@ namespace SvodExcel
                     //Command += " ) VALUES('"+DTR[0].Date+"', '"+ DTR[0].Time + "', '" + DTR[0].Teacher + "', '" + DTR[0].Group + "', '" + DTR[0].Category + "', '" + DTR[0].Place+"')";    
                     //Command += " ) VALUES('" + DTR[0].Date + "', '" + DTR[0].Time + "', '"+ DTR[0].Teacher + "', '" + " " + "' )";
                     Command += " ) VALUES('" + DTR[j].Date + "', '" + DTR[j].Time + "', '" + DTR[j].Teacher + "', '" + DTR[j].Group + "', '" + DTR[j].Category + "', '" + DTR[j].Place + "' )";
+
 
                     //"01.01.1900','2','3','4','5','6')";
                     //Command += "]) VALUES('1')";
@@ -377,7 +379,10 @@ namespace SvodExcel
 
                 con.Close();
                 con.Dispose();
-
+                
+               // Workbook WB_insert = new Workbook();
+               // WB_insert.Open(pathC);
+               
 
                 File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + DateTime.Now.ToString().Replace(':', '_') + ".xlsx");
                 File.Copy(pathC, pathA);
@@ -679,7 +684,7 @@ namespace SvodExcel
                     {
                         dt.Rows.Add("","");
                     }
-                    ExcelLibrary.DataSetHelper.CreateWorkbook(pathFast, ds);
+                    DataSetHelper.CreateWorkbook(pathFast, ds);
                    
                 }
                 //exApp.Quit();
