@@ -14,8 +14,6 @@ using System.Data.SqlClient;
 using System.Data.OleDb;
 using System.Runtime.InteropServices;
 using ExcelLibrary;
-using ExcelLibraryXLSX;
-
 
 
 namespace SvodExcel
@@ -267,9 +265,8 @@ namespace SvodExcel
                 string pathA = Properties.Settings.Default.PathToGlobalData;
                 File.Copy(pathA, pathC);
                 //var exApp = new Microsoft.Office.Interop.Excel.Application();
-                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-                /*
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                
                 var exBook = exApp.Workbooks.Open(pathC);
                 var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                 int BlinkEnd = 0;
@@ -285,104 +282,9 @@ namespace SvodExcel
                     ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
                     ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
                 }    
-                exBook.Close(true);
-                */
-
-                String connection_in = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
-                switch (pathC.Substring(pathC.LastIndexOf('.')))
-                {
-                    case ".xls":
-                        connection_in = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
-                        break;
-                    case ".xlsx":
-                        connection_in = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
-                        break;
-                    default:
-                        MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                        break;
-                }
-                String Command_in = "Select * from [Лист1$]";
-                OleDbConnection con_in = new OleDbConnection(connection_in);
-
-                con_in.Open();
-                OleDbCommand cmd_in = new OleDbCommand(Command_in, con_in);
-                OleDbDataAdapter db_in = new OleDbDataAdapter(cmd_in);
-                DataTable dt_input = new DataTable();
-                db_in.Fill(dt_input);
-                //MessageBox.Show(dt_input.Columns[4].DataType.ToString());
-                List<string> ColName = new List<string>();
-                for(int i=0;i<dt_input.Columns.Count;i++)
-                {
-                    ColName.Add(dt_input.Columns[i].ColumnName);
-                }
-                int OriginalRowsCount = dt_input.Rows.Count;
-                cmd_in.Dispose();                
-                con_in.Close();
-                con_in.Dispose();
+                exBook.Close(true);            
                
-
-                String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
-                //String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
-                switch (pathC.Substring(pathC.LastIndexOf('.')))
-                {
-                    case ".xls":
-                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;\"";
-                        //connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
-                        break;
-                    case ".xlsx":
-                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;\"";
-                        //connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
-                        break;
-                    default:
-                        MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                        break;
-                }
-
-                OleDbConnection con = new OleDbConnection(connection);
-                con.Open();
-                for (int j=0;j<DTR.Count;j++)
-                {
-                    String Command = "INSERT INTO [Лист1$] ( [" + ColName[1] + "]";
-                    for (int i = 2; i <= 6; i++)
-                    {
-                        Command += ", [" + ColName[i] + "]";
-                    }
-                    //ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
-                    //ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
-                    //ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
-                    //ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
-                    //ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
-                    //ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
-                    //Command += " ) VALUES('"+DTR[0].Date+"', '"+ DTR[0].Time + "', '" + DTR[0].Teacher + "', '" + DTR[0].Group + "', '" + DTR[0].Category + "', '" + DTR[0].Place+"')";    
-                    //Command += " ) VALUES('" + DTR[0].Date + "', '" + DTR[0].Time + "', '"+ DTR[0].Teacher + "', '" + " " + "' )";
-                    Command += " ) VALUES('" + DTR[j].Date + "', '" + DTR[j].Time + "', '" + DTR[j].Teacher + "', '" + DTR[j].Group + "', '" + DTR[j].Category + "', '" + DTR[j].Place + "' )";
-
-
-                    //"01.01.1900','2','3','4','5','6')";
-                    //Command += "]) VALUES('1')";
-
-                    
-                    OleDbCommand cmd = new OleDbCommand(Command, con);
-                    /*OleDbDataAdapter db = new OleDbDataAdapter(cmd);
-                    DataTable dt_input = new DataTable();
-                    db.Fill(dt_input);*/
-
-                    //cmd.Parameters.AddWithValue("a", "1");
-                    //cmd.Parameters.AddWithValue("b", "2");
-                    //cmd.Parameters[4].GetType().ToString();
-
-                    cmd.ExecuteNonQuery();//поля:дата,текст,текст, текст (может быть по умолчанию числом),текст,текст
-                    cmd.Dispose();
-                    
-                }
-
-                con.Close();
-                con.Dispose();
-                
-               
-               //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + DateTime.Now.ToString().Replace(':', '_') + ".xlsx");
                 File.Copy(pathC, pathA);
@@ -420,42 +322,6 @@ namespace SvodExcel
 
         private void buttonDebug_Click(object sender, RoutedEventArgs e)
         {
-
-            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
-            ClearHang();
-            if (File.Exists(pathB))
-            {
-                MessageBox.Show("К сожалению, на данный момент экспорт невозможен - другой пользователь уже начал оновлять общий файл!\nПопробуйте еще раз чуть позже");
-            }
-            else
-            {
-                string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
-                if (File.Exists(pathC))
-                {
-                    try { File.Delete(pathC); }
-                    catch
-                    {
-                        MessageBox.Show("Ошибка обращения к локальной копии сводного документа.\nПерезапустите компьютер");
-                        return;
-                    }
-
-                }
-                StreamWriter sw = File.CreateText(pathB);
-                String host = System.Net.Dns.GetHostName();
-                System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList[0];
-                sw.WriteLine(ip.ToString());
-                sw.Close();
-                string pathA = Properties.Settings.Default.PathToGlobalData;
-                File.Copy(pathA, pathC);
-
-                Workbook WB_insert = new Workbook();
-
-                File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + DateTime.Now.ToString().Replace(':', '_') + ".xlsx");
-                File.Copy(pathC, pathA);
-                //File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
-                File.Delete(pathC);
-                File.Delete(pathB);
-            }           
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

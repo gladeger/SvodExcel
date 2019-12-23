@@ -394,12 +394,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="ExcelLibrary\ExcelLibraryXLSX.csproj">
-      <Project>{cd544247-a373-46d7-b923-574ce23fa3e9}</Project>
-      <Name>ExcelLibraryXLSX</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
