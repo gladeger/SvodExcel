@@ -7,6 +7,9 @@ using System.Windows.Input;
 using System.Linq;
 using System.Windows.Media;
 using System.Text.RegularExpressions;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.OleDb;
 
 
 namespace SvodExcel
@@ -24,7 +27,9 @@ namespace SvodExcel
         private List<string> NotCheckTeacher=new List<string>();
         private bool itisnotstart = false;
         List<string> TimeTemplate = new List<string>();
-        Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
+        public Microsoft.Office.Interop.Excel.Application exApp;
+
+
         System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
         
         public SingleInput()
@@ -193,7 +198,7 @@ namespace SvodExcel
             else
                 if (File.Exists(pathA))
                 {
-                    string path = Directory.GetCurrentDirectory() + ".\\РАСП.xlsx";
+                    string pathC = Directory.GetCurrentDirectory() + ".\\РАСП.xlsx";
                     //string path = "C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
                     //string pathB = @".\\РАСП.xlsx";
                     string pathB = Properties.Settings.Default.PathToLocalData;
@@ -201,27 +206,75 @@ namespace SvodExcel
                         File.Delete(pathB);
                     File.Copy(pathA, pathB);
                     while (!File.Exists(pathB)) { };
-                    //Microsoft.Office.Interop.Excel.XLCel
-
-                    var exBook = exApp.Workbooks.Open(path);
-                    var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                    var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                    int BlinkEnd = 0;
-                if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
-                    BlinkEnd = 1;
-                List<string> ListExcel = new List<string>();    
-                    for (int j = 15; j < lastcell.Row+BlinkEnd; j++)
+                //Microsoft.Office.Interop.Excel.XLCel
+                /*
+                var exBook = exApp.Workbooks.Open(pathC);
+                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
+                int BlinkEnd = 0;
+            if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
+                BlinkEnd = 1;
+            List<string> ListExcel = new List<string>();    
+                for (int j = 15; j < lastcell.Row+BlinkEnd; j++)
+                {
+                    if (ExSheet.Cells[j + 1, 4].Value != null)
                     {
-                        if (ExSheet.Cells[j + 1, 4].Value != null)
-                        {
-                            ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
-                        }
+                        ListExcel.Add(ExSheet.Cells[j + 1, 4].Value.ToString());
                     }
-                    exBook.Close(false);
-                    //exApp.Quit();
-                    File.Delete(pathB);
+                }
+                exBook.Close(false);
+                //exApp.Quit();
+                */
+                String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                switch (pathC.Substring(pathC.LastIndexOf('.')))
+                {
+                    case ".xls":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                        break;
+                    case ".xlsx":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                        break;
+                    default:
+                        MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                        break;
+                }
+                String Command = "Select * from [Лист1$A15:H]";
+                OleDbConnection con = new OleDbConnection(connection);
 
-                    List<string> ListTeacher = new List<string>(ListExcel.Distinct());
+                con.Open();
+                OleDbCommand cmd = new OleDbCommand(Command, con);
+                OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                DataTable dt_input = new DataTable();
+                db.Fill(dt_input);
+
+                for (int i = 0; i < dt_input.Rows.Count; i++)
+                {
+                    if (dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length == 0 && dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length == 0)
+                    {
+                        dt_input.Rows[i].Delete();
+                        //i -= 1;
+                    }
+
+                }
+                dt_input.AcceptChanges();
+                //dataGridViewFast.ItemsSource = dt_input.AsDataView();
+
+                string BufStringExcel;
+                List<string> ListTeacher = new List<string>();
+                for (int j = 0; j < dt_input.Rows.Count; j++)
+                {
+                    BufStringExcel = dt_input.Rows[j].ItemArray.GetValue(3).ToString();
+                    if (ListTeacher.IndexOf(BufStringExcel) < 0)
+                    {
+                        ListTeacher.Add(BufStringExcel);
+                    }
+                }
+                cmd.Dispose();
+                con.Close();
+                con.Dispose();
+                File.Delete(pathB);
+
                     ListTeacher.Sort();
                     string pathData = @".\ListTeacher.dat";
                     File.WriteAllText(pathData, ListTeacher[0]);
@@ -255,7 +308,7 @@ namespace SvodExcel
         }
         private void UpdateListTeacher()
         {
-            double This_TH2 = this.Top + this.Height / 2.0;
+            /*double This_TH2 = this.Top + this.Height / 2.0;
             double This_LW2 = this.Left + this.Width / 2.0;
             Thread newWindowThread = new Thread(new ThreadStart(() =>
             {
@@ -266,12 +319,20 @@ namespace SvodExcel
                 PB.ShowDialog();
                 System.Windows.Threading.Dispatcher.Run();
             }));
+            
             newWindowThread.SetApartmentState(ApartmentState.STA);
             newWindowThread.IsBackground = true;
             newWindowThread.Start();
+            */
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            objBlur.Radius = 4;
+            this.Effect = objBlur;
+            UpdateLayout();            
             GetExcel();
+            this.Effect = null;
+            UpdateLayout();
             //PB.Close();
-            newWindowThread.Abort();
+            //newWindowThread.Abort();
             comboBoxTeacher.SelectedIndex = -1;
         }
         private void StartListTeacher()
@@ -330,7 +391,7 @@ namespace SvodExcel
                     }
                     string pathA = Properties.Settings.Default.PathToGlobalData;
                     File.Copy(pathA, pathC);
-                    
+                
                     var exBook = exApp.Workbooks.Open(pathC);
                     var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     string FormulCalculate = ExSheet.Cells[16, 8].Formula;
@@ -615,8 +676,6 @@ namespace SvodExcel
 
         private void Single_manual_entry_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            exApp.Quit();
-            exApp = null;
             GC.Collect();
             itisclickcombobox = false;
             itisclose = true;

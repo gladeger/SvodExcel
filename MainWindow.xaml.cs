@@ -24,7 +24,7 @@ namespace SvodExcel
     public partial class MainWindow : Window
     {
         
-        Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
+        public Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
         
         public List<DataTableRow> DTR = new List<DataTableRow>();
         public List<DataViewTableRow> vDTR = new List<DataViewTableRow>();
@@ -80,6 +80,7 @@ namespace SvodExcel
         private void MenuItemSingleInput_Click(object sender, RoutedEventArgs e)
         {
             SingleInput f = new SingleInput();
+            f.exApp = exApp;
             f.Top = this.Top+50;
             f.Left = this.Left+50;
             f.RowIndex = -1;
@@ -112,6 +113,7 @@ namespace SvodExcel
                     {
                         int SI = dataGridExport.SelectedIndex;
                         SingleInput f = new SingleInput();
+                        f.exApp = exApp;
                         f.Top = this.Top + 50;
                         f.Left = this.Left + 50;
                         f.RowIndex = dataGridExport.SelectedIndex;
