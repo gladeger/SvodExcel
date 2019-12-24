@@ -345,8 +345,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,0" Height="97" VerticalAlignment="Bottom" Width="79"/>
-        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,0" Height="97" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right"/>
+        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,0" Height="74" VerticalAlignment="Bottom" Width="79"/>
+        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,0" Height="74" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right"/>
     </Grid>
     <!---->
 </Window>
