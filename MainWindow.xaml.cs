@@ -48,8 +48,8 @@ namespace SvodExcel
             vfDTR.Clear();
 
             // example data
-            AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","-----","-----"));
-            AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
+            //AddNewItem(new DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","-----","-----"));
+            //AddNewItem(new DataTableRow("07.11.2019", "12:00-18:40", "Радюхина Е.И.", "", "#######", "*?!~%$#"));
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
             CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
             //----exmpla data
