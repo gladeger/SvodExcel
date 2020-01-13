@@ -26,6 +26,14 @@
         <Image x:Key="View_download_disable" Source="Images\View_download_disable.png"></Image>
         <Image x:Key="DeleteRecord_enable" Source="Images\DeleteRecord.png"></Image>
         <Image x:Key="DeleteRecord_disable" Source="Images\DeleteRecord_disable.png"></Image>
+        <Image x:Key="Key_enable" Source="Images\key.png"></Image>
+        <Image x:Key="Key_disable" Source="Images\key_disable.png"></Image>
+        <Image x:Key="Key_enable_m" Source="Images\key.png"></Image>
+        <Image x:Key="Key_disable_m" Source="Images\key_disable.png"></Image>
+        <Image x:Key="KeyOff_enable" Source="Images\KeyOff.png"></Image>
+        <Image x:Key="KeyOff_disable" Source="Images\KeyOff_disable.png"></Image>
+        <Image x:Key="KeyOff_enable_m" Source="Images\KeyOff.png"></Image>
+        <Image x:Key="KeyOff_disable_m" Source="Images\KeyOff_disable.png"></Image>
         <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
             <Image Source="Images\Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
@@ -275,6 +283,78 @@
         <Style TargetType="{x:Type DataGridRow}">
             <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
         </Style>
+        <Style TargetType="{x:Type Button}" x:Key="Admin_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Key_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Key_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="Admin_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="Key_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="Key_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="AdminOff_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="KeyOff_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="KeyOff_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="AdminOff_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="KeyOff_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="KeyOff_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <!--<Style TargetType="{x:Type DataGridCell}">
             <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
         </Style>-->
@@ -290,6 +370,8 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="MenuItemSaveFast"  Header="Сохранить краткую сводку..." Click="buttonSaveFast_Click"  Style="{StaticResource FastSave_MenuItem}" IsEnabled="False"/>
+                <MenuItem x:Name="MenuItemAdmin"  Header="Режим администратора" ToolTip='Перейти в "Режим администратора"' Style="{StaticResource Admin_MenuItem}" Click="buttonAdmin_Click"/>
+                <MenuItem x:Name="MenuItemAdminOff"  Header="Отключить режим администратора" ToolTip='Выйти из "Режима администратора"' IsEnabled="False" Style="{StaticResource AdminOff_MenuItem}" Click="buttonAdmin_Click"/>
                 <MenuItem Header="Выход" Click="MenuItem_Click_Exit"/>
             </MenuItem>
             <MenuItem Header="Ввод данных">
@@ -297,7 +379,7 @@
                 <MenuItem Header="Импорт из Excel" IsEnabled="False"/>
                 <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False"/>
             </MenuItem>
-            <MenuItem Header="Настройки..." IsEnabled="False"/>
+            <MenuItem x:Name="MenuItemOptions" Header="Настройки..." ToolTip="Для включения настроек необходимо перейти в режим администратора." IsEnabled="False"/>
             <MenuItem Header="Справка">
                 <MenuItem Header="О программе" Click="MenuItem_Click"/>
             </MenuItem>
@@ -321,6 +403,8 @@
                 <Image Source="Images\View_download.png" />
             </Button>
             <Button x:Name="buttonDebug" Width="26"  Margin="10,0,0,0" Click="buttonDebug_Click" Content="Debug" ToolTip="Кнопка Debug, для (что характерно) Debug" IsEnabled="False"/>
+            <Button x:Name="buttonAdmin" Width="26"  Margin="10,0,0,0" ToolTip='Перейти в "Режим администратора"' Style="{StaticResource Admin_button}" Click="buttonAdmin_Click"/>
+            <Button x:Name="buttonAdminOff" Width="26"  Margin="10,0,0,0" ToolTip='Выйти из "Режима администратора"' Style="{StaticResource AdminOff_button}" Click="buttonAdmin_Click"/>
         </StackPanel>
         <TabControl x:Name="tabControl" Margin="0,61,0,0" SelectionChanged="tabControl_SelectionChanged">
             <TabItem x:Name="ExportTab" Header="Экспорт">

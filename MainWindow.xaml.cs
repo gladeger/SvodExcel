@@ -25,7 +25,7 @@ namespace SvodExcel
     {
         
         public Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
-        
+        public bool AdminMode;
         public List<DataTableRow> DTR = new List<DataTableRow>();
         public List<DataViewTableRow> vDTR = new List<DataViewTableRow>();
         public List<DataViewFastTableRow> vfDTR = new List<DataViewFastTableRow>();
@@ -37,9 +37,15 @@ namespace SvodExcel
             vDTR.Clear();
             vfDTR.Clear();
 
+            AdminMode = false;
             dataGridExport.ItemsSource = DTR;
             dataGridView.ItemsSource = vDTR;
             dataGridViewFast.ItemsSource = vfDTR;
+            buttonAdminOff.IsEnabled = false;
+            buttonAdminOff.Visibility = Visibility.Collapsed;
+            MenuItemAdminOff.IsEnabled = false;
+            MenuItemAdminOff.Visibility = Visibility.Collapsed;
+            MenuItemOptions.IsEnabled = false;
         }
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
         {
@@ -866,5 +872,55 @@ namespace SvodExcel
             }            
         }
 
+        public void AdminModeActive()
+        {
+            AdminModeActive(AdminMode);
+        }
+        public void AdminModeActive(bool AdminModeSwitch)
+        {
+            AdminMode = !AdminMode;
+            if (AdminMode)
+            {
+                buttonAdminOff.IsEnabled = true;
+                buttonAdminOff.Visibility = Visibility.Visible;
+                MenuItemAdminOff.IsEnabled = true;
+                MenuItemAdminOff.Visibility = Visibility.Visible;
+                MenuItemOptions.IsEnabled = true;
+                buttonAdmin.IsEnabled = false;
+                buttonAdmin.Visibility = Visibility.Collapsed;
+                MenuItemAdmin.IsEnabled = false;
+                MenuItemAdmin.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                buttonAdminOff.IsEnabled = false;
+                buttonAdminOff.Visibility = Visibility.Collapsed;
+                MenuItemAdminOff.IsEnabled = false;
+                MenuItemAdminOff.Visibility = Visibility.Collapsed;
+                MenuItemOptions.IsEnabled = false;
+                buttonAdmin.IsEnabled = true;
+                buttonAdmin.Visibility = Visibility.Visible;
+                MenuItemAdmin.IsEnabled = true;
+                MenuItemAdmin.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void buttonAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            if (!AdminMode) {
+                if (MessageBox.Show("Ты бэтмен?", "Переход в режим администрирования", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    InputPassword IPas = new InputPassword();
+                    if(IPas.ShowDialog().Value)
+                    {
+                        AdminModeActive();
+                    }
+                    
+                }
+            }else
+                {
+                    AdminModeActive();
+                }
+        }
     }
 }

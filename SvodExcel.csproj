@@ -228,12 +228,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataGridExcel.cs" />
+    <Compile Include="InputPassword.xaml.cs">
+      <DependentUpon>InputPassword.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProgressBar.xaml.cs">
       <DependentUpon>ProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="SingleInput.xaml.cs">
       <DependentUpon>SingleInput.xaml</DependentUpon>
     </Compile>
+    <Page Include="InputPassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -390,6 +397,12 @@
     <Content Include="ACEOLEDB.DLL">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\Batman_and_Cape.ico" />
+    <Resource Include="Images\Batman_and_Cape.png" />
+    <Resource Include="Images\KeyOff.png" />
+    <Resource Include="Images\KeyOff_disable.png" />
+    <Resource Include="Images\key.png" />
+    <Resource Include="Images\key_disable.png" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

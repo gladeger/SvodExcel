@@ -16,11 +16,6 @@ namespace SvodExcel
         public string Category { get; set; }
         public string Place { get; set; }
         
-        static void FileAsDataBase()
-        {
-
-        }
-
         public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace)
         {
             Date = inputDate;

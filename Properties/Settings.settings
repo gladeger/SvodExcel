@@ -41,5 +41,8 @@
     <Setting Name="ViewFast" Type="System.String" Scope="User">
       <Value Profile="(Default)">ViewFast.xls</Value>
     </Setting>
+    <Setting Name="AdminPassword" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">RFadmin111</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
