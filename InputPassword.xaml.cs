@@ -23,5 +23,19 @@ namespace SvodExcel
         {
             InitializeComponent();
         }
+
+        private void buttonOK_Click(object sender, RoutedEventArgs e)
+        {
+            if(pasBox.Password== Properties.Settings.Default.AdminPassword)
+            {
+                this.DialogResult = true;
+            }
+            else
+            {
+                MessageBox.Show("Пароль неверный!", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            
+//            this.Close();
+        }
     }
 }

@@ -911,9 +911,15 @@ namespace SvodExcel
                 if (MessageBox.Show("Ты бэтмен?", "Переход в режим администрирования", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
                 {
                     InputPassword IPas = new InputPassword();
-                    if(IPas.ShowDialog().Value)
+                    switch(IPas.ShowDialog())
                     {
+                        case true:
                         AdminModeActive();
+                            break;
+                        case false:
+                            break;
+                        default:
+                            break; 
                     }
                     
                 }
