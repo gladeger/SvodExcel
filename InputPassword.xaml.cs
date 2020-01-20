@@ -22,6 +22,7 @@ namespace SvodExcel
         public InputPassword()
         {
             InitializeComponent();
+            pasBox.Focus();
         }
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)

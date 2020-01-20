@@ -928,5 +928,11 @@ namespace SvodExcel
                     AdminModeActive();
                 }
         }
+
+        private void MenuItemOptions_Click(object sender, RoutedEventArgs e)
+        {
+            Options Op = new Options();
+            Op.ShowDialog();
+        }
     }
 }

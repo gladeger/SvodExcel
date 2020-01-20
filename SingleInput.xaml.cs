@@ -48,6 +48,7 @@ namespace SvodExcel
             NotCheckTeacher.Add(ButtonWriteAndStop.Name);
             NotCheckTeacher.Add(ButtonCancel.Name);
             itisnotstart = true;
+            DatePicker_Date.Focus();
         }
 
         private void MaskedTextBoxStartTime_GotFocus(object sender, RoutedEventArgs e)

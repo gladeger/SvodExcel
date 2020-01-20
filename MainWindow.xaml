@@ -379,7 +379,7 @@
                 <MenuItem Header="Импорт из Excel" IsEnabled="False"/>
                 <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False"/>
             </MenuItem>
-            <MenuItem x:Name="MenuItemOptions" Header="Настройки..." ToolTip="Для включения настроек необходимо перейти в режим администратора." IsEnabled="False"/>
+            <MenuItem x:Name="MenuItemOptions" Header="Настройки..." ToolTip="Для включения настроек необходимо перейти в режим администратора." IsEnabled="False" Click="MenuItemOptions_Click"/>
             <MenuItem Header="Справка">
                 <MenuItem Header="О программе" Click="MenuItem_Click"/>
             </MenuItem>
