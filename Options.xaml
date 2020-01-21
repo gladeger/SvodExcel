@@ -23,15 +23,17 @@
                     </ListBoxItem>
                 </ListBox>
                 <Label x:Name="OptionLabel" Content="Настройки" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-                <Grid Background="#FF2EFF00" Margin="10,32,10,0" Grid.Column="1">
+                <Grid Margin="10,32,10,0" Grid.Column="1">
                     <Frame x:Name="frame" Content="Frame" HorizontalAlignment="Left" Height="324" Margin="0,0,0,0" VerticalAlignment="Top" Width="572" Source="/SvodExcel;component/OptionMain.xaml"/>
                 </Grid>
 
             </Grid>
             <Grid Margin="0,368,0,0" Grid.RowSpan="2">
                 <Button x:Name="buttonCancel" Content="Отмена" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" IsCancel="True" Height="30"/>
-                <Button x:Name="buttonOK" Content="ОК" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="150" IsDefault="True" Height="30"/>
+                <Button x:Name="buttonOK" Content="ОК" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="150" IsDefault="True" Height="30" IsEnabled="False" Click="buttonOK_Click"/>
+                <Button x:Name="buttonDefault" Content="По умолчанию" HorizontalAlignment="Right" Margin="0,0,165,10" VerticalAlignment="Bottom" Width="150" Height="30" Click="buttonDefault_Click"/>
             </Grid>
         </Grid>
+        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,59" Height="74" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right"/>
     </Grid>
 </Window>

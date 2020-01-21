@@ -31,8 +31,8 @@
     <TargetCulture>ru</TargetCulture>
     <PublisherName>ИПК и Гладких</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>1.7.1224.%2a</ApplicationVersion>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>1.8.0121.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -231,6 +231,9 @@
     <Compile Include="InputPassword.xaml.cs">
       <DependentUpon>InputPassword.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenFileTable.xaml.cs">
+      <DependentUpon>OpenFileTable.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OptionMain.xaml.cs">
       <DependentUpon>OptionMain.xaml</DependentUpon>
     </Compile>
@@ -240,6 +243,7 @@
     <Compile Include="ProgressBar.xaml.cs">
       <DependentUpon>ProgressBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="SingleInput.xaml.cs">
       <DependentUpon>SingleInput.xaml</DependentUpon>
     </Compile>
@@ -265,6 +269,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="OpenFileTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="OptionMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -411,6 +419,8 @@
     <Content Include="ACEOLEDB.DLL">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\OpenFile_disable.png" />
+    <Resource Include="Images\OpenFile.png" />
     <Resource Include="Images\Batman_and_Cape.ico" />
     <Resource Include="Images\Batman_and_Cape.png" />
     <Resource Include="Images\KeyOff.png" />

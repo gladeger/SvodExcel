@@ -19,9 +19,33 @@ namespace SvodExcel
     /// </summary>
     public partial class Options : Window
     {
+        OptionMain OptM;
         public Options()
         {
+            
             InitializeComponent();
+            //frame.Source = new Uri("OptionMain.xaml",UriKind.Relative);
+            OptM = new OptionMain(this as Options);
+            frame.Content = OptM;
+            //MessageBox.Show(OpM.ToString()+"\n"+frame.ToString());
+        }
+
+        public void ChangeOptions()
+        {
+            buttonOK.IsEnabled = true;
+        }
+
+        private void buttonOK_Click(object sender, RoutedEventArgs e)
+        {
+            if (OptM.change)
+                OptM.submitChanges();
+            this.DialogResult = true;
+            Properties.Settings.Default.Save();
+        }
+
+        private void buttonDefault_Click(object sender, RoutedEventArgs e)
+        {
+            OptM.defaultOptions();
         }
     }
 }

@@ -20,21 +20,75 @@ namespace SvodExcel
     /// </summary>
     public partial class OptionMain : Page
     {
-        public OptionMain()
+        public bool change=false;
+        private bool[] changes= new bool[1];
+
+        private bool NonFirstStart = false;
+
+        private delegate void SubmitActions();
+        private SubmitActions[] submitActions = new SubmitActions[1];
+        public Options linkOptionsWindow=null;
+        public OptionMain(Options linkOnOptionsWindow)
         {
+            change = false;
             InitializeComponent();
+            linkOptionsWindow = linkOnOptionsWindow;
+            textBoxSettingPath.Text = Properties.Settings.Default.PathToGlobalData;
+            for(int i=0;i<changes.Length;i++)
+            {
+                changes[i] = false;
+            }
+            submitActions[0] = submitSettingPath;
+            //linkOptionsWindow = this.Parent as Options;
         }
 
         private void buttonBrowseMainFile_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.FileName = "РАСП";
-            dlg.DefaultExt = ".xlsx";
-            dlg.Filter = "Все (.*)|*.*|Книга Excel (.xlsx)|*.xlsx|Книга Excel 97-2003 (.xls)|*.xls";
-            if(dlg.ShowDialog()==true)
+            dlg.InitialDirectory = textBoxSettingPath.Text.Substring(0, textBoxSettingPath.Text.LastIndexOf('\\'));
+            dlg.FileName = textBoxSettingPath.Text.Substring(textBoxSettingPath.Text.LastIndexOf('\\')+1);            
+            //dlg.FileName = "РАСП";
+            dlg.Filter = "Книга Excel (.xlsx)|*.xlsx|Книга Excel 97-2003 (.xls)|*.xls|Все (.*)|*.*";
+            dlg.DefaultExt = ".xlsx";            
+            if (dlg.ShowDialog()==true)
             {
                 textBoxSettingPath.Text = dlg.FileName;
             }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            NonFirstStart = true;
+        }
+
+        private void textBoxSettingPath_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(NonFirstStart)
+            {
+                change = true;
+                changes[0] = true;
+                linkOptionsWindow.ChangeOptions();
+            }            
+        }
+
+        private void submitSettingPath()
+        {
+            Properties.Settings.Default.PathToGlobalData = textBoxSettingPath.Text;
+        }
+
+        public void submitChanges()
+        {
+            if(change)
+            {
+                for (int i = 0; i < changes.Length; i++)
+                    if (changes[i])
+                        submitActions[i]();
+            }
+        }
+
+        public void defaultOptions()
+        {
+            textBoxSettingPath.Text = Properties.Settings.Default.PathToGlobalDataDefault;
         }
     }
 }

@@ -23,12 +23,15 @@ namespace SvodExcel.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel\\РАСП.xlsx")]
         public string PathToGlobalData {
             get {
                 return ((string)(this["PathToGlobalData"]));
+            }
+            set {
+                this["PathToGlobalData"] = value;
             }
         }
         
@@ -161,6 +164,15 @@ namespace SvodExcel.Properties {
         public string AdminPassword {
             get {
                 return ((string)(this["AdminPassword"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel\\РАСП.xlsx")]
+        public string PathToGlobalDataDefault {
+            get {
+                return ((string)(this["PathToGlobalDataDefault"]));
             }
         }
     }

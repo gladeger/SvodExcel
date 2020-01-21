@@ -46,6 +46,7 @@ namespace SvodExcel
             MenuItemAdminOff.IsEnabled = false;
             MenuItemAdminOff.Visibility = Visibility.Collapsed;
             MenuItemOptions.IsEnabled = false;
+            //AdminModeActive();//вкл/выкл режим админа
         }
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
         {
@@ -61,7 +62,7 @@ namespace SvodExcel
             //----exmpla data
 
             ClearHang();
-            //buttonDebug.Visibility = Visibility.Collapsed;
+            buttonDebug.Visibility = Visibility.Collapsed;
         }
         private void SvodExcel_Closed(object sender, EventArgs e)
         {
@@ -83,17 +84,21 @@ namespace SvodExcel
             f.ShowDialog();
         }
 
-        private void MenuItemSingleInput_Click(object sender, RoutedEventArgs e)
+        private void openSingleInput()
         {
             SingleInput f = new SingleInput();
             f.exApp = exApp;
-            f.Top = this.Top+50;
-            f.Left = this.Left+50;
+            f.Top = this.Top + 50;
+            f.Left = this.Left + 50;
             f.RowIndex = -1;
             f.ShowDialog();
             //f.Show();
 
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+        }
+        private void MenuItemSingleInput_Click(object sender, RoutedEventArgs e)
+        {
+            openSingleInput();
         }
 
         public void AddNewItem(DataTableRow newDTR)
@@ -933,6 +938,26 @@ namespace SvodExcel
         {
             Options Op = new Options();
             Op.ShowDialog();
+        }
+
+        private void openWindowOpenFileTable()
+        {
+            OpenFileTable f = new OpenFileTable();
+            f.Top = this.Top + 50;
+            f.Left = this.Left + 50;
+            f.ShowDialog();
+
+            CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+        }
+
+        private void buttonFileInputHot_Click(object sender, RoutedEventArgs e)
+        {
+            openWindowOpenFileTable();
+        }
+
+        private void MenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            openWindowOpenFileTable();
         }
     }
 }

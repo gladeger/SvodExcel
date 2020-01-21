@@ -7,9 +7,9 @@
       xmlns:Properties="clr-namespace:SvodExcel.Properties" x:Class="SvodExcel.OptionMain"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="OptionMain">
+      Title="OptionMain" Loaded="Page_Loaded">
 
-    <Grid Background="#FF00D1FF">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="50"/>
@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Путь к общему файлу:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox x:Name="textBoxSettingPath" Grid.Column="1" Text="Setting" Height="30" VerticalAlignment="Center" Padding="0,5,0,0">
+            <TextBox x:Name="textBoxSettingPath" Grid.Column="1" Text="Setting" Height="30" VerticalAlignment="Center" Padding="0,5,0,0" TextChanged="textBoxSettingPath_TextChanged">
             </TextBox>
             <Button x:Name="buttonBrowseMainFile" Content="Обзор..." Grid.Column="2" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="100" Height="30" Click="buttonBrowseMainFile_Click"/>
         </Grid>

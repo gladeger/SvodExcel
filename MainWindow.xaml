@@ -34,6 +34,14 @@
         <Image x:Key="KeyOff_disable" Source="Images\KeyOff_disable.png"></Image>
         <Image x:Key="KeyOff_enable_m" Source="Images\KeyOff.png"></Image>
         <Image x:Key="KeyOff_disable_m" Source="Images\KeyOff_disable.png"></Image>
+        <Image x:Key="SingleInput_enable_m" Source="Images\SingleInput.png"></Image>
+        <Image x:Key="SingleInput_disable_m" Source="Images\SingleInput_disable.png"></Image>
+        <Image x:Key="MultiInput_enable_m" Source="Images\MultiInput.png"></Image>
+        <Image x:Key="MultiInput_disable_m" Source="Images\MultiInput_disable.png"></Image>
+        <Image x:Key="FileInput_enable" Source="Images\OpenFile.png"></Image>
+        <Image x:Key="FileInput_disable" Source="Images\OpenFile_disable.png"></Image>
+        <Image x:Key="FileInput_enable_m" Source="Images\OpenFile.png"></Image>
+        <Image x:Key="FileInput_disable_m" Source="Images\OpenFile_disable.png"></Image>
         <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
             <Image Source="Images\Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
@@ -355,6 +363,78 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="SingleInput_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="SingleInput_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="SingleInput_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="MultiInput_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="MultiInput_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="MultiInput_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="FileInput_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="FileInput_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="FileInput_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="FileInput_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="FileInput_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="FileInput_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <!--<Style TargetType="{x:Type DataGridCell}">
             <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
         </Style>-->
@@ -375,9 +455,9 @@
                 <MenuItem Header="Выход" Click="MenuItem_Click_Exit"/>
             </MenuItem>
             <MenuItem Header="Ввод данных">
-                <MenuItem Header="Ручной ввод по одному" Click="MenuItemSingleInput_Click"/>
-                <MenuItem Header="Импорт из Excel" IsEnabled="False"/>
-                <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False"/>
+                <MenuItem Header="Ручной ввод по одному" Click="MenuItemSingleInput_Click"  Style="{StaticResource SingleInput_MenuItem}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
+                <MenuItem Header="Импорт из Excel" Checked="MenuItem_Checked" Style="{StaticResource FileInput_MenuItem}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл"/>
+                <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False" Style="{StaticResource MultiInput_MenuItem}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
             </MenuItem>
             <MenuItem x:Name="MenuItemOptions" Header="Настройки..." ToolTip="Для включения настроек необходимо перейти в режим администратора." IsEnabled="False" Click="MenuItemOptions_Click"/>
             <MenuItem Header="Справка">
@@ -387,8 +467,9 @@
         <StackPanel Height="28" VerticalAlignment="Top" Margin="0,28,0,0" Orientation="Horizontal" >
             <StackPanel x:Name="menu_Hot_Export" Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
                 <Button x:Name="buttonExportHot" Width="26" Margin="10,0,0,0" Style="{StaticResource excel_import_button}" IsEnabled="False" Click="buttonExportHot_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
-                <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip="Добавить новую запись Занятия для экспорта в общий файл"/>
-                <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных из Excel для экспорта в общий файл"/>
+                <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
+                <Button x:Name="buttonFileInputHot" Width="26"  Margin="10,0,0,0" Style="{StaticResource FileInput_button}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="buttonFileInputHot_Click"/>
+                <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
                 <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых"/>
             </StackPanel>
             <StackPanel x:Name="menu_Hot_ViewFast"  Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
