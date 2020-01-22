@@ -490,7 +490,7 @@
         <TabControl x:Name="tabControl" Margin="0,61,0,0" SelectionChanged="tabControl_SelectionChanged">
             <TabItem x:Name="ExportTab" Header="Экспорт">
                 <Grid x:Name="gridDataGridExport" Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded" LayoutUpdated="dataGridExport_LayoutUpdated" AllowDrop="True"/>
+                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded" LayoutUpdated="dataGridExport_LayoutUpdated" AllowDrop="True" MouseDoubleClick="dataGridExport_MouseDoubleClick"/>
                     <Button x:Name="buttonExport"  Margin="0,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Upload_button}" HorizontalAlignment="Center" IsEnabled="False" Click="buttonExport_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
                 </Grid>
             </TabItem>

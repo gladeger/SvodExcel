@@ -29,7 +29,7 @@ namespace SvodExcel
         public List<DataTableRow> DTR = new List<DataTableRow>();
         public List<DataViewTableRow> vDTR = new List<DataViewTableRow>();
         public List<DataViewFastTableRow> vfDTR = new List<DataViewFastTableRow>();
-
+        private bool ClickToAddRow = true;
         public MainWindow()
         {
             InitializeComponent();
@@ -113,6 +113,7 @@ namespace SvodExcel
 
         private void DataGridCell_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            ClickToAddRow = false;
             DataGridCell cell = sender as DataGridCell;
             ChangeDataGrid();
         }
@@ -489,10 +490,19 @@ namespace SvodExcel
                             return;
                             break;
                     }
-                    String Command = "Select * from [Sheet_1$]";
                     OleDbConnection con = new OleDbConnection(connection);
-                    
+                    DataTable dtExcelSchema;
                     con.Open();
+                    dtExcelSchema = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                    //con.Close();
+                    DataSet ds = new DataSet();
+
+                    string SheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                    String Command = "Select * from [" + SheetName + "]";
+                    //String Command = "Select * from [Sheet_1$]";
+                    //OleDbConnection con = new OleDbConnection(connection);
+                    
+                    //con.Open();
                     OleDbCommand cmd = new OleDbCommand(Command, con);
                     OleDbDataAdapter db = new OleDbDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -531,10 +541,19 @@ namespace SvodExcel
                             return;
                             break;
                     }
-                    String Command = "Select * from [Лист1$A15:H]";
                     OleDbConnection con = new OleDbConnection(connection);
-
+                    DataTable dtExcelSchema;
                     con.Open();
+                    dtExcelSchema = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                    //con.Close();
+                    DataSet ds = new DataSet();
+
+                    string SheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                    String Command = "Select * from [" + SheetName + "A15:H]";
+                    //String Command = "Select * from [Лист1$A15:H]";
+                    //OleDbConnection con = new OleDbConnection(connection);
+
+                    //con.Open();
                     OleDbCommand cmd = new OleDbCommand(Command, con);
                     OleDbDataAdapter db = new OleDbDataAdapter(cmd);
                     DataTable dt_input = new DataTable();
@@ -572,7 +591,7 @@ namespace SvodExcel
                     con.Close();
                     con.Dispose();
 
-                    DataSet ds = new DataSet();
+                    ds = new DataSet();
                     DataTable dt = new DataTable("Sheet_1");
                     ds.Tables.Add(dt);
                     dt.Columns.Add("Teacher", Type.GetType("System.String"));
@@ -650,10 +669,19 @@ namespace SvodExcel
                         return;
                         break;
                 }
-                String Command = "Select * from [Лист1$A15:H]";
                 OleDbConnection con = new OleDbConnection(connection);
-
+                DataTable dtExcelSchema;
                 con.Open();
+                dtExcelSchema = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                //con.Close();
+                DataSet ds = new DataSet();
+
+                string SheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                String Command = "Select * from [" + SheetName + "A15:H]";
+                //String Command = "Select * from [Лист1$A15:H]";
+                
+
+                
                 OleDbCommand cmd = new OleDbCommand(Command, con);
                 OleDbDataAdapter db = new OleDbDataAdapter(cmd);
                 DataTable dt_input = new DataTable();
@@ -976,6 +1004,18 @@ namespace SvodExcel
                     break;
             }
             
+        }
+
+        private void dataGridExport_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if(ClickToAddRow)
+            {
+                    openSingleInput();
+            }
+            else
+            {
+                ClickToAddRow = true;
+            }
         }
     }
 }

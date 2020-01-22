@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Data.OleDb;
+using System.Data;
+using System.Windows;
 
 namespace SvodExcel
 {
@@ -171,6 +175,83 @@ namespace SvodExcel
         public bool OpenFile(string FileName)
         {
             InputDataFileRows.Clear();
+            if(File.Exists(FileName))
+            {
+                String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + FileName + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                switch (FileName.Substring(FileName.LastIndexOf('.')))
+                {
+                    case ".xls":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + FileName + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                        break;
+                    case ".xlsx":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + FileName + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                        break;
+                    default:
+                        return false;
+                }
+
+
+                //String Command = "Show tables";
+                try
+                {
+                    OleDbConnection con = new OleDbConnection(connection);
+
+                    con.Open();
+                    DataTable dtExcelSchema;
+                    dtExcelSchema = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                    //con.Close();
+                    DataSet ds = new DataSet();
+
+                    string SheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                    String Command = "Select * from [" + SheetName + "]";
+
+                    OleDbCommand cmd = new OleDbCommand(Command, con);
+                    OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    db.Fill(dt);
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        if (dt.Rows[i].ItemArray.GetValue(0).ToString().Length == 0)
+                        {
+                            dt.Rows[i].Delete();
+                            //i -= 1;
+                        }
+
+                    }
+                    dt.AcceptChanges();
+                    //dataGridViewFast.ItemsSource = dt.AsDataView();
+                    cmd.Dispose();
+                    con.Close();
+                    con.Dispose();
+                    int StartIndex = 0;
+                    if(dt.Rows[0].ItemArray.GetValue(3).ToString().Length!=0)
+                    {
+                        StartIndex = 0;
+                    }
+                    else
+                    {
+                        if (dt.Rows[1].ItemArray.GetValue(3).ToString().Length != 0)
+                        {
+                            StartIndex = 1;
+                        }
+                        else
+                        {
+                            if (dt.Rows[17].ItemArray.GetValue(3).ToString().Length != 0)
+                            {
+                                StartIndex = 17;
+                            }
+                            else
+                                return false;
+                        }
+                    }
+                    MessageBox.Show(dt.Rows[StartIndex].ItemArray.GetValue(3).ToString());
+                }
+                catch
+                {
+                    return false;
+                }
+                
+            }
             InputDataFileRows.Add(new DataTableRow("1", "2", "3", "4", "5", "6"));
             return true;
         }

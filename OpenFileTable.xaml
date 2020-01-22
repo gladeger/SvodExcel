@@ -29,7 +29,7 @@
                 Укажите путь к файлу или нескольким файлам <LineBreak/>
                 (в качестве разделителя используйте символ '|' без пробелов) <LineBreak/>
                 с таблицей для экспорта в общий файл или <LineBreak/>
-                просто перетащите файлы в это окно
+                просто перетащите файлы и папки в это окно
             </TextBlock>
             <Label Grid.Row="1" Grid.Column="0" Content="Путь к файлу:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0"/>
             <TextBox Grid.Row="1" Grid.Column="1" x:Name="textBoxFileName" Text="Setting" Height="30" VerticalAlignment="Center" Padding="0,5,0,0" Margin="10"/>
