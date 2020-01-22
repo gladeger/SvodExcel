@@ -137,5 +137,44 @@ namespace SvodExcel
         }
     }
 
+
+    public class InputDataFile
+    {
+        public List<DataTableRow> InputDataFileRows { get; }
+        public InputDataFile()
+        {
+            InputDataFileRows = new List<DataTableRow>();
+            InputDataFileRows.Clear();
+        }
+        public InputDataFile(string FileName)
+        {
+            InputDataFileRows = new List<DataTableRow>();
+            OpenFile(FileName);
+        }
+        public InputDataFile(DataTableRow inputdatafilerow)
+        {
+            InputDataFileRows = new List<DataTableRow>();
+            InputDataFileRows.Clear();
+            InputDataFileRows.Add(inputdatafilerow);
+        }
+
+        public void Clear()
+        {
+            InputDataFileRows.Clear();
+        }
+
+        public void Add(DataTableRow inputdatafilerow)
+        {
+            InputDataFileRows.Add(inputdatafilerow);
+        }
+
+        public bool OpenFile(string FileName)
+        {
+            InputDataFileRows.Clear();
+            InputDataFileRows.Add(new DataTableRow("1", "2", "3", "4", "5", "6"));
+            return true;
+        }
+
+    }
 }
 

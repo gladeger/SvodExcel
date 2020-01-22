@@ -940,15 +940,16 @@ namespace SvodExcel
             Op.ShowDialog();
         }
 
-        private void openWindowOpenFileTable()
+        private void openWindowOpenFileTable(string[] dataString=null)
         {
-            OpenFileTable f = new OpenFileTable();
+            OpenFileTable f = new OpenFileTable(dataString);
             f.Top = this.Top + 50;
             f.Left = this.Left + 50;
             f.ShowDialog();
 
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }
+
 
         private void buttonFileInputHot_Click(object sender, RoutedEventArgs e)
         {
@@ -958,6 +959,23 @@ namespace SvodExcel
         private void MenuItem_Checked(object sender, RoutedEventArgs e)
         {
             openWindowOpenFileTable();
+        }
+
+        private void SvodExcel_Drop(object sender, DragEventArgs e)
+        {
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    {
+                        string[] dataString = (string[])e.Data.GetData(DataFormats.FileDrop);
+                        openWindowOpenFileTable(dataString);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            
         }
     }
 }
