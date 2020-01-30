@@ -7,6 +7,7 @@ using System.IO;
 using System.Data.OleDb;
 using System.Data;
 using System.Windows;
+using System.Text.RegularExpressions;
 
 namespace SvodExcel
 {
@@ -211,7 +212,7 @@ namespace SvodExcel
                     db.Fill(dt);
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        if (dt.Rows[i].ItemArray.GetValue(0).ToString().Length == 0)
+                        if ((dt.Rows[i].ItemArray.GetValue(0).ToString().Length+ dt.Rows[i].ItemArray.GetValue(1).ToString().Length+ dt.Rows[i].ItemArray.GetValue(2).ToString().Length) == 0)
                         {
                             dt.Rows[i].Delete();
                             //i -= 1;
@@ -223,28 +224,31 @@ namespace SvodExcel
                     cmd.Dispose();
                     con.Close();
                     con.Dispose();
-                    int StartIndex = 0;
-                    if(dt.Rows[0].ItemArray.GetValue(3).ToString().Length!=0)
+                    //int StartRow = 0;
+                    //int StartColumn = 0;
+                    for(int i=0;i< dt.Rows.Count;i++)
                     {
-                        StartIndex = 0;
-                    }
-                    else
-                    {
-                        if (dt.Rows[1].ItemArray.GetValue(3).ToString().Length != 0)
+                        for(int j=0;j<dt.Columns.Count;j++)
                         {
-                            StartIndex = 1;
-                        }
-                        else
-                        {
-                            if (dt.Rows[17].ItemArray.GetValue(3).ToString().Length != 0)
+                            Regex regexTime = new Regex(@"^( *[Cc] *)?\d{1,2} *[\.,:;\- ]? *\d{1,2}(( *[\-–\/\\\| ] *)|( +)|( *[Дд][Оо] *))\d{1,2} *[\.,:;\- ]? *\d{1,2} *$");
+                            if (regexTime.IsMatch(dt.Rows[i].ItemArray.GetValue(j).ToString()))
                             {
-                                StartIndex = 17;
+                                Regex regexName = new Regex(@"");
+                                Regex regexDate = new Regex(@"^ *\d{1,2} *[\.,:;\- ]? *\d{1,2} *[\.,:;\- ]? *((\d{2})|(\d{4})) *$");
+                                if(j>0)
+                                {
+                                    if (regexDate.IsMatch(dt.Rows[i].ItemArray.GetValue(j - 1).ToString()))
+                                        InputDataFileRows.Add(new DataTableRow(dt.Rows[i].ItemArray.GetValue(j-2).ToString(), dt.Rows[i].ItemArray.GetValue(j - 1).ToString(), dt.Rows[i].ItemArray.GetValue(j).ToString(), dt.Rows[i].ItemArray.GetValue(j + 1).ToString(), dt.Rows[i].ItemArray.GetValue(j + 2).ToString(), dt.Rows[i].ItemArray.GetValue(j + 3).ToString()));
+                                }                                
+                                else
+                                {
+                                    //if (regexName.IsMatch(dt.Rows[i].ItemArray.GetValue(j - 1).ToString()))
+                                      //  InputDataFileRows.Add(new DataTableRow(dt.Rows[i].ItemArray.GetValue(j - 2).ToString(), dt.Rows[i].ItemArray.GetValue(j - 1).ToString(), dt.Rows[i].ItemArray.GetValue(j).ToString(), dt.Rows[i].ItemArray.GetValue(j + 1).ToString(), dt.Rows[i].ItemArray.GetValue(j + 2).ToString(), dt.Rows[i].ItemArray.GetValue(j + 3).ToString()));
+                                }
                             }
-                            else
-                                return false;
                         }
                     }
-                    MessageBox.Show(dt.Rows[StartIndex].ItemArray.GetValue(3).ToString());
+                    //InputDataFileRows.Add(new DataTableRow(dt.Rows[StartRow].ItemArray.GetValue(StartColumn).ToString(), dt.Rows[StartRow].ItemArray.GetValue(StartColumn+1).ToString(), dt.Rows[StartRow].ItemArray.GetValue(StartColumn+2).ToString(), dt.Rows[StartRow].ItemArray.GetValue(StartColumn+3).ToString(), dt.Rows[StartRow].ItemArray.GetValue(StartColumn+4).ToString(), dt.Rows[StartRow].ItemArray.GetValue(StartColumn+5).ToString()));
                 }
                 catch
                 {
@@ -252,7 +256,8 @@ namespace SvodExcel
                 }
                 
             }
-            InputDataFileRows.Add(new DataTableRow("1", "2", "3", "4", "5", "6"));
+            
+            //InputDataFileRows.Add(new DataTableRow("1", "2", "3", "4", "5", "6"));
             return true;
         }
 
