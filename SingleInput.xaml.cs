@@ -828,5 +828,15 @@ namespace SvodExcel
             }
             return false;
         }
+
+        private void buttonViewTimeTemplates_Click(object sender, RoutedEventArgs e)
+        {
+            string bufstr = "Диапазоны времени:\n";
+            for(int i=0;i<TimeTemplate.Count;i++)
+            {
+                bufstr += TimeTemplate[i]+"\n";
+            }
+            MessageBox.Show(bufstr,"Возможные диапазоны времени",MessageBoxButton.OK);
+        }
     }
 }

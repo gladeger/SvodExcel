@@ -14,6 +14,7 @@ using System.Data.SqlClient;
 using System.Data.OleDb;
 using System.Runtime.InteropServices;
 using ExcelLibrary;
+using System.Collections.Specialized;
 
 
 namespace SvodExcel
@@ -46,6 +47,8 @@ namespace SvodExcel
             MenuItemAdminOff.IsEnabled = false;
             MenuItemAdminOff.Visibility = Visibility.Collapsed;
             MenuItemOptions.IsEnabled = false;
+            ((INotifyCollectionChanged)dataGridExport.Items).CollectionChanged += dataGridExportItemsChanges;
+
             //AdminModeActive();//вкл/выкл режим админа
         }
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
@@ -1015,6 +1018,19 @@ namespace SvodExcel
             else
             {
                 ClickToAddRow = true;
+            }
+        }
+        private void dataGridExportItemsChanges(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            StatusStringCountRecordAllFile.Content = dataGridExport.Items.Count.ToString();
+        }
+
+        private void dataGridExport_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.Key==Key.Delete)
+            {
+                if(DTR.Count>0 && dataGridExport.SelectedIndex>=0)
+                DeleteItem(dataGridExport.SelectedIndex);
             }
         }
     }

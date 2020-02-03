@@ -490,8 +490,12 @@
         <TabControl x:Name="tabControl" Margin="0,61,0,0" SelectionChanged="tabControl_SelectionChanged">
             <TabItem x:Name="ExportTab" Header="Экспорт">
                 <Grid x:Name="gridDataGridExport" Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded" LayoutUpdated="dataGridExport_LayoutUpdated" AllowDrop="True" MouseDoubleClick="dataGridExport_MouseDoubleClick"/>
+                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded" LayoutUpdated="dataGridExport_LayoutUpdated" AllowDrop="True" MouseDoubleClick="dataGridExport_MouseDoubleClick" KeyUp="dataGridExport_KeyUp"/>
                     <Button x:Name="buttonExport"  Margin="0,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Upload_button}" HorizontalAlignment="Center" IsEnabled="False" Click="buttonExport_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
+                    <StackPanel Margin="0,0,0,48" Orientation="Horizontal" Height="auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="auto">
+                        <Label x:Name="StatusStringConstTextAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="Всего строк будет импортировано :"/>
+                        <Label x:Name="StatusStringCountRecordAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="0"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem x:Name="ViewSmallTab" Header="Просмотр краткой сводки" AllowDrop="True">
@@ -510,8 +514,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,0" Height="74" VerticalAlignment="Bottom" Width="79"/>
-        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,0" Height="74" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right"/>
+        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,0" Height="74" VerticalAlignment="Bottom" Width="79" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom"/>
+        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,0" Height="74" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom"/>
     </Grid>
     <!---->
 </Window>

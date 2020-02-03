@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
+using System.Collections.Specialized;
 
 
 namespace SvodExcel
@@ -28,6 +29,7 @@ namespace SvodExcel
         List<InputDataFile> IDFs = new List<InputDataFile>();
         List<int> IDFsIndex = new List<int>();
         InputDataFile IDF = new InputDataFile();
+        ulong countAllRecords = 0;
         public OpenFileTable(string[] dataString=null)
         {
             InitializeComponent();
@@ -39,6 +41,8 @@ namespace SvodExcel
                     AddFilesToOpen(dataString);
             }
             dataGridExport.ItemsSource = IDF.InputDataFileRows;
+            countAllRecords = 0;
+            ((INotifyCollectionChanged)listBoxInputFiles.Items).CollectionChanged += listBoxInputFilesItemsChanges;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -103,12 +107,17 @@ namespace SvodExcel
                             img.Width = 20;
                             img.Height = 20;
                             img.Margin = new Thickness(0, 0, 5, 0);
-                            if (ReadFile(FileNames[i]))
-                                img.Source = BitmapOpenFile;
-                            else
-                                img.Source = BitmapOpenFileDisable;
                             ToolTip ttpi = new ToolTip();
-                            ttpi.Content = "Подходит для экспорта данных";
+                            if (ReadFile(FileNames[i]))
+                            {
+                                ttpi.Content = "Подходит для экспорта данных";
+                                img.Source = BitmapOpenFile;
+                            }                                
+                            else
+                            {
+                                img.Source = BitmapOpenFileDisable;
+                                ttpi.Content = "Не подходит для экспорта данных, ошибка в форме записи или невозможно прочесть данные";
+                            }                            
                             img.ToolTip = ttpi;
                             TextBlock tbl = new TextBlock();
                             tbl.Text = FileNames[i].Substring(FileNames[i].LastIndexOf('\\') + 1);
@@ -136,6 +145,37 @@ namespace SvodExcel
             }
         }
 
+        private void DeleteFilesToOpen(string[] FileNames)
+        {
+            for(int i=0;i<FileNames.Length;i++)
+                DeleteFilesToOpen(InputFileName.IndexOf(FileNames[i]));
+        }
+        private void DeleteFilesToOpen(string FileName)
+        {
+            DeleteFilesToOpen(InputFileName.IndexOf(FileName));
+        }
+        private void DeleteFilesToOpen(int FileIndex)
+        {
+            InputFileName.RemoveAt(FileIndex);
+            IDFs.RemoveAt(FileIndex);
+            listBoxInputFiles.Items.RemoveAt(FileIndex);
+            if (listBoxInputFiles.Items.Count > FileIndex)
+            {
+                listBoxInputFiles.SelectedIndex = FileIndex;
+            }
+            else
+            {
+                if (listBoxInputFiles.Items.Count > 0)
+                {
+                    listBoxInputFiles.SelectedIndex = listBoxInputFiles.Items.Count - 1;
+                }
+                else
+                    dataGridExport.ItemsSource = null;
+            }
+            listBoxInputFiles.UpdateLayout();
+            dataGridExport.UpdateLayout();
+        }
+
         private void buttonOpenFile_Click(object sender, RoutedEventArgs e)
         {
             string[] dataString = textBoxFileName.Text.Split('|');
@@ -144,34 +184,39 @@ namespace SvodExcel
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(InputFileName[listBoxInputFiles.SelectedIndex]);
-        }
+            if(checkBoxFindDublicate.IsChecked.Value)
+            {
+                FindDublicateRecord();
+            }
 
+            MainWindow home = Application.Current.MainWindow as MainWindow;
+            for(int i=0;i<IDFs.Count;i++)
+            {
+                for(int j=0;j< IDFs[i].InputDataFileRows.Count;j++)
+                {
+                    home.AddNewItem(IDFs[i].InputDataFileRows[j]);
+                }
+            }
+            Close();
+        }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            FindDublicateRecord();
+        }
+        private void FindDublicateRecord()
+        {
+ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }
         private void buttonDeleteFile_Click(object sender, RoutedEventArgs e)
         {
             if(listBoxInputFiles.SelectedItem!=null)
             {
                 int Ind = listBoxInputFiles.SelectedIndex;
-                InputFileName.RemoveAt(Ind);
-                IDFs.RemoveAt(Ind);
-                listBoxInputFiles.Items.RemoveAt(Ind);
-                if (listBoxInputFiles.Items.Count > Ind)
-                {
-                    listBoxInputFiles.SelectedIndex = Ind;
-                }
-                else
-                {
-                    if(listBoxInputFiles.Items.Count > 0)
-                    {
-                        listBoxInputFiles.SelectedIndex = listBoxInputFiles.Items.Count - 1;
-                    }
-                    else
-                        dataGridExport.ItemsSource = null;
-                }
+                DeleteFilesToOpen(Ind);
+                
             }
-            listBoxInputFiles.UpdateLayout();
-            dataGridExport.UpdateLayout();
         }
+
 
         private bool ReadFile(string FileName)
         {
@@ -184,7 +229,7 @@ namespace SvodExcel
             }                
             else
             {
-                IDFs.Add(null);
+                IDFs.Add(new InputDataFile());
                 return false;
             }
                 
@@ -196,15 +241,41 @@ namespace SvodExcel
             if(Ind>=0)
             {
                 if (IDFs[Ind] != null)
+                {
                     dataGridExport.ItemsSource = IDFs[Ind].InputDataFileRows;
+                    StatusStringCountRecordFile.Content = IDFs[Ind].InputDataFileRows.Count.ToString();
+                }                    
                 else
+                {
                     dataGridExport.ItemsSource = null;
+                    StatusStringCountRecordFile.Content = "0";
+                }                    
             }
             else
             {
                 dataGridExport.ItemsSource = null;
+                StatusStringCountRecordFile.Content = "0";
             }
+            //StatusStringCountRecordFile.Content = (dataGridExport.ItemsSource as List<DataTableRow>).Count.ToString();
             dataGridExport.UpdateLayout();
         }
+
+        private void listBoxInputFilesItemsChanges(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if(listBoxInputFiles.Items.Count==0)
+            {
+                InputFileName.Clear();
+                IDFsIndex.Clear();
+            }
+            countAllRecords = 0;
+            for(int i=0;i< IDFs.Count;i++)
+            {
+                //if(IDFs[i].InputDataFileRows!=null)
+                    countAllRecords += (ulong)IDFs[i].InputDataFileRows.Count;
+            }
+            StatusStringCountRecordAllFile.Content = countAllRecords.ToString();
+        }
+
+      
     }
 }

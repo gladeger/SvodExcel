@@ -21,33 +21,106 @@ namespace SvodExcel
         public string Category { get; set; }
         public string Place { get; set; }
         
-        public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace)
+        public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace, bool testcorrect=false)
         {
-            Date = inputDate;
-            if (inputTime.Length > 0)
+            // DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","-----","-----"));
+            Date = "";
+            Time = "";
+            Teacher = "";
+            Group = "";
+            Category = "";
+            Place = "";
+            if (testcorrect)
             {
-                if (inputTime[0] == '0')
+                string bufInputDate=inputDate;
+                if(bufInputDate.Length>0)
                 {
-                    Time = inputTime.Substring(1).Replace(':', '.');
-                }
-                else
-                {
-                    Time = inputTime.Replace(':', '.');
-                }
-                if (Time[Time.IndexOf("-") + 1] == '0')
-                {
-                    Time = Time.Substring(0, Time.IndexOf("-") + 1) + Time.Substring(Time.IndexOf("-") + 2);
-                }
+                    while(bufInputDate[0]<'0'|| bufInputDate[0] > '9')
+                    {
+                        bufInputDate = bufInputDate.Substring(1);
+                    }
+                    Regex regexDateDigit = new Regex(@"\d");
+                    Regex regexDateSeparate = new Regex(@"[\.,:;\-\/ ]");
+                    MatchCollection matchesDate = regexDateDigit.Matches(bufInputDate);
+                    MatchCollection matchesDateSeparate = regexDateSeparate.Matches(bufInputDate);
+                    bufInputDate.Substring(0, matchesDate[matchesDate.Count - 1].Index + 1);
+                    while (bufInputDate[bufInputDate.Length-1] < '0' || bufInputDate[bufInputDate.Length - 1] > '9')
+                    {
+                        bufInputDate = bufInputDate.Substring(0, bufInputDate.Length - 1);
+                    }
+                    matchesDate = regexDateDigit.Matches(bufInputDate);
+                    matchesDateSeparate = regexDateSeparate.Matches(bufInputDate);
+                    bufInputDate =regexDateSeparate.Replace(bufInputDate, "/");
+                    //MessageBox.Show(Convert.ToDateTime(bufInputDate).ToString());
+                    MessageBox.Show(bufInputDate);
+                    switch (matchesDate.Count)
+                    {
+                        case 8:
+                            switch (matchesDateSeparate[0].Index)
+                            {
+                                case 2:
+                                    Date = matchesDate[0].Value + matchesDate[1].Value + "." + matchesDate[2].Value + matchesDate[3].Value + "." + matchesDate[4].Value + matchesDate[5].Value + matchesDate[6].Value + matchesDate[7].Value;
+                                    break;
+                                case 4:
+                                    Date = matchesDate[6].Value + matchesDate[7].Value + "." + matchesDate[4].Value + matchesDate[5].Value + "." + matchesDate[0].Value + matchesDate[1].Value + matchesDate[2].Value + matchesDate[3].Value;
+                                    break;
+                                default:
+                                    Date = "";
+                                    break;
+                            }
+                            
+                            break;
+                        case 7:
+                            switch (matchesDateSeparate[0].Index)
+                            {
+                                case 1:
+                                    Date = "0" + matchesDate[0].Value + "." + matchesDate[1].Value + matchesDate[2].Value + "." + matchesDate[3].Value + matchesDate[4].Value + matchesDate[5].Value + matchesDate[6].Value;
+                                    break;
+
+                            }
+                            break;
+                        case 6:
+                            break;
+                        case 5:
+                            break;
+                        case 4:
+                            break;
+                        default:
+                            Date = "";
+                            break;
+
+                    }
+                }                
             }
             else
             {
-                Time = null;
-            }
+                Date = inputDate;
+                if (inputTime.Length > 0)
+                {
+                    if (inputTime[0] == '0')
+                    {
+                        Time = inputTime.Substring(1).Replace(':', '.');
+                    }
+                    else
+                    {
+                        Time = inputTime.Replace(':', '.');
+                    }
+                    if (Time[Time.IndexOf("-") + 1] == '0')
+                    {
+                        Time = Time.Substring(0, Time.IndexOf("-") + 1) + Time.Substring(Time.IndexOf("-") + 2);
+                    }
+                }
+                else
+                {
+                    Time = null;
+                }
 
-            Teacher = inputTeacher;
-            Group = inputGroup;
-            Category = inputCategory;
-            Place = inputPlace;
+                Teacher = inputTeacher;
+                Group = inputGroup;
+                Category = inputCategory;
+                Place = inputPlace;
+            }
+            
         }
         public DataTableRow()
         {
@@ -173,6 +246,17 @@ namespace SvodExcel
             InputDataFileRows.Add(inputdatafilerow);
         }
 
+        public void Add(String str1="", String str2="", String str3="", String str4="", String str5="", String str6="")
+        {
+            if(str1==null) str1 = "";
+            if (str2 == null) str2 = "";
+            if (str3 == null) str3 = "";
+            if (str4 == null) str4 = "";
+            if (str5 == null) str5 = "";
+            if (str6 == null) str6 = "";
+
+        }
+
         public bool OpenFile(string FileName)
         {
             InputDataFileRows.Clear();
@@ -233,17 +317,22 @@ namespace SvodExcel
                             Regex regexTime = new Regex(@"^( *[Cc] *)?\d{1,2} *[\.,:;\- ]? *\d{1,2}(( *[\-–\/\\\| ] *)|( +)|( *[Дд][Оо] *))\d{1,2} *[\.,:;\- ]? *\d{1,2} *$");
                             if (regexTime.IsMatch(dt.Rows[i].ItemArray.GetValue(j).ToString()))
                             {
-                                Regex regexName = new Regex(@"");
-                                Regex regexDate = new Regex(@"^ *\d{1,2} *[\.,:;\- ]? *\d{1,2} *[\.,:;\- ]? *((\d{2})|(\d{4})) *$");
+                                Regex regexName = new Regex(@"^ *([А-Я]|Ё)([а-я]|ё)+ +(([А-Я]|Ё) *\. *){0,2} *$");
+                                Regex regexDate = new Regex(@"^ *\d{1,2} *[\.,:;\- \/]? *\d{1,2} *[\.,:;\- \/]? *((\d{2})|(\d{4})) *$");
                                 if(j>0)
                                 {
                                     if (regexDate.IsMatch(dt.Rows[i].ItemArray.GetValue(j - 1).ToString()))
-                                        InputDataFileRows.Add(new DataTableRow(dt.Rows[i].ItemArray.GetValue(j-2).ToString(), dt.Rows[i].ItemArray.GetValue(j - 1).ToString(), dt.Rows[i].ItemArray.GetValue(j).ToString(), dt.Rows[i].ItemArray.GetValue(j + 1).ToString(), dt.Rows[i].ItemArray.GetValue(j + 2).ToString(), dt.Rows[i].ItemArray.GetValue(j + 3).ToString()));
+                                        InputDataFileRows.Add(new DataTableRow(dt.Rows[i].ItemArray.GetValue(j-1).ToString(), dt.Rows[i].ItemArray.GetValue(j).ToString(), dt.Rows[i].ItemArray.GetValue(j+1).ToString(), dt.Rows[i].ItemArray.GetValue(j + 2).ToString(), dt.Rows[i].ItemArray.GetValue(j + 3).ToString(), dt.Rows[i].ItemArray.GetValue(j + 4).ToString(),true));
+                                    else
+                                    {
+                                        if (regexName.IsMatch(dt.Rows[i].ItemArray.GetValue(j + 1).ToString()))
+                                            InputDataFileRows.Add(new DataTableRow(dt.Rows[i].ItemArray.GetValue(j - 1).ToString(), dt.Rows[i].ItemArray.GetValue(j).ToString(), dt.Rows[i].ItemArray.GetValue(j + 1).ToString(), dt.Rows[i].ItemArray.GetValue(j + 2).ToString(), dt.Rows[i].ItemArray.GetValue(j + 3).ToString(), dt.Rows[i].ItemArray.GetValue(j + 4).ToString(), true));
+                                    }    
                                 }                                
                                 else
                                 {
-                                    //if (regexName.IsMatch(dt.Rows[i].ItemArray.GetValue(j - 1).ToString()))
-                                      //  InputDataFileRows.Add(new DataTableRow(dt.Rows[i].ItemArray.GetValue(j - 2).ToString(), dt.Rows[i].ItemArray.GetValue(j - 1).ToString(), dt.Rows[i].ItemArray.GetValue(j).ToString(), dt.Rows[i].ItemArray.GetValue(j + 1).ToString(), dt.Rows[i].ItemArray.GetValue(j + 2).ToString(), dt.Rows[i].ItemArray.GetValue(j + 3).ToString()));
+                                    if (regexName.IsMatch(dt.Rows[i].ItemArray.GetValue(j + 1).ToString()))
+                                        InputDataFileRows.Add(new DataTableRow(dt.Rows[i].ItemArray.GetValue(j - 1).ToString(), dt.Rows[i].ItemArray.GetValue(j).ToString(), dt.Rows[i].ItemArray.GetValue(j + 1).ToString(), dt.Rows[i].ItemArray.GetValue(j + 2).ToString(), dt.Rows[i].ItemArray.GetValue(j + 3).ToString(), dt.Rows[i].ItemArray.GetValue(j + 4).ToString(), true));
                                 }
                             }
                         }
@@ -256,7 +345,8 @@ namespace SvodExcel
                 }
                 
             }
-            
+            if (InputDataFileRows.Count == 0)
+                return false;
             //InputDataFileRows.Add(new DataTableRow("1", "2", "3", "4", "5", "6"));
             return true;
         }
