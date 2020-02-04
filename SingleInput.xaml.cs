@@ -343,6 +343,7 @@ namespace SvodExcel
 
             if (!File.Exists(path))
             {
+                comboBoxTeacher.Items.Add("Moodle");
                 comboBoxTeacher.Items.Add("Пронина Л.Н.");
                 comboBoxTeacher.Items.Add("Григорьева А.И.");
                 File.WriteAllText(path, comboBoxTeacher.Items[0].ToString());

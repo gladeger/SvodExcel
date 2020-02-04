@@ -6,6 +6,10 @@
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
         Title="Добавить строки из файла" Width="800" Loaded="Window_Loaded" AllowDrop="True" Height="840" MinHeight="840" MinWidth="800">
+    <Window.Resources>
+        <Image x:Key="OpenFile_enable" Source="Images\OpenFile.png"></Image>
+        <Image x:Key="OpenFile_disable" Source="Images\OpenFile_disable.png"></Image>
+    </Window.Resources>
     <Grid  Height="800">
         <Grid.RowDefinitions>
             <RowDefinition Height="400"/>

@@ -27,70 +27,182 @@ namespace SvodExcel
             Date = "";
             Time = "";
             Teacher = "";
-            Group = "";
-            Category = "";
-            Place = "";
+            Group = inputGroup;
+            Category = inputCategory;
+            Place = inputPlace;
             if (testcorrect)
             {
-                string bufInputDate=inputDate;
-                if(bufInputDate.Length>0)
+                string bufInputDate = inputDate;
+                if (bufInputDate == null)
+                    bufInputDate = "";
+                if (bufInputDate.Length > 0)
                 {
-                    while(bufInputDate[0]<'0'|| bufInputDate[0] > '9')
+                    int startindex = 0;
+                    while (bufInputDate[startindex] < '0' || bufInputDate[startindex] > '9')
                     {
-                        bufInputDate = bufInputDate.Substring(1);
+                        startindex += 1;
                     }
+                    bufInputDate = bufInputDate.Substring(startindex);
+                    int endindex = bufInputDate.Length - 1;
+                    while (bufInputDate[endindex] < '0' || bufInputDate[endindex] > '9')
+                    {
+                        endindex -= 1;
+                    }
+                    bufInputDate = bufInputDate.Substring(0, endindex + 1);
                     Regex regexDateDigit = new Regex(@"\d");
                     Regex regexDateSeparate = new Regex(@"[\.,:;\-\/ ]");
+                    List<bool> bufFlags = new List<bool>();
+                    for (int i = 0; i < bufInputDate.Length; i++)
+                    {
+                        bufFlags.Add(true);
+                    }
                     MatchCollection matchesDate = regexDateDigit.Matches(bufInputDate);
                     MatchCollection matchesDateSeparate = regexDateSeparate.Matches(bufInputDate);
-                    bufInputDate.Substring(0, matchesDate[matchesDate.Count - 1].Index + 1);
-                    while (bufInputDate[bufInputDate.Length-1] < '0' || bufInputDate[bufInputDate.Length - 1] > '9')
+                    for (int i = 1; i < matchesDateSeparate.Count; i++)
                     {
-                        bufInputDate = bufInputDate.Substring(0, bufInputDate.Length - 1);
+                        if (matchesDateSeparate[i].Index == (matchesDateSeparate[i - 1].Index - 1))
+                        {
+                            bufFlags[matchesDateSeparate[i].Index] = false;
+                        }
                     }
+                    List<char> bufCharDate = new List<char>();
+                    for (int i = 0; i < bufInputDate.Length; i++)
+                    {
+                        if (bufFlags[i])
+                            bufCharDate.Add(bufInputDate[i]);
+                    }
+                    bufInputDate = new string(bufCharDate.ToArray());
                     matchesDate = regexDateDigit.Matches(bufInputDate);
                     matchesDateSeparate = regexDateSeparate.Matches(bufInputDate);
-                    bufInputDate =regexDateSeparate.Replace(bufInputDate, "/");
-                    //MessageBox.Show(Convert.ToDateTime(bufInputDate).ToString());
-                    MessageBox.Show(bufInputDate);
-                    switch (matchesDate.Count)
+                    bufInputDate = regexDateSeparate.Replace(bufInputDate, ".");
+                    try
                     {
-                        case 8:
-                            switch (matchesDateSeparate[0].Index)
-                            {
-                                case 2:
-                                    Date = matchesDate[0].Value + matchesDate[1].Value + "." + matchesDate[2].Value + matchesDate[3].Value + "." + matchesDate[4].Value + matchesDate[5].Value + matchesDate[6].Value + matchesDate[7].Value;
-                                    break;
-                                case 4:
-                                    Date = matchesDate[6].Value + matchesDate[7].Value + "." + matchesDate[4].Value + matchesDate[5].Value + "." + matchesDate[0].Value + matchesDate[1].Value + matchesDate[2].Value + matchesDate[3].Value;
-                                    break;
-                                default:
-                                    Date = "";
-                                    break;
-                            }
-                            
-                            break;
-                        case 7:
-                            switch (matchesDateSeparate[0].Index)
-                            {
-                                case 1:
-                                    Date = "0" + matchesDate[0].Value + "." + matchesDate[1].Value + matchesDate[2].Value + "." + matchesDate[3].Value + matchesDate[4].Value + matchesDate[5].Value + matchesDate[6].Value;
-                                    break;
-
-                            }
-                            break;
-                        case 6:
-                            break;
-                        case 5:
-                            break;
-                        case 4:
-                            break;
-                        default:
-                            Date = "";
-                            break;
-
+                        Date = Convert.ToDateTime(bufInputDate).GetDateTimeFormats('d')[0];
                     }
-                }                
+                    catch
+                    {
+                        Date = "";
+                    }
+                }
+                string bufInputTime = inputTime;
+                if (bufInputTime == null)
+                    bufInputTime = "";
+                if (bufInputTime.Length > 0)
+                {
+                    int startindex = 0;
+                    while (bufInputTime[startindex] < '0' || bufInputTime[startindex] > '9')
+                    {
+                        startindex += 1;
+                    }
+                    bufInputTime = bufInputTime.Substring(startindex);
+                    int endindex = bufInputTime.Length - 1;
+                    while (bufInputTime[endindex] < '0' || bufInputTime[endindex] > '9')
+                    {
+                        endindex -= 1;
+                    }
+                    bufInputTime = bufInputTime.Substring(0, endindex + 1);
+                    Regex regexTimeDigit = new Regex(@"\d");
+                    Regex regexTimeSeparate = new Regex(@"[\.,:;\-\/ ]");
+                    List<bool> bufFlags = new List<bool>();
+                    for (int i = 0; i < bufInputTime.Length; i++)
+                    {
+                        bufFlags.Add(true);
+                    }
+                    MatchCollection matchesTime = regexTimeDigit.Matches(bufInputTime);
+                    MatchCollection matchesTimeSeparate = regexTimeSeparate.Matches(bufInputTime);
+                    for (int i = 1; i < matchesTimeSeparate.Count; i++)
+                    {
+                        if (matchesTimeSeparate[i].Index == (matchesTimeSeparate[i - 1].Index - 1))
+                        {
+                            bufFlags[matchesTimeSeparate[i].Index] = false;
+                        }
+                    }
+                    List<char> bufCharTime = new List<char>();
+                    for (int i = 0; i < bufInputTime.Length; i++)
+                    {
+                        if (bufFlags[i])
+                            bufCharTime.Add(bufInputTime[i]);
+                    }
+                    bufInputTime = new string(bufCharTime.ToArray());
+                    matchesTime = regexTimeDigit.Matches(bufInputTime);
+                    matchesTimeSeparate = regexTimeSeparate.Matches(bufInputTime);
+                    bufInputTime = regexTimeSeparate.Replace(bufInputTime, ":");
+                    if (matchesTimeSeparate.Count == 3)
+                    {
+                        string bufInputTimeStart = bufInputTime.Substring(0, matchesTimeSeparate[1].Index);
+                        string bufInputTimeEnd = bufInputTime.Substring(matchesTimeSeparate[1].Index + 1);
+                        try
+                        {
+                            Time = Convert.ToDateTime(bufInputTimeStart).GetDateTimeFormats('t')[0] + "-" + Convert.ToDateTime(bufInputTimeEnd).GetDateTimeFormats('t')[0];
+                        }
+                        catch
+                        {
+                            Time = "";
+                        }
+                    }
+                    else
+                    {
+                        Time = "";
+                    }
+                }
+
+                string bufInputTeacher = inputTeacher;
+                if (bufInputTeacher == null)
+                    bufInputTeacher = "";
+                if (bufInputTeacher.Length > 0)
+                {
+                    Regex regexTeacherMoodle = new Regex(@"moodle", RegexOptions.IgnoreCase);
+                    if (regexTeacherMoodle.IsMatch(bufInputTeacher))
+                    {
+                        bufInputTeacher = "Moodle";
+                        Teacher = "Moodle";
+                    }
+                    else
+                    {
+                        Regex regexTeacherSeparate = new Regex(@"[\.,:;\-\/ ]");
+                        Regex regexTeacherChar = new Regex(@"([А-Я]|Ё)|([а-я]|ё)");
+                        bufInputTeacher += ".";
+                        MatchCollection matchTeacherChar = regexTeacherChar.Matches(bufInputTeacher);
+                        bufInputTeacher = bufInputTeacher.Substring(matchTeacherChar[0].Index, matchTeacherChar[matchTeacherChar.Count - 1].Index + 2);
+                        //MessageBox.Show("From (" + startindex + " - " + (endindex + 1) + ") " + bufInputTeacher);
+                        //bufInputTeacher = bufInputTeacher.Substring(0, endindex + 1);
+                        //MessageBox.Show("From ("+startindex+" - "+endindex+") "+bufInputTeacher);
+                        List<bool> bufFlags = new List<bool>();
+                        for (int i = 0; i < bufInputTeacher.Length; i++)
+                        {
+                            bufFlags.Add(true);
+                        }
+                        MatchCollection matchesTeacherSeparate = regexTeacherSeparate.Matches(bufInputTeacher);
+                        for (int i = 1; i < matchesTeacherSeparate.Count; i++)
+                        {
+                            if (matchesTeacherSeparate[i].Index == (matchesTeacherSeparate[i - 1].Index - 1))
+                            {
+                                bufFlags[matchesTeacherSeparate[i].Index] = false;
+                            }
+                        }
+                        List<char> bufCharTeacher = new List<char>();
+                        for (int i = 0; i < bufInputTeacher.Length; i++)
+                        {
+                            if (bufFlags[i])
+                                bufCharTeacher.Add(bufInputTeacher[i]);
+                        }
+                        //MessageBox.Show("To " + bufInputTeacher);
+                        bufInputTeacher = new string(bufCharTeacher.ToArray());
+                        matchesTeacherSeparate = regexTeacherSeparate.Matches(bufInputTeacher);
+                        bufInputTeacher = regexTeacherSeparate.Replace(bufInputTeacher, ".");
+                        if(matchesTeacherSeparate.Count > 0)
+                            bufInputTeacher = bufInputTeacher.Remove(matchesTeacherSeparate[0].Index,1).Insert(matchesTeacherSeparate[0].Index, " ");
+                        Regex regexName = new Regex(@"^([А-Я]|Ё)([а-я]|ё)+ +(([А-Я]|Ё)*\. *){2}$");
+                        if(regexName.IsMatch(bufInputTeacher))
+                        {
+                            Teacher = bufInputTeacher;
+                        }
+                        else
+                        {
+                            Teacher = "";
+                        }
+                    }
+                }
             }
             else
             {
@@ -341,12 +453,17 @@ namespace SvodExcel
                 }
                 catch
                 {
+                    //MessageBox.Show("!");
                     return false;
                 }
                 
             }
             if (InputDataFileRows.Count == 0)
+            {
+                //MessageBox.Show("?");
                 return false;
+            }
+                
             //InputDataFileRows.Add(new DataTableRow("1", "2", "3", "4", "5", "6"));
             return true;
         }

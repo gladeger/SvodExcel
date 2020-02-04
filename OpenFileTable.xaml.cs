@@ -24,8 +24,8 @@ namespace SvodExcel
     public partial class OpenFileTable : Window
     {
         List<string> InputFileName = new List<string>();
-        BitmapImage BitmapOpenFile =new BitmapImage(new Uri("OpenFile.png", UriKind.Relative));
-        BitmapImage BitmapOpenFileDisable = new BitmapImage(new Uri("OpenFile_disable.png", UriKind.Relative));
+        BitmapImage BitmapOpenFile =new BitmapImage(new Uri(@"Images\OpenFile.png", UriKind.Relative));
+        BitmapImage BitmapOpenFileDisable = new BitmapImage(new Uri(@"Images\OpenFile_disable.png", UriKind.Relative));
         List<InputDataFile> IDFs = new List<InputDataFile>();
         List<int> IDFsIndex = new List<int>();
         InputDataFile IDF = new InputDataFile();
@@ -108,16 +108,13 @@ namespace SvodExcel
                             img.Height = 20;
                             img.Margin = new Thickness(0, 0, 5, 0);
                             ToolTip ttpi = new ToolTip();
+                            ttpi.Content = "Не подходит для экспорта данных, ошибка в форме записи или невозможно прочесть данные";
+                            img.Source = BitmapOpenFileDisable;
                             if (ReadFile(FileNames[i]))
                             {
                                 ttpi.Content = "Подходит для экспорта данных";
                                 img.Source = BitmapOpenFile;
                             }                                
-                            else
-                            {
-                                img.Source = BitmapOpenFileDisable;
-                                ttpi.Content = "Не подходит для экспорта данных, ошибка в форме записи или невозможно прочесть данные";
-                            }                            
                             img.ToolTip = ttpi;
                             TextBlock tbl = new TextBlock();
                             tbl.Text = FileNames[i].Substring(FileNames[i].LastIndexOf('\\') + 1);
@@ -257,6 +254,15 @@ namespace SvodExcel
                 StatusStringCountRecordFile.Content = "0";
             }
             //StatusStringCountRecordFile.Content = (dataGridExport.ItemsSource as List<DataTableRow>).Count.ToString();
+            if (dataGridExport.Columns.Count > 0)
+            {
+                dataGridExport.Columns[0].Header = "Дата проведения";
+                dataGridExport.Columns[1].Header = "Время проведения";
+                dataGridExport.Columns[2].Header = "Преподаватель";
+                dataGridExport.Columns[3].Header = "Номер группы";
+                dataGridExport.Columns[4].Header = "Категория слушателей";
+                dataGridExport.Columns[5].Header = "Место проведения";
+            }
             dataGridExport.UpdateLayout();
         }
 
