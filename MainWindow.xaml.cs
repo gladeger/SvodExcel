@@ -90,6 +90,7 @@ namespace SvodExcel
         private void openSingleInput()
         {
             SingleInput f = new SingleInput();
+            f.Owner = this;
             f.exApp = exApp;
             f.Top = this.Top + 50;
             f.Left = this.Left + 50;
@@ -974,6 +975,7 @@ namespace SvodExcel
         private void openWindowOpenFileTable(string[] dataString=null)
         {
             OpenFileTable f = new OpenFileTable(dataString);
+            f.Owner = this;
             f.Top = this.Top + 50;
             f.Left = this.Left + 50;
             f.ShowDialog();

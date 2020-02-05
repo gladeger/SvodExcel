@@ -307,7 +307,7 @@ namespace SvodExcel
             this.Effect = objBlur;
             UpdateLayout();
         }
-        private void UpdateListTeacher()
+        public void UpdateListTeacher()
         {
             /*double This_TH2 = this.Top + this.Height / 2.0;
             double This_LW2 = this.Left + this.Width / 2.0;
@@ -375,7 +375,7 @@ namespace SvodExcel
             TimeTemplate.Clear();
             TimeTemplate = File.ReadAllLines(pathT).ToList<string>();
         }
-        private void UpdateListTimes()
+        public void UpdateListTimes(bool WatchonTimeCreate=false)
         {
             string pathT = @".\ListTime.dat";
 

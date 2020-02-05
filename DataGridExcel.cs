@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace SvodExcel
 {
+
     public class DataTableRow
     {
         
@@ -24,12 +25,27 @@ namespace SvodExcel
         public DataTableRow(string inputDate, string inputTime, string inputTeacher, string inputGroup, string inputCategory, string inputPlace, bool testcorrect=false)
         {
             // DataTableRow("06.11.2019", "10:00-16:40", "Пронина Л.Н.", "","-----","-----"));
-            Date = "";
+            if (inputDate != null)
+                Date = inputDate;
+            else
+                Date = "";
             Time = "";
-            Teacher = "";
-            Group = inputGroup;
-            Category = inputCategory;
-            Place = inputPlace;
+            if (inputTeacher != null)
+                Teacher = inputTeacher;
+            else
+                Teacher = "";
+            if (inputGroup != null)
+                Group = inputGroup;
+            else
+                Group = "";
+            if (inputCategory != null)
+                Category = inputCategory;
+            else
+                Category = "";
+            if (inputPlace != null)
+                Place = inputPlace;
+            else
+                Place = "";
             if (testcorrect)
             {
                 string bufInputDate = inputDate;
@@ -133,7 +149,13 @@ namespace SvodExcel
                         string bufInputTimeEnd = bufInputTime.Substring(matchesTimeSeparate[1].Index + 1);
                         try
                         {
-                            Time = Convert.ToDateTime(bufInputTimeStart).GetDateTimeFormats('t')[0] + "-" + Convert.ToDateTime(bufInputTimeEnd).GetDateTimeFormats('t')[0];
+                            if (Convert.ToDateTime(bufInputTimeStart)> Convert.ToDateTime(bufInputTimeEnd))
+                            {
+                                string buftemptime = bufInputTimeStart;
+                                bufInputTimeStart = bufInputTimeEnd;
+                                bufInputTimeEnd = buftemptime;
+                            }
+                            Time = (Convert.ToDateTime(bufInputTimeStart).GetDateTimeFormats('t')[0] + "-" + Convert.ToDateTime(bufInputTimeEnd).GetDateTimeFormats('t')[0]).Replace(':', '.');                            
                         }
                         catch
                         {
@@ -199,23 +221,34 @@ namespace SvodExcel
                         }
                         else
                         {
-                            Teacher = "";
+                            /* regexInvertName = new Regex(@"^(([А-Я]|Ё)\. *){2} +([А-Я]|Ё)([а-я]|ё)+$");
+                            if (regexInvertName.IsMatch(bufInputTeacher))
+                            {
+                                Teacher = bufInputTeacher.Substring(bufInputTeacher.LastIndexOf(' ') + 1) + " " + bufInputTeacher.Substring(0,bufInputTeacher.LastIndexOf(' '));
+                            }
+                            else*/
+                                Teacher = "";
                         }
                     }
                 }
             }
             else
             {
-                Date = inputDate;
-                if (inputTime.Length > 0)
+               
+                string bufTime;
+                if (inputTime != null)
+                    bufTime = inputTime;
+                else
+                    bufTime = "";
+                if (bufTime.Length > 0)
                 {
-                    if (inputTime[0] == '0')
+                    if (bufTime[0] == '0')
                     {
-                        Time = inputTime.Substring(1).Replace(':', '.');
+                        Time = bufTime.Substring(1).Replace(':', '.');
                     }
                     else
                     {
-                        Time = inputTime.Replace(':', '.');
+                        Time = bufTime.Replace(':', '.');
                     }
                     if (Time[Time.IndexOf("-") + 1] == '0')
                     {
@@ -224,13 +257,8 @@ namespace SvodExcel
                 }
                 else
                 {
-                    Time = null;
+                    Time = "";
                 }
-
-                Teacher = inputTeacher;
-                Group = inputGroup;
-                Category = inputCategory;
-                Place = inputPlace;
             }
             
         }
@@ -446,6 +474,26 @@ namespace SvodExcel
                                     if (regexName.IsMatch(dt.Rows[i].ItemArray.GetValue(j + 1).ToString()))
                                         InputDataFileRows.Add(new DataTableRow(dt.Rows[i].ItemArray.GetValue(j - 1).ToString(), dt.Rows[i].ItemArray.GetValue(j).ToString(), dt.Rows[i].ItemArray.GetValue(j + 1).ToString(), dt.Rows[i].ItemArray.GetValue(j + 2).ToString(), dt.Rows[i].ItemArray.GetValue(j + 3).ToString(), dt.Rows[i].ItemArray.GetValue(j + 4).ToString(), true));
                                 }
+                            }
+                        }
+                    }
+                    for(int i=0; i<InputDataFileRows.Count;i++)
+                    {
+                        if(InputDataFileRows[i].Time==null)
+                        {
+                            InputDataFileRows.RemoveAt(i);
+                            i -= 1;
+                        }
+                        else
+                        {
+                            if (InputDataFileRows[i].Time.Length==0)
+                            {
+                                InputDataFileRows.RemoveAt(i);
+                                i -= 1;
+                            }
+                            else
+                            {
+
                             }
                         }
                     }

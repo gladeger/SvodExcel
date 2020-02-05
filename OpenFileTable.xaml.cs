@@ -29,6 +29,8 @@ namespace SvodExcel
         List<InputDataFile> IDFs = new List<InputDataFile>();
         List<int> IDFsIndex = new List<int>();
         InputDataFile IDF = new InputDataFile();
+        List<string> TimeTemplate = new List<string>();
+        List<string> TeacherTemplate = new List<string>();
         ulong countAllRecords = 0;
         public OpenFileTable(string[] dataString=null)
         {
@@ -58,6 +60,55 @@ namespace SvodExcel
                 dataGridExport.Columns[5].Header = "Место проведения";
             }
             dataGridExport.UpdateLayout();
+            StartListTimes();
+            StartListTeacher();
+            /*string bufstr = "";
+            for(int i=0;i<TimeTemplate.Count;i++)
+            {
+                bufstr += TimeTemplate[i] + "\n";
+            }
+            MessageBox.Show(bufstr);*/
+        }
+
+        private void StartListTimes()
+        {
+            string pathT = @".\ListTime.dat";
+
+            if (!File.Exists(pathT))
+            {
+                File.WriteAllText(pathT, "10:00-16:40");
+                File.AppendAllText(pathT, "\n" + "12:00-18:40");
+            }
+
+            TimeTemplate.Clear();
+            TimeTemplate = File.ReadAllLines(pathT).ToList<string>();
+            for(int i=0;i<TimeTemplate.Count;i++)
+            {
+                if(TimeTemplate[i][0]=='0')
+                {
+                    TimeTemplate[i] = TimeTemplate[i].Substring(1);
+                }
+                TimeTemplate[i] = TimeTemplate[i].Replace(':', '.');
+            }
+        }
+        private void StartListTeacher()
+        {
+
+            string path = @".\ListTeacher.dat";
+
+            if (!File.Exists(path))
+            {
+                File.WriteAllText(path, "");
+                File.WriteAllText(path, "\n"+"Moodle");
+                File.AppendAllText(path, "\n" + "Пронина Л.Н.");
+                File.AppendAllText(path, "\n" + "Григорьева А.И.");
+            }
+            else
+            {
+                string[] Teachers = File.ReadAllLines(path);
+                TeacherTemplate.Clear();
+                TeacherTemplate = File.ReadAllLines(path).ToList<string>();
+            }
         }
 
         private void buttonBrowseMainFile_Click(object sender, RoutedEventArgs e)
@@ -78,6 +129,11 @@ namespace SvodExcel
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
+                System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+                objBlur.Radius = 4;
+                this.Effect = objBlur;
+                UpdateLayout();
+
                 //string dataString = (string)e.Data.GetData(DataFormats.StringFormat);
                 string[] dataString = (string[])e.Data.GetData(DataFormats.FileDrop);
                 AddFilesToOpen(dataString);
@@ -85,6 +141,9 @@ namespace SvodExcel
                 {
                     listBoxInputFiles.SelectedIndex= listBoxInputFiles.Items.Count - 1;
                 }
+
+                this.Effect = null;
+                UpdateLayout();
             }
         }
 
@@ -209,8 +268,7 @@ namespace SvodExcel
             if(listBoxInputFiles.SelectedItem!=null)
             {
                 int Ind = listBoxInputFiles.SelectedIndex;
-                DeleteFilesToOpen(Ind);
-                
+                DeleteFilesToOpen(Ind);                
             }
         }
 
@@ -221,7 +279,29 @@ namespace SvodExcel
             if (tempIDF.OpenFile(FileName))
             {
                 IDFs.Add(new InputDataFile(FileName));
-                //IDFs.Last().OpenFile(FileName);
+                
+                for(int i=0;i<IDFs[IDFs.Count-1].InputDataFileRows.Count;i++)
+                {
+                    if (TimeTemplate.IndexOf(IDFs[IDFs.Count - 1].InputDataFileRows[i].Time) < 0)
+                    {
+                        IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
+                        i -= 1;
+                    }
+                    else
+                    {
+                        if (TeacherTemplate.IndexOf(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher) < 0)
+                        {
+                            IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
+                            i-=1;
+                        }
+                            
+                    }
+                }
+                if (IDFs[IDFs.Count - 1].InputDataFileRows.Count<=0)
+                {
+                    IDFs[IDFs.Count - 1].InputDataFileRows.Clear();
+                    return false;
+                }
                 return true;
             }                
             else
@@ -282,6 +362,40 @@ namespace SvodExcel
             StatusStringCountRecordAllFile.Content = countAllRecords.ToString();
         }
 
-      
+        private void buttonUpdateTimeTemplates_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            objBlur.Radius = 4;
+            this.Effect = objBlur;
+            UpdateLayout();
+
+            SingleInput SItemp = new SingleInput();
+            SItemp.Owner = this;
+            SItemp.exApp = (Owner as MainWindow).exApp;
+            SItemp.UpdateListTimes();
+            SItemp.Owner = null;
+            StartListTimes();
+
+            this.Effect = null;
+            UpdateLayout();
+        }
+
+        private void buttonUpdateTeacherTemplates_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
+            objBlur.Radius = 4;
+            this.Effect = objBlur;
+            UpdateLayout();
+            
+            SingleInput SItemp = new SingleInput();
+            SItemp.Owner = this;
+            SItemp.exApp = (Owner as MainWindow).exApp;
+            SItemp.UpdateListTeacher();
+            SItemp.Owner = null;
+            StartListTeacher();
+
+            this.Effect = null;
+            UpdateLayout();
+        }
     }
 }

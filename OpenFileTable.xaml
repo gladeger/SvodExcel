@@ -69,7 +69,7 @@
                             <StackPanel HorizontalAlignment="Left" >
                                 <TextBlock Text="Включенная опция означает, что перед добавлением программа будет проверять  "/>
                                 <TextBlock Text="все добавляемые из файлов строки на дубликаты."/>
-                            </StackPanel>                            
+                            </StackPanel>
                         </Label.ToolTip>
                     </Label>
                 </StackPanel>
@@ -82,7 +82,30 @@
                 <Label x:Name="StatusStringConstTextAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="Всего строк будет импортировано из всех файлов:"/>
                 <Label x:Name="StatusStringCountRecordAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="0"/>
             </StackPanel>
+            <Button x:Name="buttonUpdateTimeTemplates" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top" Width="130" FontSize="14" Height="60" Click="buttonUpdateTimeTemplates_Click" ToolTip="Обновить список шаблонов времени занятии из общего файла" Grid.Column="1">
+                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTimeTemplates}" Height="{Binding Height, ElementName=buttonUpdateTimeTemplates}" HorizontalAlignment="Center">
+                    <Image Source="Images/Timer.png" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Center" Width="25" Height="25" />
+                    <TextBlock FontSize="12" TextAlignment="Center" Margin="0,5,0,0">
+                        Обновить<LineBreak/>
+                        шаблоны<LineBreak/>
+                        времени
+                    </TextBlock>
+                    <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
+                </Grid>
+            </Button>
+            <Button x:Name="buttonUpdateTeacherTemplates" HorizontalAlignment="Left" Margin="10,188,0,0" VerticalAlignment="Top" Width="130" FontSize="14" Height="60" Click="buttonUpdateTeacherTemplates_Click" ToolTip="Обновить список преподавателей из общего файла" Grid.Column="1">
+                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTimeTemplates}" Height="{Binding Height, ElementName=buttonUpdateTimeTemplates}" HorizontalAlignment="Center">
+                    <Image Source="Images/Instructor.png" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Center" Width="25" Height="25" />
+                    <TextBlock FontSize="12" TextAlignment="Center" Margin="0,5,0,0">
+                        Обновить<LineBreak/>
+                        список<LineBreak/>
+                        преподавателей
+                    </TextBlock>
+                    <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
+                </Grid>
+            </Button>
             <Button Content="Искать дубли" HorizontalAlignment="Right" Margin="0,0,10,67" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="1" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" IsEnabled="False" Click="Button_Click"/>
+           
         </Grid>
     </Grid>
 </Window>
