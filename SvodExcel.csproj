@@ -29,10 +29,10 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <TargetCulture>ru</TargetCulture>
-    <PublisherName>ИПК и Гладких</PublisherName>
+    <PublisherName>ИПК</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>4</ApplicationRevision>
-    <ApplicationVersion>1.8.0204.%2a</ApplicationVersion>
+    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationVersion>1.8.0210.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -419,6 +419,8 @@
     <Content Include="ACEOLEDB.DLL">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\Edit.png" />
+    <Resource Include="Images\Edit_disable.png" />
     <Resource Include="Images\Instructor.png" />
     <Resource Include="Images\Instructor_disable.png" />
     <Resource Include="Images\Timer.png" />

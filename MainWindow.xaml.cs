@@ -129,34 +129,43 @@ namespace SvodExcel
                     {
                         int SI = dataGridExport.SelectedIndex;
                         SingleInput f = new SingleInput();
+                        f.Owner = this;
                         f.exApp = exApp;
                         f.Top = this.Top + 50;
                         f.Left = this.Left + 50;
                         f.RowIndex = dataGridExport.SelectedIndex;
-                        switch (dataGridExport.CurrentColumn.DisplayIndex)
+                        if(dataGridExport.CurrentColumn!=null)
                         {
-                            case 0:
-                                f.DatePicker_Date.Focus();
-                                break;
-                            case 1:
-                                f.MaskedTextBoxStartTime.Focus();
-                                break;
-                            case 2:
-                                f.comboBoxTeacher.Focus();
-                                break;
-                            case 3:
-                                f.textboxGroup.Focus();
-                                break;
-                            case 4:
-                                f.textBoxCategory.Focus();
-                                break;
-                            case 5:
-                                f.textBoxPlace.Focus();
-                                break;
-                            default:
-                                f.ButtonCancel.Focus();
-                                break;
+                            switch (dataGridExport.CurrentColumn.DisplayIndex)
+                            {
+                                case 0:
+                                    f.DatePicker_Date.Focus();
+                                    break;
+                                case 1:
+                                    f.MaskedTextBoxStartTime.Focus();
+                                    break;
+                                case 2:
+                                    f.comboBoxTeacher.Focus();
+                                    break;
+                                case 3:
+                                    f.textboxGroup.Focus();
+                                    break;
+                                case 4:
+                                    f.textBoxCategory.Focus();
+                                    break;
+                                case 5:
+                                    f.textBoxPlace.Focus();
+                                    break;
+                                default:
+                                    f.ButtonCancel.Focus();
+                                    break;
+                            }
                         }
+                        else
+                        {
+                            f.DatePicker_Date.Focus();
+                        }
+                        
                         f.DatePicker_Date.Text = DTR[SI].Date;
                         f.comboBoxTeacher.Text = DTR[SI].Teacher;
 
@@ -203,6 +212,7 @@ namespace SvodExcel
                 if(DTR.Count<1)
                 {
                     buttonDeleteHot.IsEnabled = false;
+                    buttonEditInputHot.IsEnabled = false;
                     buttonExport.IsEnabled = false;
                     buttonExportHot.IsEnabled = false;
                 }
@@ -868,9 +878,16 @@ namespace SvodExcel
         private void DataGridCell_PreviewSelected(object sender, RoutedEventArgs e)
         {
             if (tabControl.SelectedIndex == 0 && dataGridExport.SelectedIndex>=0)
+            {
+                buttonEditInputHot.IsEnabled =true;
                 buttonDeleteHot.IsEnabled = true;
+            }                
             else
+            {
                 buttonDeleteHot.IsEnabled = false;
+                buttonEditInputHot.IsEnabled = false;
+            }
+                
         }
 
         private void buttonSaveFast_Click(object sender, RoutedEventArgs e)
@@ -974,10 +991,14 @@ namespace SvodExcel
 
         private void openWindowOpenFileTable(string[] dataString=null)
         {
-            OpenFileTable f = new OpenFileTable(dataString);
-            f.Owner = this;
+            OpenFileTable f = new OpenFileTable(dataString,this);
+            //f.Owner = this;
             f.Top = this.Top + 50;
             f.Left = this.Left + 50;
+            //f.Show();
+            //f.Hide();
+            //if(dataString!=null)
+              //  f.AddFilesToOpen(dataString);
             f.ShowDialog();
 
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
@@ -1034,6 +1055,11 @@ namespace SvodExcel
                 if(DTR.Count>0 && dataGridExport.SelectedIndex>=0)
                 DeleteItem(dataGridExport.SelectedIndex);
             }
+        }
+
+        private void MenuItemEditInput_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeDataGrid();
         }
     }
 }

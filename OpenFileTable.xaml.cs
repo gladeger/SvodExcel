@@ -32,11 +32,16 @@ namespace SvodExcel
         List<string> TimeTemplate = new List<string>();
         List<string> TeacherTemplate = new List<string>();
         ulong countAllRecords = 0;
-        public OpenFileTable(string[] dataString=null)
+        private bool ClickToAddRow = true;
+        public OpenFileTable(string[] dataString=null, Window OwnerWindow=null)
         {
             InitializeComponent();
+            StartListTimes();
+            StartListTeacher();
             InputFileName.Clear();
             IDFsIndex.Clear();
+            if (OwnerWindow != null)
+                Owner = OwnerWindow;
             if(dataString!=null)
             {
                 if(dataString.Length>0)
@@ -45,6 +50,7 @@ namespace SvodExcel
             dataGridExport.ItemsSource = IDF.InputDataFileRows;
             countAllRecords = 0;
             ((INotifyCollectionChanged)listBoxInputFiles.Items).CollectionChanged += listBoxInputFilesItemsChanges;
+            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -60,8 +66,7 @@ namespace SvodExcel
                 dataGridExport.Columns[5].Header = "Место проведения";
             }
             dataGridExport.UpdateLayout();
-            StartListTimes();
-            StartListTeacher();
+            
             /*string bufstr = "";
             for(int i=0;i<TimeTemplate.Count;i++)
             {
@@ -147,7 +152,7 @@ namespace SvodExcel
             }
         }
 
-        private void AddFilesToOpen(string[] FileNames, bool Recursia=false)
+        public void AddFilesToOpen(string[] FileNames, bool Recursia=false)
         {
             textBoxFileName.Text = "";
             for (int i = 0; i < FileNames.Length; i++)
@@ -344,6 +349,17 @@ namespace SvodExcel
                 dataGridExport.Columns[5].Header = "Место проведения";
             }
             dataGridExport.UpdateLayout();
+
+            if (dataGridExport.SelectedIndex >= 0)
+            {
+                buttonEditInputHot.IsEnabled = true;
+                buttonDeleteHot.IsEnabled = true;
+            }
+            else
+            {
+                buttonDeleteHot.IsEnabled = false;
+                buttonEditInputHot.IsEnabled = false;
+            }
         }
 
         private void listBoxInputFilesItemsChanges(object sender, NotifyCollectionChangedEventArgs e)
@@ -360,6 +376,16 @@ namespace SvodExcel
                     countAllRecords += (ulong)IDFs[i].InputDataFileRows.Count;
             }
             StatusStringCountRecordAllFile.Content = countAllRecords.ToString();
+            if (dataGridExport.SelectedIndex >= 0)
+            {
+                buttonEditInputHot.IsEnabled = true;
+                buttonDeleteHot.IsEnabled = true;
+            }
+            else
+            {
+                buttonDeleteHot.IsEnabled = false;
+                buttonEditInputHot.IsEnabled = false;
+            }
         }
 
         private void buttonUpdateTimeTemplates_Click(object sender, RoutedEventArgs e)
@@ -396,6 +422,163 @@ namespace SvodExcel
 
             this.Effect = null;
             UpdateLayout();
+        }
+
+        private void dataGridExport_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                if (dataGridExport.Items.Count > 0 && dataGridExport.SelectedIndex >= 0)
+                    DeleteItem(dataGridExport.SelectedIndex);
+            }
+        }
+        public void DeleteItem(int RowIndex)
+        {
+            if (RowIndex >= 0 && RowIndex < dataGridExport.Items.Count)
+            {
+                int Ind = listBoxInputFiles.SelectedIndex;
+                if (Ind >= 0)
+                {
+                    if (MessageBox.Show("Вы действительно хотите удалить из экспортируемых данных файла\n"+ InputFileName[Ind]+"\n запись\n" + IDFs[Ind].InputDataFileRows[RowIndex].Date + " " + IDFs[Ind].InputDataFileRows[RowIndex].Time + " " + IDFs[Ind].InputDataFileRows[RowIndex].Teacher + "\n?", "Удаление элемента из экспорта", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                    {
+
+                        if (IDFs[Ind] != null)
+                        {
+                            IDFs[Ind].InputDataFileRows.Remove(IDFs[Ind].InputDataFileRows[RowIndex]);
+                        }
+                        else
+                        {
+                            dataGridExport.ItemsSource = null;
+                            StatusStringCountRecordFile.Content = "0";
+                        }
+                    }
+                    CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+                    if (IDFs[Ind].InputDataFileRows.Count < 1)
+                    {
+                        DeleteFilesToOpen(Ind);
+                        buttonDeleteHot.IsEnabled = false;
+                        buttonEditInputHot.IsEnabled = false;
+                    }
+                }                    
+            }
+            else
+                MessageBox.Show("Ошибка удаления элемента");
+        }
+
+        private void buttonDeleteHot_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridExport.Items.Count > 0 && dataGridExport.SelectedIndex >= 0)
+                DeleteItem(dataGridExport.SelectedIndex);
+        }
+
+        private void DataGridCell_PreviewSelected(object sender, RoutedEventArgs e)
+        {
+            if (dataGridExport.SelectedIndex >= 0)
+            {
+                buttonEditInputHot.IsEnabled = true;
+                buttonDeleteHot.IsEnabled = true;
+            }
+            else
+            {
+                buttonDeleteHot.IsEnabled = false;
+                buttonEditInputHot.IsEnabled = false;
+            }
+        }
+
+        private void DataGridCell_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ClickToAddRow = false;
+            DataGridCell cell = sender as DataGridCell;
+            ChangeDataGrid();
+        }
+
+        private void ChangeDataGrid()
+        {
+            int Ind = listBoxInputFiles.SelectedIndex;
+            int RowIndex = dataGridExport.SelectedIndex;
+            if (dataGridExport.SelectedIndex>=0)
+            {
+                {
+                    int SI = dataGridExport.SelectedIndex;
+                    SingleInput f = new SingleInput();
+                    f.Owner = this;
+                    f.exApp = (Owner as MainWindow).exApp;
+                    f.Top = this.Top + 50;
+                    f.Left = this.Left + 50;
+                    f.RowIndex = dataGridExport.SelectedIndex;
+                    if (dataGridExport.CurrentColumn != null)
+                    {
+                        switch (dataGridExport.CurrentColumn.DisplayIndex)
+                        {
+                            case 0:
+                                f.DatePicker_Date.Focus();
+                                break;
+                            case 1:
+                                f.MaskedTextBoxStartTime.Focus();
+                                break;
+                            case 2:
+                                f.comboBoxTeacher.Focus();
+                                break;
+                            case 3:
+                                f.textboxGroup.Focus();
+                                break;
+                            case 4:
+                                f.textBoxCategory.Focus();
+                                break;
+                            case 5:
+                                f.textBoxPlace.Focus();
+                                break;
+                            default:
+                                f.ButtonCancel.Focus();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        f.DatePicker_Date.Focus();
+                    }
+
+                    f.DatePicker_Date.Text = IDFs[Ind].InputDataFileRows[RowIndex].Date;
+                    f.comboBoxTeacher.Text = IDFs[Ind].InputDataFileRows[RowIndex].Teacher;
+
+                    f.MaskedTextBoxStartTime.Text = IDFs[Ind].InputDataFileRows[RowIndex].Time.Substring(0, 5).Replace('.', ':');
+                    if (f.MaskedTextBoxStartTime.Text[0] == '_')
+                    {
+                        f.MaskedTextBoxStartTime.Text = "0" + IDFs[Ind].InputDataFileRows[RowIndex].Time.Substring(0, 4).Replace('.', ':');
+                    }
+                    f.MaskedTextBoxEndTime.Text = IDFs[Ind].InputDataFileRows[RowIndex].Time.Substring(IDFs[Ind].InputDataFileRows[RowIndex].Time.Length - 5, 5).Replace('.', ':');
+                    if (f.MaskedTextBoxEndTime.Text[0] == '_')
+                    {
+                        f.MaskedTextBoxEndTime.Text = "0" + IDFs[Ind].InputDataFileRows[RowIndex].Time.Substring(IDFs[Ind].InputDataFileRows[RowIndex].Time.Length - 4, 4).Replace('.', ':');
+                    }
+                    f.comboBoxTeacher.SelectedIndex = f.comboBoxTeacher.Items.IndexOf(IDFs[Ind].InputDataFileRows[RowIndex].Teacher);
+                    f.textboxGroup.Text = IDFs[Ind].InputDataFileRows[RowIndex].Group;
+                    f.textBoxCategory.Text = IDFs[Ind].InputDataFileRows[RowIndex].Category;
+                    f.textBoxPlace.Text = IDFs[Ind].InputDataFileRows[RowIndex].Place;
+                    f.Title = "Редактирование записи \"" + IDFs[Ind].InputDataFileRows[RowIndex].Date + " " + IDFs[Ind].InputDataFileRows[RowIndex].Time + " " + IDFs[Ind].InputDataFileRows[RowIndex].Teacher + "\"";
+                    f.ButtonWriteAndContinue.IsEnabled = false;
+                    f.ButtonWriteAndContinue.Visibility = Visibility.Collapsed;
+                    f.ButtonWriteAndStop.Content = "Внести изменения";
+                    f.ButtonWriteAndStop.HorizontalAlignment = HorizontalAlignment.Left;
+                    f.ButtonWriteAndStop.Margin = new Thickness(10, 0, 0, 10);
+                    f.ShowDialog();
+                }
+            }
+        }
+
+        private void MenuItemEditInput_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeDataGrid();
+        }
+
+        public void EditItem(int RowIndex, DataTableRow newDTR)
+        {
+            int Ind = listBoxInputFiles.SelectedIndex;
+            if(Ind>0)
+            {
+                IDFs[Ind].InputDataFileRows[RowIndex] = newDTR;
+            }            
+            CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }
     }
 }

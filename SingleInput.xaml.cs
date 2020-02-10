@@ -783,13 +783,34 @@ namespace SvodExcel
 
         private void NewRecord()
         {
-            MainWindow home = Application.Current.MainWindow as MainWindow;
-            if(RowIndex==-1)
-                home.AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
-            else
+            Window home=null;
+            switch(Owner.GetType().ToString())
             {
-                home.EditItem(RowIndex,new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                case ("SvodExcel.MainWindow"):
+                    home = Owner as MainWindow;
+                    if (RowIndex == -1)
+                        (home as MainWindow).AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                    else
+                    {
+                        (home as MainWindow).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                    }
+                    break;
+                case ("SvodExcel.OpenFileTable"):
+                    home = Owner as OpenFileTable;
+                    if (RowIndex >0)
+                        (home as OpenFileTable).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                    break;
+                default:
+                    home = Application.Current.MainWindow as MainWindow;
+                    if (RowIndex == -1)
+                        (home as MainWindow).AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                    else
+                    {
+                        (home as MainWindow).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                    }
+                    break;
             }
+            
         }
         private void ClearData()
         {

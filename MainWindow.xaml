@@ -42,6 +42,10 @@
         <Image x:Key="FileInput_disable" Source="Images\OpenFile_disable.png"></Image>
         <Image x:Key="FileInput_enable_m" Source="Images\OpenFile.png"></Image>
         <Image x:Key="FileInput_disable_m" Source="Images\OpenFile_disable.png"></Image>
+        <Image x:Key="Edit_enable" Source="Images\Edit.png"></Image>
+        <Image x:Key="Edit_disable" Source="Images\Edit_disable.png"></Image>
+        <Image x:Key="Edit_enable_m" Source="Images\Edit.png"></Image>
+        <Image x:Key="Edit_disable_m" Source="Images\Edit_disable.png"></Image>
         <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
             <Image Source="Images\Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
@@ -113,6 +117,24 @@
                     <Setter Property="Content">
                         <Setter.Value>
                             <StaticResource  ResourceKey="SingleInput_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="Edit_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Edit_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Edit_disable"></StaticResource>
                         </Setter.Value>
                     </Setter>
                 </Trigger>
@@ -470,6 +492,7 @@
                 <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
                 <Button x:Name="buttonFileInputHot" Width="26"  Margin="10,0,0,0" Style="{StaticResource FileInput_button}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="buttonFileInputHot_Click"/>
                 <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
+                <Button x:Name="buttonEditInputHot"  IsEnabled="False" Click="MenuItemEditInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись "Занятие" для экспорта в общий файл'/>
                 <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых"/>
             </StackPanel>
             <StackPanel x:Name="menu_Hot_ViewFast"  Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
