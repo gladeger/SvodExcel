@@ -19,8 +19,8 @@
         <Image x:Key="View_enable" Source="Images\View.png"></Image>
         <Image x:Key="Save_disable" Source="Images\Save_disable.png"></Image>
         <Image x:Key="Save_enable" Source="Images\Save.png"></Image>
-        <Image x:Key="Save_disable_m" Source="Images\Save_disable.png"></Image>
-        <Image x:Key="Save_enable_m" Source="Images\Save.png"></Image>
+        <Image x:Key="Save_disable_m" Source="Images\Save_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="Save_enable_m" Source="Images\Save.png" Width="20" Height="20"></Image>
         <Image x:Key="View_disable" Source="Images\View_disable.png"></Image>
         <Image x:Key="View_download_enable" Source="Images\View_download.png"></Image>
         <Image x:Key="View_download_disable" Source="Images\View_download_disable.png"></Image>
@@ -28,24 +28,24 @@
         <Image x:Key="DeleteRecord_disable" Source="Images\DeleteRecord_disable.png"></Image>
         <Image x:Key="Key_enable" Source="Images\key.png"></Image>
         <Image x:Key="Key_disable" Source="Images\key_disable.png"></Image>
-        <Image x:Key="Key_enable_m" Source="Images\key.png"></Image>
-        <Image x:Key="Key_disable_m" Source="Images\key_disable.png"></Image>
+        <Image x:Key="Key_enable_m" Source="Images\key.png" Width="20" Height="20"></Image>
+        <Image x:Key="Key_disable_m" Source="Images\key_disable.png" Width="20" Height="20"></Image>
         <Image x:Key="KeyOff_enable" Source="Images\KeyOff.png"></Image>
         <Image x:Key="KeyOff_disable" Source="Images\KeyOff_disable.png"></Image>
-        <Image x:Key="KeyOff_enable_m" Source="Images\KeyOff.png"></Image>
-        <Image x:Key="KeyOff_disable_m" Source="Images\KeyOff_disable.png"></Image>
-        <Image x:Key="SingleInput_enable_m" Source="Images\SingleInput.png"></Image>
-        <Image x:Key="SingleInput_disable_m" Source="Images\SingleInput_disable.png"></Image>
-        <Image x:Key="MultiInput_enable_m" Source="Images\MultiInput.png"></Image>
-        <Image x:Key="MultiInput_disable_m" Source="Images\MultiInput_disable.png"></Image>
+        <Image x:Key="KeyOff_enable_m" Source="Images\KeyOff.png" Width="20" Height="20"></Image>
+        <Image x:Key="KeyOff_disable_m" Source="Images\KeyOff_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="SingleInput_enable_m" Source="Images\SingleInput.png" Width="20" Height="20"></Image>
+        <Image x:Key="SingleInput_disable_m" Source="Images\SingleInput_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="MultiInput_enable_m" Source="Images\MultiInput.png" Width="20" Height="20"></Image>
+        <Image x:Key="MultiInput_disable_m" Source="Images\MultiInput_disable.png" Width="20" Height="20"></Image>
         <Image x:Key="FileInput_enable" Source="Images\OpenFile.png"></Image>
         <Image x:Key="FileInput_disable" Source="Images\OpenFile_disable.png"></Image>
-        <Image x:Key="FileInput_enable_m" Source="Images\OpenFile.png"></Image>
-        <Image x:Key="FileInput_disable_m" Source="Images\OpenFile_disable.png"></Image>
+        <Image x:Key="FileInput_enable_m" Source="Images\OpenFile.png" Width="20" Height="20"></Image>
+        <Image x:Key="FileInput_disable_m" Source="Images\OpenFile_disable.png" Width="20" Height="20"></Image>
         <Image x:Key="Edit_enable" Source="Images\Edit.png"></Image>
         <Image x:Key="Edit_disable" Source="Images\Edit_disable.png"></Image>
-        <Image x:Key="Edit_enable_m" Source="Images\Edit.png"></Image>
-        <Image x:Key="Edit_disable_m" Source="Images\Edit_disable.png"></Image>
+        <Image x:Key="Edit_enable_m" Source="Images\Edit.png" Width="20" Height="20"></Image>
+        <Image x:Key="Edit_disable_m" Source="Images\Edit_disable.png" Width="20" Height="20"></Image>
         <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
             <Image Source="Images\Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
@@ -468,7 +468,7 @@
             <MenuItem Header="Файл">
                 <MenuItem Header="Выгрузить общий файл..." Click="buttonView_Download_Click">
                     <MenuItem.Icon>
-                        <Image Source="Images\View_download.png" Width="auto" Height="20"/>
+                        <Image Source="Images\View_download.png" Width="20" Height="20"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="MenuItemSaveFast"  Header="Сохранить краткую сводку..." Click="buttonSaveFast_Click"  Style="{StaticResource FastSave_MenuItem}" IsEnabled="False"/>
