@@ -31,7 +31,7 @@
     <TargetCulture>ru</TargetCulture>
     <PublisherName>ИПК</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>7</ApplicationRevision>
     <ApplicationVersion>1.8.0211.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -419,6 +419,12 @@
     <Content Include="ACEOLEDB.DLL">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\Disconnect.png" />
+    <Resource Include="Images\Disconnect_disable.png" />
+    <Resource Include="Images\UploadEdit_disable.png" />
+    <Resource Include="Images\UploadEdit.png" />
+    <Resource Include="Images\ViewEdit.png" />
+    <Resource Include="Images\ViewEdit_disable.png" />
     <Resource Include="Images\Edit.png" />
     <Resource Include="Images\Edit_disable.png" />
     <Resource Include="Images\Instructor.png" />

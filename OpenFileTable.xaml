@@ -87,7 +87,7 @@
                 <ColumnDefinition Width="150"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ListBox Grid.Row="0" Grid.Column="0"  x:Name="listBoxInputFiles" HorizontalAlignment="Left" Margin="10,10,0,10" Width="180" SelectionChanged="listBoxInputFiles_SelectionChanged"/>
+            <ListBox Grid.Row="0" Grid.Column="0"  x:Name="listBoxInputFiles" HorizontalAlignment="Left" Margin="10,10,0,67" Width="180" SelectionChanged="listBoxInputFiles_SelectionChanged"/>
             <Button Grid.Column="2" Grid.Row="1" x:Name="buttonCancelDown" Content="Отмена" IsCancel="True" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="30"/>
             <DataGrid Grid.Row="0" Grid.Column="2" x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,10,10,67" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" KeyUp="dataGridExport_KeyUp"/>
             <Button Grid.Row="1" x:Name="buttonOK" Content="Добавить записи" HorizontalAlignment="Right" Margin="0,0,40,10" VerticalAlignment="Bottom" Width="150" Height="30" Click="buttonOK_Click"/>
@@ -144,9 +144,19 @@
                     <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
                 </Grid>
             </Button>
-            <Button Content="Искать дубли" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="1" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" IsEnabled="False" Click="Button_Click"/>
+            <Button x:Name="buttonFindDublicates" Content="Искать дубли" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="1" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" IsEnabled="False" Click="Button_Click"/>
+            <TextBlock x:Name="StatusStringConstTextAllFile_Copy" VerticalAlignment="Bottom" Margin="10,0,0,10" HorizontalAlignment="Left" Width="180" Height="48" TextAlignment="Center" Grid.Column="0" FontStyle="Italic">
+                Изменения внесенные здесь <LineBreak/>
+                не меняют содержимое <LineBreak/>
+                исходных файлов
+            </TextBlock>
+            <TextBlock x:Name="StatusStringConstTextAllFile_Copy1" VerticalAlignment="Bottom" Margin="10,0,0,175" HorizontalAlignment="Left" Width="99" Height="104" TextAlignment="Right" Grid.Column="1" FontStyle="Italic">
+            Изменения <LineBreak/>внесенные <LineBreak/>здесь <LineBreak/>
+                не меняют <LineBreak/>содержимое <LineBreak/>
+                исходных файлов
+            </TextBlock>
 
         </Grid>
-        
+
     </Grid>
 </Window>

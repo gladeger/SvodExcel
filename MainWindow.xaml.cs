@@ -26,7 +26,7 @@ namespace SvodExcel
     {
         
         public Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
-        public bool AdminMode;
+        public bool AdminMode, ConnectMode, NoneSave;
         public List<DataTableRow> DTR = new List<DataTableRow>();
         public List<DataViewTableRow> vDTR = new List<DataViewTableRow>();
         public List<DataViewFastTableRow> vfDTR = new List<DataViewFastTableRow>();
@@ -39,6 +39,8 @@ namespace SvodExcel
             vfDTR.Clear();
 
             AdminMode = false;
+            ConnectMode = false;
+            NoneSave = false;
             dataGridExport.ItemsSource = DTR;
             dataGridView.ItemsSource = vDTR;
             dataGridViewFast.ItemsSource = vfDTR;
@@ -47,9 +49,11 @@ namespace SvodExcel
             MenuItemAdminOff.IsEnabled = false;
             MenuItemAdminOff.Visibility = Visibility.Collapsed;
             MenuItemOptions.IsEnabled = false;
+            ViewEditTab.Visibility = Visibility.Collapsed;
+
             ((INotifyCollectionChanged)dataGridExport.Items).CollectionChanged += dataGridExportItemsChanges;
 
-            //AdminModeActive();//вкл/выкл режим админа
+            AdminModeActive();//вкл/выкл режим админа
         }
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
         {
@@ -408,6 +412,7 @@ namespace SvodExcel
                     menu_Hot_Export.IsEnabled = true;
                     menu_Hot_View.IsEnabled = false;
                     menu_Hot_ViewFast.IsEnabled = false;
+                    MenuInputData.IsEnabled = true;
 
                     menu_Hot_Export.Visibility = Visibility.Visible;
                     menu_Hot_View.Visibility = Visibility.Collapsed;
@@ -417,6 +422,7 @@ namespace SvodExcel
                     menu_Hot_Export.IsEnabled = false;
                     menu_Hot_View.IsEnabled = true;
                     menu_Hot_ViewFast.IsEnabled = true;
+                    MenuInputData.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Collapsed;
                     menu_Hot_View.Visibility = Visibility.Visible;
@@ -426,15 +432,27 @@ namespace SvodExcel
                     menu_Hot_Export.IsEnabled = false;
                     menu_Hot_View.IsEnabled = true;
                     menu_Hot_ViewFast.IsEnabled = false;
+                    MenuInputData.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Collapsed;
                     menu_Hot_View.Visibility = Visibility.Visible;
+                    menu_Hot_ViewFast.Visibility = Visibility.Collapsed;
+                    break;
+                case 3:
+                    menu_Hot_Export.IsEnabled = false;
+                    menu_Hot_View.IsEnabled = false;
+                    menu_Hot_ViewFast.IsEnabled = false;
+                    MenuInputData.IsEnabled = false;
+
+                    menu_Hot_Export.Visibility = Visibility.Collapsed;
+                    menu_Hot_View.Visibility = Visibility.Collapsed;
                     menu_Hot_ViewFast.Visibility = Visibility.Collapsed;
                     break;
                 default:
                     menu_Hot_Export.IsEnabled = false;
                     menu_Hot_View.IsEnabled = false;
                     menu_Hot_ViewFast.IsEnabled = false;
+                    MenuInputData.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Visible;
                     menu_Hot_View.Visibility = Visibility.Visible;
@@ -993,6 +1011,8 @@ namespace SvodExcel
                 buttonAdmin.Visibility = Visibility.Collapsed;
                 MenuItemAdmin.IsEnabled = false;
                 MenuItemAdmin.Visibility = Visibility.Collapsed;
+                ViewEditTab.IsEnabled = true;
+                ViewEditTab.Visibility = Visibility.Visible;
             }
             else
             {
@@ -1005,6 +1025,8 @@ namespace SvodExcel
                 buttonAdmin.Visibility = Visibility.Visible;
                 MenuItemAdmin.IsEnabled = true;
                 MenuItemAdmin.Visibility = Visibility.Visible;
+                ViewEditTab.IsEnabled = false;
+                ViewEditTab.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -1109,6 +1131,179 @@ namespace SvodExcel
         private void MenuItemFileInput_Click(object sender, RoutedEventArgs e)
         {
             openWindowOpenFileTable();
+        }
+
+        private void dataGridViewEdit_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (dataGridViewEdit.Columns.Count > 0)
+            {
+                dataGridViewEdit.Columns[0].Header = "Дата проведения";
+                dataGridViewEdit.Columns[1].Header = "Время проведения";
+                dataGridViewEdit.Columns[2].Header = "Преподаватель";
+                dataGridViewEdit.Columns[3].Header = "Номер группы";
+                dataGridViewEdit.Columns[4].Header = "Категория слушателей";
+                dataGridViewEdit.Columns[5].Header = "Место проведения";
+                dataGridViewEdit.Columns[0].MaxWidth = 120;
+                dataGridViewEdit.Columns[1].MaxWidth = 120;
+                dataGridViewEdit.Columns[2].MaxWidth = 200;
+                dataGridViewEdit.Columns[3].MaxWidth = 120;
+            }
+            if(dataGridViewEdit.ItemsSource!=null)
+                CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
+        }
+
+        private void buttonDisconnect_Click(object sender, RoutedEventArgs e)
+        {
+            if(NoneSave)
+            {
+                if (MessageBox.Show("Вы действительно хотите отключиться от общих данных не сохранив изменений?", "Подтверждение отключения", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
+                {
+                    ConnectDisconnect();
+                }
+            }
+            else
+            {
+                ConnectDisconnect();
+            }
+            
+        }        
+
+        private void buttonViewEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Вы действительно хотите подключиться к общим данным?\n Внимание пока вы не отключитесь от общих данных, все остальные пользователи не смогут вносить изменения в общие данные","Подтверждение подключения",MessageBoxButton.OKCancel,MessageBoxImage.Warning) == MessageBoxResult.OK)
+            {
+                ConnectDisconnect();
+            }            
+        }
+
+        public void ConnectDisconnect()
+        {
+            ConnectDisconnect(ConnectMode);
+        }
+        public void ConnectDisconnect(bool ConnectSwitch)
+        {
+            ConnectMode =!ConnectSwitch;
+            if(ConnectMode)
+            {
+                buttonDisconnect.IsEnabled = true;
+                buttonViewEdit.IsEnabled = false;
+                ExportTab.IsEnabled = false;
+                ViewSmallTab.IsEnabled = false;
+                ViewTab.IsEnabled = false;
+
+                string pathB = Properties.Settings.Default.PathToGlobal + "\\" + Properties.Settings.Default.GlobalMarker;
+                if (File.Exists(pathB))
+                {
+                    MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
+                }
+                else
+                {
+                    string pathA = Properties.Settings.Default.PathToGlobalData;
+                    string pathC = Directory.GetCurrentDirectory() + "\\" + "View_" + Properties.Settings.Default.GlobalData;
+                    if (File.Exists(pathC))
+                    {
+                        FileInfo localdata = new FileInfo(pathC);
+                        FileInfo globaldata = new FileInfo(pathA);
+                        if (globaldata.LastWriteTime.ToLocalTime() > localdata.LastWriteTime.ToLocalTime())
+                        {
+                            localdata.IsReadOnly = false;
+                            File.Delete(pathC);
+                            File.Copy(pathA, pathC);
+                            localdata.IsReadOnly = true;
+                            CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+                        }
+                        else
+                        {
+                            if (dataGridView.Items.Count > 0)
+                                return;
+                        }
+                    }
+                    else
+                    {
+                        File.Copy(pathA, pathC);
+                        FileInfo localdata = new FileInfo(pathC);
+                        localdata.IsReadOnly = true;
+
+                    }
+
+                    vDTR.Clear();
+
+                    int i;
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                    switch (pathC.Substring(pathC.LastIndexOf('.')))
+                    {
+                        case ".xls":
+                            connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                            break;
+                        case ".xlsx":
+                            connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                            break;
+                        default:
+                            MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                            break;
+                    }
+                    OleDbConnection con = new OleDbConnection(connection);
+                    DataTable dtExcelSchema;
+                    con.Open();
+                    dtExcelSchema = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                    //con.Close();
+                    DataSet ds = new DataSet();
+
+                    string SheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                    String Command = "Select * from [" + SheetName + "A15:H]";
+                    //String Command = "Select * from [Лист1$A15:H]";
+
+
+
+                    OleDbCommand cmd = new OleDbCommand(Command, con);
+                    OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                    DataTable dt_input = new DataTable();
+                    db.Fill(dt_input);
+
+                    for (i = 0; i < dt_input.Rows.Count; i++)
+                    {
+                        if (dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length == 0 && dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length == 0)
+                        {
+                            dt_input.Rows[i].Delete();
+                            //i -= 1;
+                        }
+                    }
+                    dt_input.AcceptChanges();
+                    for (i = 0; i < dt_input.Rows.Count; i++)
+                    {
+                        vDTR.Add(new DataViewTableRow(
+                                dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString() : "",
+                                dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(2).ToString() : "",
+                                dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(3).ToString() : "",
+                                dt_input.Rows[i].ItemArray.GetValue(4).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(4).ToString() : "",
+                                dt_input.Rows[i].ItemArray.GetValue(5).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(5).ToString() : "",
+                                dt_input.Rows[i].ItemArray.GetValue(6).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(6).ToString() : "",
+                                dt_input.Rows[i].ItemArray.GetValue(7).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(7).ToString() : ""
+                                ));
+                    }
+
+                    //dataGridViewFast.ItemsSource = dt_input.AsDataView();
+                    cmd.Dispose();
+                    con.Close();
+                    con.Dispose();
+                    //exApp.Quit();
+                    dataGridViewEdit.ItemsSource = vDTR;
+                    CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
+                    dataGridViewEdit.Columns.Remove(dataGridViewEdit.Columns[dataGridViewEdit.Columns.Count - 1]);
+                    dataGridViewEdit.UpdateLayout();
+                }
+            }
+            else
+            {
+                buttonDisconnect.IsEnabled = false;
+                buttonViewEdit.IsEnabled = true;
+                ExportTab.IsEnabled = true;
+                ViewSmallTab.IsEnabled = true;
+                ViewTab.IsEnabled = true;
+                dataGridViewEdit.ItemsSource = null;
+                dataGridViewEdit.UpdateLayout();
+            }
         }
     }
 }

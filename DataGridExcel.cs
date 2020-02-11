@@ -221,12 +221,17 @@ namespace SvodExcel
                         }
                         else
                         {
-                            /* regexInvertName = new Regex(@"^(([А-Я]|Ё)\. *){2} +([А-Я]|Ё)([а-я]|ё)+$");
+                            Regex regexInvertName = new Regex(@"^(([А-Я]|Ё)[\.,:;\-\/ ]*){2}[\.,:;\-\/ ]+([А-Я]|Ё)([а-я]|ё)+[\.,:;\-\/ ]*$");
                             if (regexInvertName.IsMatch(bufInputTeacher))
                             {
-                                Teacher = bufInputTeacher.Substring(bufInputTeacher.LastIndexOf(' ') + 1) + " " + bufInputTeacher.Substring(0,bufInputTeacher.LastIndexOf(' '));
+                                Regex regexBigChar = new Regex(@"([А-Я]|Ё)");
+                                MatchCollection matchBigChar = regexBigChar.Matches(bufInputTeacher);
+                                if(matchBigChar.Count==3)
+                                    Teacher = bufInputTeacher.Substring(matchBigChar[2].Index, matchesTeacherSeparate[matchesTeacherSeparate.Count-1].Index- matchBigChar[2].Index) + " " + matchBigChar[0].Value+"."+ matchBigChar[1].Value+".";
+                                else
+                                    Teacher = "";
                             }
-                            else*/
+                            else
                                 Teacher = "";
                         }
                     }

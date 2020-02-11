@@ -50,7 +50,7 @@ namespace SvodExcel
             dataGridExport.ItemsSource = IDF.InputDataFileRows;
             countAllRecords = 0;
             ((INotifyCollectionChanged)listBoxInputFiles.Items).CollectionChanged += listBoxInputFilesItemsChanges;
-            
+            buttonFindDublicates.Visibility = Visibility.Collapsed;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
