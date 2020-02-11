@@ -47,5 +47,11 @@
     <Setting Name="PathToGlobalDataDefault" Type="System.String" Scope="Application">
       <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel\РАСП.xlsx</Value>
     </Setting>
+    <Setting Name="PathLocalNewData" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.\</Value>
+    </Setting>
+    <Setting Name="ExtensionFileNewData" Type="System.String" Scope="User">
+      <Value Profile="(Default)">xls</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

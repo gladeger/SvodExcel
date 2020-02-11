@@ -175,5 +175,29 @@ namespace SvodExcel.Properties {
                 return ((string)(this["PathToGlobalDataDefault"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\")]
+        public string PathLocalNewData {
+            get {
+                return ((string)(this["PathLocalNewData"]));
+            }
+            set {
+                this["PathLocalNewData"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("xls")]
+        public string ExtensionFileNewData {
+            get {
+                return ((string)(this["ExtensionFileNewData"]));
+            }
+            set {
+                this["ExtensionFileNewData"] = value;
+            }
+        }
     }
 }

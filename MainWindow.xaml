@@ -478,7 +478,7 @@
             </MenuItem>
             <MenuItem Header="Ввод данных">
                 <MenuItem Header="Ручной ввод по одному" Click="MenuItemSingleInput_Click"  Style="{StaticResource SingleInput_MenuItem}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
-                <MenuItem Header="Импорт из Excel" Checked="MenuItem_Checked" Style="{StaticResource FileInput_MenuItem}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл"/>
+                <MenuItem x:Name="MenuItemFileInput" Header="Импорт из Excel" Style="{StaticResource FileInput_MenuItem}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="MenuItemFileInput_Click"/>
                 <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False" Style="{StaticResource MultiInput_MenuItem}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
             </MenuItem>
             <MenuItem x:Name="MenuItemOptions" Header="Настройки..." ToolTip="Для включения настроек необходимо перейти в режим администратора." IsEnabled="False" Click="MenuItemOptions_Click"/>

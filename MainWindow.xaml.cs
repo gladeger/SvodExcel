@@ -266,7 +266,7 @@ namespace SvodExcel
 
         public void ExportData()//вставляем в общий файл данные
         {           
-            string pathB = Properties.Settings.Default.PathToGlobal+Properties.Settings.Default.GlobalMarker;
+            string pathB = Properties.Settings.Default.PathToGlobal+"\\"+Properties.Settings.Default.GlobalMarker;
             ClearHang();
             if (File.Exists(pathB))
             {
@@ -274,6 +274,7 @@ namespace SvodExcel
             }
             else
             {
+                string timeforname= DateTime.Now.ToString().Replace(':', '_');
                 string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
                 if (File.Exists(pathC))
                 {
@@ -314,10 +315,57 @@ namespace SvodExcel
                
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + DateTime.Now.ToString().Replace(':', '_') + ".xlsx");
+                File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + timeforname + ".xlsx");
                 File.Copy(pathC, pathA);
                 //File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
                 File.Delete(pathC);
+
+                //*******************************************************************************************************************************************************************************************************************************
+                {
+                    string pathD = Directory.GetCurrentDirectory() + "\\" + timeforname + " " + System.Net.Dns.GetHostName() + " " + System.Security.Principal.WindowsIdentity.GetCurrent().Name.Substring(System.Security.Principal.WindowsIdentity.GetCurrent().Name.LastIndexOf('\\') + 1) + "." + Properties.Settings.Default.ExtensionFileNewData;
+                    if (File.Exists(pathD))
+                    {
+                        File.Delete(pathD);
+                    }
+                    String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathD + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                    switch (Properties.Settings.Default.ExtensionFileNewData)
+                    {
+                        case "xls":
+                            connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathD + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                            break;
+                        case "xlsx":
+                            connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathD + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                            break;
+                        default:
+                            MessageBox.Show("Ошибка неизвестного формата файла " + Properties.Settings.Default.ExtensionFileNewData, "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                            break;
+                    }
+                    DataSet ds = new DataSet();
+                    DataTable dt = new DataTable("Sheet_1");
+                    ds.Tables.Add(dt);
+                    dt.Columns.Add("Date", Type.GetType("System.String"));
+                    dt.Columns.Add("Time", Type.GetType("System.String"));
+                    dt.Columns.Add("Teacher", Type.GetType("System.String"));
+                    dt.Columns.Add("Group", Type.GetType("System.String"));
+                    dt.Columns.Add("Category", Type.GetType("System.String"));
+                    dt.Columns.Add("Place", Type.GetType("System.String"));
+                    int i;
+                    for (i = 0; i < DTR.Count; i++)
+                    {
+                        dt.Rows.Add(DTR[i].Date, DTR[i].Time, DTR[i].Teacher, DTR[i].Group, DTR[i].Category, DTR[i].Place);
+                    }
+                    for (; i <= 100; i++)
+                    {
+                        dt.Rows.Add("", "", "", "", "", "");
+                    }
+                    DataSetHelper.CreateWorkbook(pathD, ds);
+                    ds.Dispose();
+                    dt.Dispose();
+                    File.Copy(pathD, Properties.Settings.Default.PathToGlobal+"\\"+pathD.Substring(pathD.LastIndexOf('\\')+1));
+                    File.Delete(pathD);
+                }               
+//*******************************************************************************************************************************************************************************************************************************
                 File.Delete(pathB);
                 DTR.Clear();
                 CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
@@ -325,7 +373,7 @@ namespace SvodExcel
         }
         public void ClearHang()
         {
-            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            string pathB = Properties.Settings.Default.PathToGlobal +"\\"+ Properties.Settings.Default.GlobalMarker;
             if (File.Exists(pathB))
             {
                 FileInfo employed = new FileInfo(pathB);
@@ -440,7 +488,7 @@ namespace SvodExcel
         
         public void UpdateViewFast()//Обновление быстрого просмотра сводной таблицы
         {
-            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            string pathB = Properties.Settings.Default.PathToGlobal +"\\"+ Properties.Settings.Default.GlobalMarker;
             if (File.Exists(pathB))
             {
                 MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
@@ -619,7 +667,8 @@ namespace SvodExcel
                         dt.Rows.Add("","");
                     }
                     DataSetHelper.CreateWorkbook(pathFast, ds);
-                   
+                    ds.Dispose();
+                    dt.Dispose();
                 }
                 //exApp.Quit();
                 dataGridViewFast.Columns[0].Header = "Преподаватель";
@@ -631,7 +680,7 @@ namespace SvodExcel
 
         public void UpdateView()
         {
-            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            string pathB = Properties.Settings.Default.PathToGlobal +"\\"+ Properties.Settings.Default.GlobalMarker;
             if (File.Exists(pathB))
             {
                 MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
@@ -713,13 +762,13 @@ namespace SvodExcel
                 for (i = 0; i < dt_input.Rows.Count; i++)
                 {
                     vDTR.Add(new DataViewTableRow(
-                            dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString().Substring(0, dt_input.Rows[i].ItemArray.GetValue(1).ToString().IndexOf(' ')) : "",
-                            dt_input.Rows[i].ItemArray.GetValue(2).ToString(),
-                            dt_input.Rows[i].ItemArray.GetValue(3).ToString(),
-                            dt_input.Rows[i].ItemArray.GetValue(4).ToString(),
-                            dt_input.Rows[i].ItemArray.GetValue(5).ToString(),
-                            dt_input.Rows[i].ItemArray.GetValue(6).ToString(),
-                            dt_input.Rows[i].ItemArray.GetValue(7).ToString()
+                            dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(2).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(3).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(4).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(4).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(5).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(5).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(6).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(6).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(7).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(7).ToString() : ""
                             ));
                 }
 
@@ -793,7 +842,7 @@ namespace SvodExcel
 
         public void SaveExcel()
         {
-            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            string pathB = Properties.Settings.Default.PathToGlobal +"\\"+ Properties.Settings.Default.GlobalMarker;
             if (File.Exists(pathB))
             {
                 MessageBox.Show("К сожалению, на данный момент скачивание невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
@@ -1010,11 +1059,6 @@ namespace SvodExcel
             openWindowOpenFileTable();
         }
 
-        private void MenuItem_Checked(object sender, RoutedEventArgs e)
-        {
-            openWindowOpenFileTable();
-        }
-
         private void SvodExcel_Drop(object sender, DragEventArgs e)
         {
             switch (tabControl.SelectedIndex)
@@ -1060,6 +1104,11 @@ namespace SvodExcel
         private void MenuItemEditInput_Click(object sender, RoutedEventArgs e)
         {
             ChangeDataGrid();
+        }
+
+        private void MenuItemFileInput_Click(object sender, RoutedEventArgs e)
+        {
+            openWindowOpenFileTable();
         }
     }
 }
