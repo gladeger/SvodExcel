@@ -73,7 +73,7 @@
             <Image Source="Images\ViewEdit_disable.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Grid x:Key="View_download_enable_grid"  Margin="0,0,0,0" Width="280" >
-            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные <LineBreak/>из общего файла</TextBlock>
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные из общего файла</TextBlock>
             <Image Source="Images\View_download.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Grid x:Key="Disconnect_enable_grid"  Margin="0,0,0,0" Width="55" >
@@ -384,13 +384,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="{x:Type DataGridCell}">
-            <EventSetter Event="MouseDoubleClick"    Handler="DataGridCell_PreviewMouseLeftButtonDown" />
-            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
-        </Style>
-        <Style TargetType="{x:Type DataGridRow}">
-            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
-        </Style>
         <Style TargetType="{x:Type Button}" x:Key="Admin_button">
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="True">
@@ -535,6 +528,13 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type DataGridCell}">
+            <EventSetter Event="MouseDoubleClick"    Handler="DataGridCell_PreviewMouseLeftButtonDown" />
+            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
+        </Style>
+        <Style TargetType="{x:Type DataGridRow}">
+            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
+        </Style>
         <!--<Style TargetType="{x:Type DataGridCell}">
             <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
         </Style>-->
@@ -570,6 +570,8 @@
                 <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
                 <Button x:Name="buttonFileInputHot" Width="26"  Margin="10,0,0,0" Style="{StaticResource FileInput_button}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="buttonFileInputHot_Click"/>
                 <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
+            </StackPanel>
+            <StackPanel x:Name="menu_Hot_Edit" Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
                 <Button x:Name="buttonEditInputHot"  IsEnabled="False" Click="MenuItemEditInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись "Занятие" для экспорта в общий файл'/>
                 <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых"/>
             </StackPanel>
@@ -616,10 +618,10 @@
             </TabItem>
             <TabItem x:Name="ViewEditTab" Header="Просмотр и редактирование общих данных" IsEnabled="False">
                 <Grid x:Name="gridDataGridViewEdit" Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridViewEdit" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridViewEdit_Loaded" AllowDrop="True"/>
+                    <DataGrid x:Name="dataGridViewEdit" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridViewEdit_Loaded" AllowDrop="True" MouseDoubleClick="dataGridExport_MouseDoubleClick" KeyUp="dataGridExport_KeyUp" LayoutUpdated="dataGridViewEdit_LayoutUpdated"/>
                     <Button x:Name="buttonViewEdit"  Margin="85,0,0,10" Height="57" Width="250" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewEdit_button}" HorizontalAlignment="Left" ToolTip='Подключить данные из общего сводного файла расписания' Click="buttonViewEdit_Click"/>
                     <Button x:Name="buttonDisconnect"  Margin="0,0,0,10" Height="57" Width="60" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Disconnect_button}" ToolTip='Отключиться от данных общего файла без сохранения изменений' IsEnabled="False" Click="buttonDisconnect_Click" HorizontalAlignment="Center"/>
-                    <Button x:Name="buttonViewEdit_Download"  Margin="0,0,85,10" Height="57" Width="250" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewEdit_button_download}" HorizontalAlignment="Right" ToolTip='Выгрузить данные в общий файл, сохранив все внесенные изменения.' IsEnabled="False"/>
+                    <Button x:Name="buttonViewEdit_Download"  Margin="0,0,85,10" Height="57" Width="250" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewEdit_button_download}" HorizontalAlignment="Right" ToolTip='Выгрузить данные в общий файл, сохранив все внесенные изменения.' IsEnabled="False" Click="buttonViewEdit_Download_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>

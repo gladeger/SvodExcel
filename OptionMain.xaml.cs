@@ -34,7 +34,8 @@ namespace SvodExcel
             InitializeComponent();
             linkOptionsWindow = linkOnOptionsWindow;
             textBoxSettingPath.Text = Properties.Settings.Default.PathToGlobalData;
-            for(int i=0;i<changes.Length;i++)
+            textBoxSettingPathGlobal.Text = Properties.Settings.Default.PathToGlobal;
+            for (int i=0;i<changes.Length;i++)
             {
                 changes[i] = false;
             }
@@ -74,6 +75,7 @@ namespace SvodExcel
         private void submitSettingPath()
         {
             Properties.Settings.Default.PathToGlobalData = textBoxSettingPath.Text;
+            Properties.Settings.Default.PathToGlobal = textBoxSettingPath.Text.Substring(0, textBoxSettingPath.Text.LastIndexOf('\\'));
         }
 
         public void submitChanges()
@@ -89,6 +91,7 @@ namespace SvodExcel
         public void defaultOptions()
         {
             textBoxSettingPath.Text = Properties.Settings.Default.PathToGlobalDataDefault;
+            textBoxSettingPathGlobal.Text = Properties.Settings.Default.PathToGlobalDefault;
         }
     }
 }

@@ -53,12 +53,15 @@ namespace SvodExcel.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
         public string PathToGlobal {
             get {
                 return ((string)(this["PathToGlobal"]));
+            }
+            set {
+                this["PathToGlobal"] = value;
             }
         }
         
@@ -197,6 +200,27 @@ namespace SvodExcel.Properties {
             }
             set {
                 this["ExtensionFileNewData"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double WaitingDisconnect {
+            get {
+                return ((double)(this["WaitingDisconnect"]));
+            }
+            set {
+                this["WaitingDisconnect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
+        public string PathToGlobalDefault {
+            get {
+                return ((string)(this["PathToGlobalDefault"]));
             }
         }
     }

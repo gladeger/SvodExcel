@@ -788,11 +788,22 @@ namespace SvodExcel
             {
                 case ("SvodExcel.MainWindow"):
                     home = Owner as MainWindow;
-                    if (RowIndex == -1)
-                        (home as MainWindow).AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
-                    else
+                    switch((home as MainWindow).tabControl.SelectedIndex)
                     {
-                        (home as MainWindow).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                        case 0:
+                            if (RowIndex == -1)
+                                (home as MainWindow).AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                            else
+                            {
+                                (home as MainWindow).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                            }
+                            break;
+                        case 3:
+                            if (RowIndex >= 0)
+                                (home as MainWindow).EditItemEdition(RowIndex, new DataViewTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                            break;
+                        default:
+                            break;
                     }
                     break;
                 case ("SvodExcel.OpenFileTable"):

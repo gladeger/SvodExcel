@@ -31,12 +31,19 @@ namespace SvodExcel
         public List<DataViewTableRow> vDTR = new List<DataViewTableRow>();
         public List<DataViewFastTableRow> vfDTR = new List<DataViewFastTableRow>();
         private bool ClickToAddRow = true;
+        private struct markerActionData
+        {
+            public int IndexData { get; set; }
+            public bool Action { get; set; }
+        }
+        private List<markerActionData> MAD = new List<markerActionData>();
         public MainWindow()
         {
             InitializeComponent();
             DTR.Clear();
             vDTR.Clear();
             vfDTR.Clear();
+            MAD.Clear();
 
             AdminMode = false;
             ConnectMode = false;
@@ -93,16 +100,19 @@ namespace SvodExcel
 
         private void openSingleInput()
         {
-            SingleInput f = new SingleInput();
-            f.Owner = this;
-            f.exApp = exApp;
-            f.Top = this.Top + 50;
-            f.Left = this.Left + 50;
-            f.RowIndex = -1;
-            f.ShowDialog();
-            //f.Show();
+            if(tabControl.SelectedIndex==0)
+            {
+                SingleInput f = new SingleInput();
+                f.Owner = this;
+                f.exApp = exApp;
+                f.Top = this.Top + 50;
+                f.Left = this.Left + 50;
+                f.RowIndex = -1;
+                f.ShowDialog();
+                //f.Show();
 
-            CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+                CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+            }
         }
         private void MenuItemSingleInput_Click(object sender, RoutedEventArgs e)
         {
@@ -127,17 +137,19 @@ namespace SvodExcel
         }
         private void ChangeDataGrid()
         {
+            SingleInput f;
+            int SI;
             switch (tabControl.SelectedIndex)
             {
                 case 0:
                     {
-                        int SI = dataGridExport.SelectedIndex;
-                        SingleInput f = new SingleInput();
+                        SI =DTR.IndexOf(dataGridExport.SelectedItem as DataTableRow);
+                        f = new SingleInput();
                         f.Owner = this;
                         f.exApp = exApp;
                         f.Top = this.Top + 50;
                         f.Left = this.Left + 50;
-                        f.RowIndex = dataGridExport.SelectedIndex;
+                        f.RowIndex = SI;
                         if(dataGridExport.CurrentColumn!=null)
                         {
                             switch (dataGridExport.CurrentColumn.DisplayIndex)
@@ -196,6 +208,71 @@ namespace SvodExcel
                         f.ShowDialog();
                     }                    
                     break;
+                case 3:
+                    SI = vDTR.IndexOf(dataGridViewEdit.SelectedItem as DataViewTableRow);
+                    f = new SingleInput();
+                    f.Owner = this;
+                    f.exApp = exApp;
+                    f.Top = this.Top + 50;
+                    f.Left = this.Left + 50;
+                    f.RowIndex = SI;
+                    if (dataGridExport.CurrentColumn != null)
+                    {
+                        switch (dataGridViewEdit.CurrentColumn.DisplayIndex)
+                        {
+                            case 0:
+                                f.DatePicker_Date.Focus();
+                                break;
+                            case 1:
+                                f.MaskedTextBoxStartTime.Focus();
+                                break;
+                            case 2:
+                                f.comboBoxTeacher.Focus();
+                                break;
+                            case 3:
+                                f.textboxGroup.Focus();
+                                break;
+                            case 4:
+                                f.textBoxCategory.Focus();
+                                break;
+                            case 5:
+                                f.textBoxPlace.Focus();
+                                break;
+                            default:
+                                f.ButtonCancel.Focus();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        f.DatePicker_Date.Focus();
+                    }
+
+                    f.DatePicker_Date.Text = vDTR[SI].Date;
+                    f.comboBoxTeacher.Text = vDTR[SI].Teacher;
+
+                    f.MaskedTextBoxStartTime.Text = vDTR[SI].Time.Substring(0, 5).Replace('.', ':');
+                    if (f.MaskedTextBoxStartTime.Text[0] == '_')
+                    {
+                        f.MaskedTextBoxStartTime.Text = "0" + vDTR[SI].Time.Substring(0, 4).Replace('.', ':');
+                    }
+                    f.MaskedTextBoxEndTime.Text = vDTR[SI].Time.Substring(vDTR[SI].Time.Length - 5, 5).Replace('.', ':');
+                    if (f.MaskedTextBoxEndTime.Text[0] == '_')
+                    {
+                        f.MaskedTextBoxEndTime.Text = "0" + vDTR[SI].Time.Substring(vDTR[SI].Time.Length - 4, 4).Replace('.', ':');
+                    }
+                    f.comboBoxTeacher.SelectedIndex = f.comboBoxTeacher.Items.IndexOf(vDTR[SI].Teacher);
+                    f.textboxGroup.Text = vDTR[SI].Group;
+                    f.textBoxCategory.Text = vDTR[SI].Category;
+                    f.textBoxPlace.Text = vDTR[SI].Place;
+                    f.Title = "Редактирование записи \"" + vDTR[SI].Date + " " + vDTR[SI].Time + " " + vDTR[SI].Teacher + "\"";
+                    f.ButtonWriteAndContinue.IsEnabled = false;
+                    f.ButtonWriteAndContinue.Visibility = Visibility.Collapsed;
+                    f.ButtonWriteAndStop.Content = "Внести изменения";
+                    f.ButtonWriteAndStop.HorizontalAlignment = HorizontalAlignment.Left;
+                    f.ButtonWriteAndStop.Margin = new Thickness(10, 0, 0, 10);
+                    f.ShowDialog();
+                    break;
                 default:
                     break;
             }
@@ -206,12 +283,24 @@ namespace SvodExcel
             DTR[RowIndex] = newDTR;
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }
+        public void EditItemEdition(int RowIndex, DataViewTableRow newDTR)
+        {
+            NoneSave = true;
+            vDTR[RowIndex] = newDTR;
+            markerActionData bufmad= new markerActionData();
+            bufmad.IndexData = RowIndex;
+            bufmad.Action = true;
+            MAD.Add(bufmad);
+            CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
+        }
         public void DeleteItem(int RowIndex)
         {
             if (RowIndex >= 0 && RowIndex < DTR.Count)
             {
                 if(MessageBox.Show("Вы действительно хотите удалить из экспортируемых данных запись\n"+ DTR[RowIndex].Date + " " + DTR[RowIndex].Time + " " + DTR[RowIndex].Teacher+"\n?","Удаление элемента из экспорта",MessageBoxButton.YesNo,MessageBoxImage.Question,MessageBoxResult.No) ==MessageBoxResult.Yes)
-                DTR.Remove(DTR[RowIndex]);
+                {
+                    DTR.Remove(dataGridExport.Items[RowIndex] as DataTableRow);
+                }
                 CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
                 if(DTR.Count<1)
                 {
@@ -224,9 +313,45 @@ namespace SvodExcel
             else
                 MessageBox.Show("Ошибка удаления элемента");
         }
+        public void DeleteItemEdition(int RowIndex)
+        {
+            if (RowIndex >= 0 && RowIndex < vDTR.Count)
+            {
+                if (MessageBox.Show("Вы действительно хотите удалить из экспортируемых данных запись\n" + vDTR[RowIndex].Date + " " + vDTR[RowIndex].Time + " " + vDTR[RowIndex].Teacher + "\n?", "Удаление элемента из экспорта", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    NoneSave = true;
+                    vDTR.Remove(dataGridViewEdit.Items[RowIndex] as DataViewTableRow);
+                    markerActionData bufmad = new markerActionData();
+                    bufmad.IndexData = RowIndex;
+                    bufmad.Action = false;
+                    MAD.Add(bufmad);                    
+                }                    
+                CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
+                if (vDTR.Count < 1)
+                {
+                    buttonDeleteHot.IsEnabled = false;
+                    buttonEditInputHot.IsEnabled = false;
+                    buttonExport.IsEnabled = false;
+                    buttonExportHot.IsEnabled = false;
+                }
+            }
+            else
+                MessageBox.Show("Ошибка удаления элемента");
+        }
+
         private void buttonDeleteHot_Click(object sender, RoutedEventArgs e)
         {
-            DeleteItem(dataGridExport.SelectedIndex);
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    DeleteItem(dataGridExport.SelectedIndex);
+                    break;
+                case 3:
+                    DeleteItemEdition(dataGridViewEdit.SelectedIndex);
+                    break;
+                default:
+                    break;
+            }            
         }
 
         private void Export_Click()
@@ -406,55 +531,67 @@ namespace SvodExcel
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch(tabControl.SelectedIndex)
+            buttonDeleteHot.IsEnabled = false;
+            buttonEditInputHot.IsEnabled = false;
+            switch (tabControl.SelectedIndex)
             {
                 case 0:
                     menu_Hot_Export.IsEnabled = true;
+                    menu_Hot_Edit.IsEnabled = true;
                     menu_Hot_View.IsEnabled = false;
                     menu_Hot_ViewFast.IsEnabled = false;
                     MenuInputData.IsEnabled = true;
 
                     menu_Hot_Export.Visibility = Visibility.Visible;
+                    menu_Hot_Edit.Visibility = Visibility.Visible;
                     menu_Hot_View.Visibility = Visibility.Collapsed;
                     menu_Hot_ViewFast.Visibility = Visibility.Collapsed;
                     break;
                 case 1:
                     menu_Hot_Export.IsEnabled = false;
+                    menu_Hot_Edit.IsEnabled = false;
                     menu_Hot_View.IsEnabled = true;
                     menu_Hot_ViewFast.IsEnabled = true;
                     MenuInputData.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Collapsed;
+                    menu_Hot_Edit.Visibility = Visibility.Collapsed;
                     menu_Hot_View.Visibility = Visibility.Visible;
                     menu_Hot_ViewFast.Visibility = Visibility.Visible;
                     break;
                 case 2:
                     menu_Hot_Export.IsEnabled = false;
+                    menu_Hot_Edit.IsEnabled = false;
                     menu_Hot_View.IsEnabled = true;
                     menu_Hot_ViewFast.IsEnabled = false;
                     MenuInputData.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Collapsed;
+                    menu_Hot_Edit.Visibility = Visibility.Collapsed;
                     menu_Hot_View.Visibility = Visibility.Visible;
                     menu_Hot_ViewFast.Visibility = Visibility.Collapsed;
                     break;
                 case 3:
                     menu_Hot_Export.IsEnabled = false;
+                    menu_Hot_Edit.IsEnabled = true;
                     menu_Hot_View.IsEnabled = false;
                     menu_Hot_ViewFast.IsEnabled = false;
                     MenuInputData.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Collapsed;
+                    menu_Hot_Edit.Visibility = Visibility.Visible;
                     menu_Hot_View.Visibility = Visibility.Collapsed;
                     menu_Hot_ViewFast.Visibility = Visibility.Collapsed;
                     break;
                 default:
                     menu_Hot_Export.IsEnabled = false;
+                    menu_Hot_Edit.IsEnabled = false;
                     menu_Hot_View.IsEnabled = false;
                     menu_Hot_ViewFast.IsEnabled = false;
                     MenuInputData.IsEnabled = false;
 
                     menu_Hot_Export.Visibility = Visibility.Visible;
+                    menu_Hot_Edit.Visibility = Visibility.Visible;
                     menu_Hot_View.Visibility = Visibility.Visible;
                     menu_Hot_ViewFast.Visibility = Visibility.Visible;
                     break;
@@ -780,7 +917,7 @@ namespace SvodExcel
                 for (i = 0; i < dt_input.Rows.Count; i++)
                 {
                     vDTR.Add(new DataViewTableRow(
-                            dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? (dt_input.Rows[i].ItemArray.GetValue(1).ToString().LastIndexOf(" ") > 0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString().Substring(0, (dt_input.Rows[i].ItemArray.GetValue(1).ToString().IndexOf(" "))) : dt_input.Rows[i].ItemArray.GetValue(1).ToString()) : "",
                             dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(2).ToString() : "",
                             dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(3).ToString() : "",
                             dt_input.Rows[i].ItemArray.GetValue(4).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(4).ToString() : "",
@@ -944,16 +1081,38 @@ namespace SvodExcel
         }
         private void DataGridCell_PreviewSelected(object sender, RoutedEventArgs e)
         {
-            if (tabControl.SelectedIndex == 0 && dataGridExport.SelectedIndex>=0)
+            switch(tabControl.SelectedIndex)
             {
-                buttonEditInputHot.IsEnabled =true;
-                buttonDeleteHot.IsEnabled = true;
-            }                
-            else
-            {
-                buttonDeleteHot.IsEnabled = false;
-                buttonEditInputHot.IsEnabled = false;
+                case 0:
+                    if (dataGridExport.SelectedIndex >= 0)
+                    {
+                        buttonEditInputHot.IsEnabled = true;
+                        buttonDeleteHot.IsEnabled = true;
+                    }
+                    else
+                    {
+                        buttonDeleteHot.IsEnabled = false;
+                        buttonEditInputHot.IsEnabled = false;
+                    }
+                    break;
+                case 3:
+                    if (dataGridViewEdit.SelectedIndex >= 0)
+                    {
+                        buttonEditInputHot.IsEnabled = true;
+                        buttonDeleteHot.IsEnabled = true;
+                    }
+                    else
+                    {
+                        buttonDeleteHot.IsEnabled = false;
+                        buttonEditInputHot.IsEnabled = false;
+                    }
+                    break;
+                default:
+                    buttonDeleteHot.IsEnabled = false;
+                    buttonEditInputHot.IsEnabled = false;
+                    break;
             }
+            
                 
         }
 
@@ -1118,8 +1277,20 @@ namespace SvodExcel
         {
             if(e.Key==Key.Delete)
             {
-                if(DTR.Count>0 && dataGridExport.SelectedIndex>=0)
-                DeleteItem(dataGridExport.SelectedIndex);
+                switch(tabControl.SelectedIndex)
+                {
+                case 0:
+                        if(DTR.Count > 0 && dataGridExport.SelectedIndex >= 0)
+                        DeleteItem(dataGridExport.SelectedIndex);
+                    break;
+                case 3:
+                        if (vDTR.Count > 0 && dataGridViewEdit.SelectedIndex >= 0)
+                            DeleteItemEdition(dataGridViewEdit.SelectedIndex);
+                    break;
+                default:
+                    break;
+                }
+                
             }
         }
 
@@ -1154,7 +1325,8 @@ namespace SvodExcel
 
         private void buttonDisconnect_Click(object sender, RoutedEventArgs e)
         {
-            if(NoneSave)
+            //if(NoneSave)
+            if(MAD.Count>0)
             {
                 if (MessageBox.Show("Вы действительно хотите отключиться от общих данных не сохранив изменений?", "Подтверждение отключения", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
                 {
@@ -1170,10 +1342,79 @@ namespace SvodExcel
 
         private void buttonViewEdit_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Вы действительно хотите подключиться к общим данным?\n Внимание пока вы не отключитесь от общих данных, все остальные пользователи не смогут вносить изменения в общие данные","Подтверждение подключения",MessageBoxButton.OKCancel,MessageBoxImage.Warning) == MessageBoxResult.OK)
+            if (MessageBox.Show("Вы действительно хотите подключиться к общим данным?\nВнимание пока вы не отключитесь от общих данных, все остальные пользователи не смогут вносить изменения в общие данные","Подтверждение подключения",MessageBoxButton.OKCancel,MessageBoxImage.Warning) == MessageBoxResult.OK)
             {
                 ConnectDisconnect();
             }            
+        }
+
+        private void dataGridViewEdit_LayoutUpdated(object sender, EventArgs e)
+        {
+            if(MAD.Count>0)
+            {
+                buttonViewEdit_Download.IsEnabled = true;
+            }
+            else
+            {
+                buttonViewEdit_Download.IsEnabled = false;
+            }
+        }
+
+        private void buttonViewEdit_Download_Click(object sender, RoutedEventArgs e)
+        {
+            if(MAD.Count>0)
+                if(
+                    MessageBox.Show("Отредактировано/удалено "+ MAD.Count.ToString()+" записей."+
+                        "\nВы действительно хотите внести изменения в общий файл?",
+                    "Подтверждение внесения изменений", MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes
+                    )
+                {
+                    string pathC = Directory.GetCurrentDirectory() + "\\" + "ViewEdit_" + Properties.Settings.Default.GlobalData;
+                    if (File.Exists(pathC))
+                    {
+                        try { File.Delete(pathC); }
+                        catch
+                        {
+                            MessageBox.Show("Ошибка обращения к локальной копии сводного документа.\nПерезапустите компьютер");
+                            return;
+                        }
+                        FileInfo localdata = new FileInfo(pathC);
+                        localdata.IsReadOnly = false;
+
+                        var exBook = exApp.Workbooks.Open(pathC);
+                        var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                        int BlinkEnd = 0;
+                        var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
+                        if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
+                            BlinkEnd = 1;
+                        //for (int i = BlinkEnd; i < (DTR.Count + BlinkEnd); i++)
+                        //{
+                        //    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
+                        //    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
+                        //    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
+                        //    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
+                        //    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
+                        //    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
+                        //}
+                        for(int i=0;i<MAD.Count;i++)
+                        {
+                            if(MAD[i].Action)
+                            {
+                                //Редактирование
+                            }
+                            else
+                            {
+                                //Удаление,
+                            }
+                        }
+                        exBook.Close(true);
+
+                        localdata.IsReadOnly = true;
+                    }
+
+                    MAD.Clear();
+                    buttonViewEdit.IsEnabled = false;
+                }
         }
 
         public void ConnectDisconnect()
@@ -1183,23 +1424,30 @@ namespace SvodExcel
         public void ConnectDisconnect(bool ConnectSwitch)
         {
             ConnectMode =!ConnectSwitch;
-            if(ConnectMode)
+            string pathB = Properties.Settings.Default.PathToGlobal + "\\" + Properties.Settings.Default.GlobalMarker;
+            string pathA = Properties.Settings.Default.PathToGlobalData;
+            string pathC = Directory.GetCurrentDirectory() + "\\" + "ViewEdit_" + Properties.Settings.Default.GlobalData;
+            if (ConnectMode)
             {
-                buttonDisconnect.IsEnabled = true;
-                buttonViewEdit.IsEnabled = false;
-                ExportTab.IsEnabled = false;
-                ViewSmallTab.IsEnabled = false;
-                ViewTab.IsEnabled = false;
-
-                string pathB = Properties.Settings.Default.PathToGlobal + "\\" + Properties.Settings.Default.GlobalMarker;
                 if (File.Exists(pathB))
                 {
                     MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
                 }
                 else
                 {
-                    string pathA = Properties.Settings.Default.PathToGlobalData;
-                    string pathC = Directory.GetCurrentDirectory() + "\\" + "View_" + Properties.Settings.Default.GlobalData;
+                    NoneSave = false;
+                    MAD.Clear();
+                    buttonDisconnect.IsEnabled = true;
+                    buttonViewEdit.IsEnabled = false;
+                    ExportTab.IsEnabled = false;
+                    ViewSmallTab.IsEnabled = false;
+                    ViewTab.IsEnabled = false;
+
+                    StreamWriter sw = File.CreateText(pathB);
+                    String host = System.Net.Dns.GetHostName();
+                    System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList[0];
+                    sw.WriteLine(ip.ToString());
+                    sw.Close();
                     if (File.Exists(pathC))
                     {
                         FileInfo localdata = new FileInfo(pathC);
@@ -1273,7 +1521,7 @@ namespace SvodExcel
                     for (i = 0; i < dt_input.Rows.Count; i++)
                     {
                         vDTR.Add(new DataViewTableRow(
-                                dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString() : "",
+                                dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? (dt_input.Rows[i].ItemArray.GetValue(1).ToString().LastIndexOf(" ")>0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString().Substring(0, (dt_input.Rows[i].ItemArray.GetValue(1).ToString().IndexOf(" "))) : dt_input.Rows[i].ItemArray.GetValue(1).ToString()) : "",
                                 dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(2).ToString() : "",
                                 dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(3).ToString() : "",
                                 dt_input.Rows[i].ItemArray.GetValue(4).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(4).ToString() : "",
@@ -1289,20 +1537,79 @@ namespace SvodExcel
                     con.Dispose();
                     //exApp.Quit();
                     dataGridViewEdit.ItemsSource = vDTR;
+                    
                     CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
-                    dataGridViewEdit.Columns.Remove(dataGridViewEdit.Columns[dataGridViewEdit.Columns.Count - 1]);
+                    if (dataGridViewEdit.Columns.Count > 0)
+                    {
+                        dataGridViewEdit.Columns.Remove(dataGridViewEdit.Columns[dataGridViewEdit.Columns.Count - 1]);
+                        dataGridViewEdit.Columns[0].Header = "Дата проведения";
+                        dataGridViewEdit.Columns[1].Header = "Время проведения";
+                        dataGridViewEdit.Columns[2].Header = "Преподаватель";
+                        dataGridViewEdit.Columns[3].Header = "Номер группы";
+                        dataGridViewEdit.Columns[4].Header = "Категория слушателей";
+                        dataGridViewEdit.Columns[5].Header = "Место проведения";
+                        dataGridViewEdit.Columns[0].MaxWidth = 120;
+                        dataGridViewEdit.Columns[1].MaxWidth = 120;
+                        dataGridViewEdit.Columns[2].MaxWidth = 200;
+                        dataGridViewEdit.Columns[3].MaxWidth = 120;
+                    }
                     dataGridViewEdit.UpdateLayout();
                 }
             }
             else
             {
-                buttonDisconnect.IsEnabled = false;
-                buttonViewEdit.IsEnabled = true;
-                ExportTab.IsEnabled = true;
-                ViewSmallTab.IsEnabled = true;
-                ViewTab.IsEnabled = true;
-                dataGridViewEdit.ItemsSource = null;
-                dataGridViewEdit.UpdateLayout();
+                if (File.Exists(pathB))
+                {
+                    FileInfo employed = new FileInfo(pathB);
+                    StreamReader sw = new StreamReader(pathB);
+                    String host = System.Net.Dns.GetHostName();
+                    System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList[0];
+                    string busy_customer = "";
+                    busy_customer = sw.ReadLine();
+                    sw.Close();
+                    if ((busy_customer == ip.ToString()) && (DateTime.Now.Subtract(employed.CreationTime.ToLocalTime()).TotalSeconds > Properties.Settings.Default.WaitingDisconnect))
+                    {
+                        File.Delete(pathB);
+                        int i = 0;
+                        while (File.Exists(pathB))
+                        {
+                            if (i > 10000)
+                                break;
+                            i++;
+                        }
+                        buttonDisconnect.IsEnabled = false;
+                        buttonViewEdit.IsEnabled = true;
+                        ExportTab.IsEnabled = true;
+                        ViewSmallTab.IsEnabled = true;
+                        ViewTab.IsEnabled = true;
+                        dataGridViewEdit.ItemsSource = null;
+                        dataGridViewEdit.UpdateLayout();
+                        MAD.Clear();
+                        if (File.Exists(pathC))
+                        {
+                            FileInfo localdata = new FileInfo(pathC);
+                            localdata.IsReadOnly = false;
+                            File.Delete(pathC);
+                            while (File.Exists(pathB))
+                            {
+                                if (i > 10000)
+                                    break;
+                                i++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(busy_customer != ip.ToString())
+                        {
+                            MessageBox.Show("Ошибка отключения: общий файл занят другим пользователем","Ошибка отключения",MessageBoxButton.OK,MessageBoxImage.Error);
+                        }
+                        if(DateTime.Now.Subtract(employed.CreationTime.ToLocalTime()).TotalMinutes > Properties.Settings.Default.WaitingInLine)
+                        {
+                            MessageBox.Show("Ошибка отключения: преждевременная попытка отключения", "Ошибка отключения", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
             }
         }
     }
