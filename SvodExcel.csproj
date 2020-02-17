@@ -434,7 +434,6 @@
     <Resource Include="Images\Help.png" />
     <Resource Include="Images\Help_disable.png" />
     <Resource Include="OpenFile.png" />
-    <Resource Include="View_download.png" />
     <Resource Include="Images\OpenFile_disable.png" />
     <Resource Include="Images\OpenFile.png" />
     <Resource Include="Images\Batman_and_Cape.ico" />

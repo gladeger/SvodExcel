@@ -286,12 +286,14 @@ namespace SvodExcel
         public void EditItemEdition(int RowIndex, DataViewTableRow newDTR)
         {
             NoneSave = true;
-            vDTR[RowIndex] = newDTR;
+            int bufRowIndex = vDTR.IndexOf(dataGridViewEdit.Items[RowIndex] as DataViewTableRow);
+            vDTR[bufRowIndex] = newDTR;
             markerActionData bufmad= new markerActionData();
-            bufmad.IndexData = RowIndex;
+            bufmad.IndexData = bufRowIndex;
             bufmad.Action = true;
             MAD.Add(bufmad);
             CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
+            
         }
         public void DeleteItem(int RowIndex)
         {
@@ -320,11 +322,13 @@ namespace SvodExcel
                 if (MessageBox.Show("Вы действительно хотите удалить из экспортируемых данных запись\n" + vDTR[RowIndex].Date + " " + vDTR[RowIndex].Time + " " + vDTR[RowIndex].Teacher + "\n?", "Удаление элемента из экспорта", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
                 {
                     NoneSave = true;
-                    vDTR.Remove(dataGridViewEdit.Items[RowIndex] as DataViewTableRow);
+                    int bufRowIndex = vDTR.IndexOf(dataGridViewEdit.Items[RowIndex] as DataViewTableRow);
+                    vDTR.RemoveAt(bufRowIndex);
                     markerActionData bufmad = new markerActionData();
-                    bufmad.IndexData = RowIndex;
+                    bufmad.IndexData = bufRowIndex;
                     bufmad.Action = false;
-                    MAD.Add(bufmad);                    
+                    MAD.Add(bufmad);
+                    labelTech.Content += "\n" + bufRowIndex.ToString();
                 }                    
                 CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
                 if (vDTR.Count < 1)
@@ -1372,31 +1376,53 @@ namespace SvodExcel
                     string pathC = Directory.GetCurrentDirectory() + "\\" + "ViewEdit_" + Properties.Settings.Default.GlobalData;
                     if (File.Exists(pathC))
                     {
-                        try { File.Delete(pathC); }
-                        catch
-                        {
-                            MessageBox.Show("Ошибка обращения к локальной копии сводного документа.\nПерезапустите компьютер");
-                            return;
-                        }
                         FileInfo localdata = new FileInfo(pathC);
-                        localdata.IsReadOnly = false;
+                        try {                               
+                                localdata.IsReadOnly = false;
+                            }
+                        catch
+                            {
+                                MessageBox.Show("Ошибка обращения к локальной копии сводного документа \n("+pathC+").\nПерезапустите компьютер");
+                                return;
+                            }
 
                         var exBook = exApp.Workbooks.Open(pathC);
                         var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                        int BlinkEnd = 0;
+                        int BlinkEnd = 1;
                         var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
-                        if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
-                            BlinkEnd = 1;
-                        //for (int i = BlinkEnd; i < (DTR.Count + BlinkEnd); i++)
-                        //{
-                        //    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
-                        //    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
-                        //    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
-                        //    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
-                        //    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
-                        //    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
-                        //}
-                        for(int i=0;i<MAD.Count;i++)
+                        //if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
+                          //  BlinkEnd = 1;
+                        Regex regexTime = new Regex(@"^( *[Cc] *)?\d{1,2} *[\.,:;\- ]? *\d{1,2}(( *[\-–\/\\\| ] *)|( +)|( *[Дд][Оо] *))\d{1,2} *[\.,:;\- ]? *\d{1,2} *$");
+                        for(int i=1;i<=lastcell.Row;i++)
+                        {
+                            string bufstr = Convert.ToString(ExSheet.Cells[i, 3].Value2);
+                            if(bufstr!=null)
+                            {
+                                if (bufstr.Length > 0)
+                                {
+                                    if (regexTime.IsMatch(bufstr))
+                                    {
+                                        //MessageBox.Show(i.ToString()+"\n"+ bufstr);
+                                        BlinkEnd = i;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        //MessageBox.Show("!"+i.ToString() + "\n" + bufstr);
+                                    }
+                                }
+                            }
+                        }
+                            //for (int i = BlinkEnd; i < (DTR.Count + BlinkEnd); i++)
+                            //{
+                            //    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
+                            //    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
+                            //    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
+                            //    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
+                            //    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
+                            //    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
+                            //}
+                        for (int i=0;i<MAD.Count;i++)
                         {
                             if(MAD[i].Action)
                             {
@@ -1404,7 +1430,8 @@ namespace SvodExcel
                             }
                             else
                             {
-                                //Удаление,
+                                ExSheet.Rows[MAD[i].IndexData+ BlinkEnd].Delete(Microsoft.Office.Interop.Excel.XlDeleteShiftDirection.xlShiftUp);
+                                labelTech2.Content = labelTech2.Content + "\n" + (MAD[i].IndexData + BlinkEnd).ToString();
                             }
                         }
                         exBook.Close(true);
@@ -1452,7 +1479,7 @@ namespace SvodExcel
                     {
                         FileInfo localdata = new FileInfo(pathC);
                         FileInfo globaldata = new FileInfo(pathA);
-                        if (globaldata.LastWriteTime.ToLocalTime() > localdata.LastWriteTime.ToLocalTime())
+                        //if (globaldata.LastWriteTime.ToLocalTime() > localdata.LastWriteTime.ToLocalTime())
                         {
                             localdata.IsReadOnly = false;
                             File.Delete(pathC);
@@ -1460,11 +1487,12 @@ namespace SvodExcel
                             localdata.IsReadOnly = true;
                             CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
                         }
-                        else
+                        //else
                         {
                             if (dataGridView.Items.Count > 0)
                                 return;
                         }
+
                     }
                     else
                     {
