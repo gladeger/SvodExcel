@@ -223,5 +223,26 @@ namespace SvodExcel.Properties {
                 return ((string)(this["PathToGlobalDefault"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StartAdminMode {
+            get {
+                return ((bool)(this["StartAdminMode"]));
+            }
+            set {
+                this["StartAdminMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StartAdminModeDefault {
+            get {
+                return ((bool)(this["StartAdminModeDefault"]));
+            }
+        }
     }
 }

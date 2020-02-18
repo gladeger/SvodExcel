@@ -31,8 +31,8 @@
     <TargetCulture>ru</TargetCulture>
     <PublisherName>ИПК</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>1.8.0212.%2a</ApplicationVersion>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>1.9.0218.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

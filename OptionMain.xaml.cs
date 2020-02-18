@@ -20,13 +20,13 @@ namespace SvodExcel
     /// </summary>
     public partial class OptionMain : Page
     {
-        public bool change=false;
-        private bool[] changes= new bool[1];
+        public bool change=false;       
 
         private bool NonFirstStart = false;
 
         private delegate void SubmitActions();
-        private SubmitActions[] submitActions = new SubmitActions[1];
+        private bool[] changes = new bool[2];
+        private SubmitActions[] submitActions = new SubmitActions[2];
         public Options linkOptionsWindow=null;
         public OptionMain(Options linkOnOptionsWindow)
         {
@@ -40,6 +40,8 @@ namespace SvodExcel
                 changes[i] = false;
             }
             submitActions[0] = submitSettingPath;
+            submitActions[1]= submitSettingStartAdmin;
+            chechBoxStartAdminMode.IsChecked = Properties.Settings.Default.StartAdminMode;
             //linkOptionsWindow = this.Parent as Options;
         }
 
@@ -78,6 +80,11 @@ namespace SvodExcel
             Properties.Settings.Default.PathToGlobal = textBoxSettingPath.Text.Substring(0, textBoxSettingPath.Text.LastIndexOf('\\'));
         }
 
+        private void submitSettingStartAdmin()
+        {
+            Properties.Settings.Default.StartAdminMode = (bool)chechBoxStartAdminMode.IsChecked;
+        }
+
         public void submitChanges()
         {
             if(change)
@@ -92,6 +99,27 @@ namespace SvodExcel
         {
             textBoxSettingPath.Text = Properties.Settings.Default.PathToGlobalDataDefault;
             textBoxSettingPathGlobal.Text = Properties.Settings.Default.PathToGlobalDefault;
+            chechBoxStartAdminMode.IsChecked = Properties.Settings.Default.StartAdminModeDefault;
+        }
+
+        private void chechBoxStartAdminMode_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (NonFirstStart)
+            {
+                change = true;
+                changes[1] = true;
+                linkOptionsWindow.ChangeOptions();
+            }
+        }
+
+        private void chechBoxStartAdminMode_Checked(object sender, RoutedEventArgs e)
+        {
+            if (NonFirstStart)
+            {
+                change = true;
+                changes[1] = true;
+                linkOptionsWindow.ChangeOptions();
+            }
         }
     }
 }

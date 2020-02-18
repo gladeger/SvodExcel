@@ -192,6 +192,7 @@ namespace SvodExcel
             string pathA = Properties.Settings.Default.PathToGlobalData;
             //string pathA = @"C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx";
             string pathER = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            FileInfo localdata;
             if (File.Exists(pathER))
             {
                 MessageBox.Show("К сожалению обновление списка сейчас невозможно, обновляется общий сводный файл.\nПопробуйте чуть позже.");
@@ -204,7 +205,12 @@ namespace SvodExcel
                     //string pathB = @".\\РАСП.xlsx";
                     string pathB = Properties.Settings.Default.PathToLocalData;
                     if (File.Exists(pathB))
+                    {
+                        localdata = new FileInfo(pathB);
+                        localdata.IsReadOnly = false;
                         File.Delete(pathB);
+                    }
+                        
                     File.Copy(pathA, pathB);
                     while (!File.Exists(pathB)) { };
                 //Microsoft.Office.Interop.Excel.XLCel
@@ -274,6 +280,8 @@ namespace SvodExcel
                 cmd.Dispose();
                 con.Close();
                 con.Dispose();
+                localdata = new FileInfo(pathB);
+                localdata.IsReadOnly = false;
                 File.Delete(pathB);
 
                     ListTeacher.Sort();
@@ -378,6 +386,7 @@ namespace SvodExcel
         public void UpdateListTimes(bool WatchonTimeCreate=false)
         {
             string pathT = @".\ListTime.dat";
+            FileInfo localdata;
 
                 string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
                 if (File.Exists(pathB))
@@ -387,10 +396,18 @@ namespace SvodExcel
                 else
                 {
                     string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
+                try
+                {
                     if (File.Exists(pathC))
                     {
+                        localdata = new FileInfo(pathC);
+                        localdata.IsReadOnly = false;
                         File.Delete(pathC);
                     }
+                }
+                catch{
+                    MessageBox.Show("Ошибка доступа к " + pathC,"Ошибка доступа",MessageBoxButton.OK,MessageBoxImage.Error);
+                }                    
                     string pathA = Properties.Settings.Default.PathToGlobalData;
                     File.Copy(pathA, pathC);
                 
@@ -398,8 +415,10 @@ namespace SvodExcel
                     var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     string FormulCalculate = ExSheet.Cells[16, 8].Formula;
                     exBook.Close(true);
-                    //exApp.Quit();
-                    File.Delete(pathC);
+                //exApp.Quit();
+                localdata = new FileInfo(pathC);
+                localdata.IsReadOnly = false;
+                File.Delete(pathC);
                     //MessageBox.Show(FormulCalculate);
                     //@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$"
                     Regex regex = new Regex(@"\d{1,2}\.\d{2}\-\d{1,2}\.\d{2}");
@@ -649,8 +668,16 @@ namespace SvodExcel
                             
                             if(CorrectNewTeacher(comboBoxTeacher.Text))
                             {
+                                Regex regexTeacherMoodle = new Regex(@"moodle", RegexOptions.IgnoreCase);
+                                if (regexTeacherMoodle.IsMatch(comboBoxTeacher.Text))
+                                {
+                                    comboBoxTeacher.Text = "Moodle";
+                                }
                                 if (NewTeacher(comboBoxTeacher.Text))
+                                {
                                     MessageBox.Show("Запись нового преподавателя успеешно завершена.\nНо другие пользователи не увидят нового преподавателя, пока не будут сделаны новые записи в общее расписание.");
+                                }
+                                    
                                 else
                                     MessageBox.Show("Ошибка записи нового преподавателя");
                             }
@@ -688,6 +715,12 @@ namespace SvodExcel
             Regex regex = new Regex(@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$");
             if(regex.IsMatch(Teacher))
                 return true;
+            Regex regexTeacherMoodle = new Regex(@"moodle", RegexOptions.IgnoreCase);
+            if (regexTeacherMoodle.IsMatch(Teacher))
+            {
+                Teacher = "Moodle";
+                return true;
+            }
             return false;
         }
         private bool NewTeacher(string Teacher)

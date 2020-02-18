@@ -48,5 +48,13 @@
             </TextBox>
             <Button x:Name="buttonBrowseMainFileGlobal" Content="Обзор..." Grid.Column="2" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="100" Height="30" Click="buttonBrowseMainFile_Click" IsEnabled="False"/>
         </Grid>
+        <Grid Grid.Row="3" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="chechBoxStartAdminMode" Content="Запускать в режиме администратора" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="false" Grid.ColumnSpan="2" Unchecked="chechBoxStartAdminMode_Unchecked" Checked="chechBoxStartAdminMode_Checked"/>
+        </Grid>
     </Grid>
 </Page>
