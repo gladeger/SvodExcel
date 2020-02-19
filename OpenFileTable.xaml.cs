@@ -50,7 +50,7 @@ namespace SvodExcel
             dataGridExport.ItemsSource = IDF.InputDataFileRows;
             countAllRecords = 0;
             ((INotifyCollectionChanged)listBoxInputFiles.Items).CollectionChanged += listBoxInputFilesItemsChanges;
-            buttonFindDublicates.Visibility = Visibility.Collapsed;
+            //buttonFindDublicates.Visibility = Visibility.Collapsed;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -260,13 +260,40 @@ namespace SvodExcel
             }
             Close();
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void buttonFindDublicates_Click(object sender, RoutedEventArgs e)
         {
             FindDublicateRecord();
+            
         }
         private void FindDublicateRecord()
         {
- //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            for(int i=0;i<IDFs.Count;i++)
+            {
+                for (int j = 0; j < IDFs[i].InputDataFileRows.Count; j++)
+                {
+                    for (int k = i; k < IDFs.Count; k++)
+                    {
+                        int m=0;
+                        if (k == i)
+                            m = j + 1;
+                        else
+                            m = 0;
+                        for (;m< IDFs[k].InputDataFileRows.Count;m++)
+                        {
+                            if(IDFs[i].InputDataFileRows[j].Intersection(IDFs[k].InputDataFileRows[m]))
+                            {
+                                MessageBox.Show(
+                                    "Пересекаются записи \n" +
+                                    IDFs[i].InputDataFileRows[j].Date+" "+ IDFs[i].InputDataFileRows[j].Time+" "+IDFs[i].InputDataFileRows[j].Teacher+" "+
+                                    "\n и \n"+
+                                    IDFs[k].InputDataFileRows[m].Date + " " + IDFs[k].InputDataFileRows[m].Time + " " + IDFs[k].InputDataFileRows[m].Teacher + " "
+                                    ,"Обнаружены наложения занятий",MessageBoxButton.OK,MessageBoxImage.Warning);
+                            }
+                            else
+                        }
+                    }
+                }
+            }                
         }
         private void buttonDeleteFile_Click(object sender, RoutedEventArgs e)
         {

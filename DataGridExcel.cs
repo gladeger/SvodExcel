@@ -276,6 +276,78 @@ namespace SvodExcel
             Category = null;
             Place = null;
         }
+
+        public bool Intersection(DataTableRow B = null)
+        {
+            return Intersection(this, B);
+        }
+        public static bool Intersection(DataTableRow A=null, DataTableRow B=null)
+        {
+            if (A == null || B == null)
+                return false;
+            if (A.Teacher != B.Teacher)
+                return false;
+            else
+            {
+                if (A.Teacher == null || B.Teacher == null)
+                    return false;
+                else
+                {
+                    if (A.Teacher == "" || B.Teacher == "" || A.Teacher == "Moodle" || B.Teacher == "Moodle")
+                        return false;
+                    else
+                    {
+                        if (A.Date != B.Date)
+                            return false;
+                        else
+                        {
+                            if (A.Date == null || B.Date == null)
+                                return false;
+                            else
+                            {
+                                if (A.Date == "" || B.Date == "")
+                                    return false;
+                                else
+                                {
+                                    if (A.Time != B.Time)
+                                        return false;
+                                    else
+                                    {
+                                        if (A.Time == null || B.Time == null)
+                                            return false;
+                                        else
+                                        {
+                                            if (A.Time == "" || B.Time == "")
+                                                return false;
+                                            else
+                                            {
+                                                string AStartTime, BStartTime, AEndTime, BEndTime;
+                                                AStartTime = A.Time.Substring(0, A.Time.IndexOf('-')).Replace('.',':');
+                                                BStartTime = B.Time.Substring(0, B.Time.IndexOf('-')).Replace('.', ':');
+                                                AEndTime=A.Time.Substring(A.Time.IndexOf('-')+1).Replace('.', ':');
+                                                BEndTime = B.Time.Substring(B.Time.IndexOf('-') + 1).Replace('.', ':');
+                                                DateTime AStart, BStart, AEnd, BEnd;
+                                                AStart = Convert.ToDateTime(AStartTime);
+                                                BStart = Convert.ToDateTime(BStartTime);
+                                                AEnd = Convert.ToDateTime(AEndTime);
+                                                BEnd = Convert.ToDateTime(BEndTime);
+                                                if (BEnd <= AStart || BStart >= AEnd)
+                                                {
+                                                    return false;
+                                                }
+                                                else
+                                                    return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
     }
     public class DataViewTableRow
     {
@@ -359,8 +431,7 @@ namespace SvodExcel
             Result = null;
         }
     }
-
-
+   
     public class InputDataFile
     {
         public List<DataTableRow> InputDataFileRows { get; }
