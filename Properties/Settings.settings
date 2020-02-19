@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SvodExcel.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="PathToGlobalData" Type="System.String" Scope="Application">
+    <Setting Name="PathToGlobalData" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel\РАСП.xlsx</Value>
     </Setting>
     <Setting Name="PathVariable1" Type="System.String" Scope="Application">
@@ -11,7 +11,7 @@
     <Setting Name="PathVariable2" Type="System.String" Scope="Application">
       <Value Profile="(Default)">C:\Users\Администратор ОК\source\repos\SvodExcel\РАСП.xlsx</Value>
     </Setting>
-    <Setting Name="PathToGlobal" Type="System.String" Scope="Application">
+    <Setting Name="PathToGlobal" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel</Value>
     </Setting>
     <Setting Name="GlobalData" Type="System.String" Scope="Application">
@@ -40,6 +40,30 @@
     </Setting>
     <Setting Name="ViewFast" Type="System.String" Scope="User">
       <Value Profile="(Default)">ViewFast.xls</Value>
+    </Setting>
+    <Setting Name="AdminPassword" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">RFadmin111</Value>
+    </Setting>
+    <Setting Name="PathToGlobalDataDefault" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel\РАСП.xlsx</Value>
+    </Setting>
+    <Setting Name="PathLocalNewData" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.\</Value>
+    </Setting>
+    <Setting Name="ExtensionFileNewData" Type="System.String" Scope="User">
+      <Value Profile="(Default)">xls</Value>
+    </Setting>
+    <Setting Name="WaitingDisconnect" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="PathToGlobalDefault" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel</Value>
+    </Setting>
+    <Setting Name="StartAdminMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="StartAdminModeDefault" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

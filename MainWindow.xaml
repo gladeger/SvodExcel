@@ -1,12 +1,12 @@
 ﻿<!--release ver.1-->
-    <Window x:Name="SvodExcel" x:Class="SvodExcel.MainWindow"
+<Window x:Name="SvodExcel" x:Class="SvodExcel.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Общие расписание" Height="450" Width="800" Icon="Images\excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded" Closing="SvodExcel_Closing" ResizeMode="CanResizeWithGrip">
+        Title="Общее расписание" Height="450" Width="800" Icon="Images\excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded" Closing="SvodExcel_Closing" ResizeMode="CanResizeWithGrip" Drop="SvodExcel_Drop" AllowDrop="True">
     <Window.Resources>
         <Image x:Key="excel_import_enable" Source="Images\excel_import.png"></Image>
         <Image x:Key="excel_import_disable" Source="Images\excel_import_disable.png"></Image>
@@ -19,13 +19,35 @@
         <Image x:Key="View_enable" Source="Images\View.png"></Image>
         <Image x:Key="Save_disable" Source="Images\Save_disable.png"></Image>
         <Image x:Key="Save_enable" Source="Images\Save.png"></Image>
-        <Image x:Key="Save_disable_m" Source="Images\Save_disable.png"></Image>
-        <Image x:Key="Save_enable_m" Source="Images\Save.png"></Image>
+        <Image x:Key="Save_disable_m" Source="Images\Save_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="Save_enable_m" Source="Images\Save.png" Width="20" Height="20"></Image>
         <Image x:Key="View_disable" Source="Images\View_disable.png"></Image>
         <Image x:Key="View_download_enable" Source="Images\View_download.png"></Image>
         <Image x:Key="View_download_disable" Source="Images\View_download_disable.png"></Image>
         <Image x:Key="DeleteRecord_enable" Source="Images\DeleteRecord.png"></Image>
         <Image x:Key="DeleteRecord_disable" Source="Images\DeleteRecord_disable.png"></Image>
+        <Image x:Key="Key_enable" Source="Images\key.png"></Image>
+        <Image x:Key="Key_disable" Source="Images\key_disable.png"></Image>
+        <Image x:Key="Key_enable_m" Source="Images\key.png" Width="20" Height="20"></Image>
+        <Image x:Key="Key_disable_m" Source="Images\key_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="KeyOff_enable" Source="Images\KeyOff.png"></Image>
+        <Image x:Key="KeyOff_disable" Source="Images\KeyOff_disable.png"></Image>
+        <Image x:Key="KeyOff_enable_m" Source="Images\KeyOff.png" Width="20" Height="20"></Image>
+        <Image x:Key="KeyOff_disable_m" Source="Images\KeyOff_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="SingleInput_enable_m" Source="Images\SingleInput.png" Width="20" Height="20"></Image>
+        <Image x:Key="SingleInput_disable_m" Source="Images\SingleInput_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="MultiInput_enable_m" Source="Images\MultiInput.png" Width="20" Height="20"></Image>
+        <Image x:Key="MultiInput_disable_m" Source="Images\MultiInput_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="FileInput_enable" Source="Images\OpenFile.png"></Image>
+        <Image x:Key="FileInput_disable" Source="Images\OpenFile_disable.png"></Image>
+        <Image x:Key="FileInput_enable_m" Source="Images\OpenFile.png" Width="20" Height="20"></Image>
+        <Image x:Key="FileInput_disable_m" Source="Images\OpenFile_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="Edit_enable" Source="Images\Edit.png"></Image>
+        <Image x:Key="Edit_disable" Source="Images\Edit_disable.png"></Image>
+        <Image x:Key="Disconnect_enable" Source="Images\Disconnect.png"></Image>
+        <Image x:Key="Disconnect_disable" Source="Images\Disconnect_disable.png"></Image>
+        <Image x:Key="Edit_enable_m" Source="Images\Edit.png" Width="20" Height="20"></Image>
+        <Image x:Key="Edit_disable_m" Source="Images\Edit_disable.png" Width="20" Height="20"></Image>
         <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
             <Image Source="Images\Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
@@ -42,13 +64,35 @@
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Просмотреть данные из общего файла</TextBlock>
             <Image Source="Images\View_disable.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
+        <Grid x:Key="ViewEdit_enable_grid"  Margin="0,0,0,0" Width="220" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center">Подключить данные <LineBreak/> общего файла</TextBlock>
+            <Image Source="Images\ViewEdit.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="ViewEdit_disable_grid"  Margin="0,0,0,0" Width="220" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center">подключить данные <LineBreak/>из общего файла</TextBlock>
+            <Image Source="Images\ViewEdit_disable.png" Margin="0,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
         <Grid x:Key="View_download_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные из общего файла</TextBlock>
             <Image Source="Images\View_download.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
+        <Grid x:Key="Disconnect_enable_grid"  Margin="0,0,0,0" Width="55" >
+            <Image Source="Images\Disconnect.png" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="Disconnect_disable_grid"  Margin="0,0,0,0" Width="55" >
+            <Image Source="Images\Disconnect_disable.png" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
         <Grid x:Key="View_download_disable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Скачать данные из общего файла</TextBlock>
             <Image Source="Images\View_download_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="ViewEdit_download_enable_grid"  Margin="0,0,0,0" Width="220" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center">Сохранить изменения<LineBreak/> и ВЫГРУЗИТЬ<LineBreak/> в общий файл</TextBlock>
+            <Image Source="Images\UploadEdit.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid x:Key="ViewEdit_download_disable_grid"  Margin="0,0,0,0" Width="220" >
+            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center">Сохранить изменения<LineBreak/> и ВЫГРУЗИТЬ<LineBreak/> в общий файл</TextBlock>
+            <Image Source="Images\UploadEdit_disable.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </Grid>
         <Grid x:Key="ViewFast_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Промотреть данные из общего файла</TextBlock>
@@ -97,6 +141,24 @@
                     <Setter Property="Content">
                         <Setter.Value>
                             <StaticResource  ResourceKey="SingleInput_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="Edit_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Edit_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Edit_disable"></StaticResource>
                         </Setter.Value>
                     </Setter>
                 </Trigger>
@@ -160,6 +222,42 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type Button}" x:Key="ViewEdit_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="ViewEdit_enable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="ViewEdit_disable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="Disconnect_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Disconnect_enable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Disconnect_disable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="{x:Type Button}" x:Key="View_button_download">
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="True">
@@ -173,6 +271,24 @@
                     <Setter Property="Content">
                         <Setter.Value>
                             <StaticResource  ResourceKey="View_download_disable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="ViewEdit_button_download">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="ViewEdit_download_enable_grid"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="ViewEdit_download_disable_grid"></StaticResource>
                         </Setter.Value>
                     </Setter>
                 </Trigger>
@@ -268,6 +384,150 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type Button}" x:Key="Admin_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Key_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="Key_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="Admin_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="Key_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="Key_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="AdminOff_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="KeyOff_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="KeyOff_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="AdminOff_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="KeyOff_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="KeyOff_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="SingleInput_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="SingleInput_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="SingleInput_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="MultiInput_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="MultiInput_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="MultiInput_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="FileInput_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="FileInput_enable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StaticResource  ResourceKey="FileInput_disable"></StaticResource>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="FileInput_MenuItem">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="FileInput_enable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Icon">
+                        <Setter.Value>
+                            <StaticResource ResourceKey="FileInput_disable_m"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="{x:Type DataGridCell}">
             <EventSetter Event="MouseDoubleClick"    Handler="DataGridCell_PreviewMouseLeftButtonDown" />
             <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
@@ -286,18 +546,20 @@
             <MenuItem Header="Файл">
                 <MenuItem Header="Выгрузить общий файл..." Click="buttonView_Download_Click">
                     <MenuItem.Icon>
-                        <Image Source="Images\View_download.png" Width="auto" Height="20"/>
+                        <Image Source="Images\View_download.png" Width="20" Height="20"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="MenuItemSaveFast"  Header="Сохранить краткую сводку..." Click="buttonSaveFast_Click"  Style="{StaticResource FastSave_MenuItem}" IsEnabled="False"/>
+                <MenuItem x:Name="MenuItemAdmin"  Header="Режим администратора" ToolTip='Перейти в "Режим администратора"' Style="{StaticResource Admin_MenuItem}" Click="buttonAdmin_Click"/>
+                <MenuItem x:Name="MenuItemAdminOff"  Header="Отключить режим администратора" ToolTip='Выйти из "Режима администратора"' IsEnabled="False" Style="{StaticResource AdminOff_MenuItem}" Click="buttonAdmin_Click"/>
                 <MenuItem Header="Выход" Click="MenuItem_Click_Exit"/>
             </MenuItem>
-            <MenuItem Header="Ввод данных">
-                <MenuItem Header="Ручной ввод по одному" Click="MenuItemSingleInput_Click"/>
-                <MenuItem Header="Импорт из Excel" IsEnabled="False"/>
-                <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False"/>
+            <MenuItem x:Name="MenuInputData" Header="Ввод данных">
+                <MenuItem Header="Ручной ввод по одному" Click="MenuItemSingleInput_Click"  Style="{StaticResource SingleInput_MenuItem}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
+                <MenuItem x:Name="MenuItemFileInput" Header="Импорт из Excel" Style="{StaticResource FileInput_MenuItem}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="MenuItemFileInput_Click"/>
+                <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False" Style="{StaticResource MultiInput_MenuItem}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
             </MenuItem>
-            <MenuItem Header="Настройки..." IsEnabled="False"/>
+            <MenuItem x:Name="MenuItemOptions" Header="Настройки..." ToolTip="Для включения настроек необходимо перейти в режим администратора." IsEnabled="False" Click="MenuItemOptions_Click"/>
             <MenuItem Header="Справка">
                 <MenuItem Header="О программе" Click="MenuItem_Click"/>
             </MenuItem>
@@ -305,8 +567,12 @@
         <StackPanel Height="28" VerticalAlignment="Top" Margin="0,28,0,0" Orientation="Horizontal" >
             <StackPanel x:Name="menu_Hot_Export" Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
                 <Button x:Name="buttonExportHot" Width="26" Margin="10,0,0,0" Style="{StaticResource excel_import_button}" IsEnabled="False" Click="buttonExportHot_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
-                <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip="Добавить новую запись Занятия для экспорта в общий файл"/>
-                <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных из Excel для экспорта в общий файл"/>
+                <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
+                <Button x:Name="buttonFileInputHot" Width="26"  Margin="10,0,0,0" Style="{StaticResource FileInput_button}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="buttonFileInputHot_Click"/>
+                <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
+            </StackPanel>
+            <StackPanel x:Name="menu_Hot_Edit" Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
+                <Button x:Name="buttonEditInputHot"  IsEnabled="False" Click="MenuItemEditInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись "Занятие" для экспорта в общий файл'/>
                 <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых"/>
             </StackPanel>
             <StackPanel x:Name="menu_Hot_ViewFast"  Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
@@ -321,15 +587,21 @@
                 <Image Source="Images\View_download.png" />
             </Button>
             <Button x:Name="buttonDebug" Width="26"  Margin="10,0,0,0" Click="buttonDebug_Click" Content="Debug" ToolTip="Кнопка Debug, для (что характерно) Debug" IsEnabled="False"/>
+            <Button x:Name="buttonAdmin" Width="26"  Margin="10,0,0,0" ToolTip='Перейти в "Режим администратора"' Style="{StaticResource Admin_button}" Click="buttonAdmin_Click"/>
+            <Button x:Name="buttonAdminOff" Width="26"  Margin="10,0,0,0" ToolTip='Выйти из "Режима администратора"' Style="{StaticResource AdminOff_button}" Click="buttonAdmin_Click"/>
         </StackPanel>
         <TabControl x:Name="tabControl" Margin="0,61,0,0" SelectionChanged="tabControl_SelectionChanged">
             <TabItem x:Name="ExportTab" Header="Экспорт">
                 <Grid x:Name="gridDataGridExport" Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded" LayoutUpdated="dataGridExport_LayoutUpdated"/>
+                    <DataGrid x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridExport_Loaded" LayoutUpdated="dataGridExport_LayoutUpdated" AllowDrop="True" MouseDoubleClick="dataGridExport_MouseDoubleClick" KeyUp="dataGridExport_KeyUp"/>
                     <Button x:Name="buttonExport"  Margin="0,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Upload_button}" HorizontalAlignment="Center" IsEnabled="False" Click="buttonExport_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
+                    <StackPanel Margin="0,0,0,48" Orientation="Horizontal" Height="auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="auto">
+                        <Label x:Name="StatusStringConstTextAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="Всего строк будет импортировано :"/>
+                        <Label x:Name="StatusStringCountRecordAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="0"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="ViewSmallTab" Header="Просмотр краткой сводки">
+            <TabItem x:Name="ViewSmallTab" Header="Просмотр краткой сводки" AllowDrop="True">
                 <Grid x:Name="gridDataGridViewFast" Background="#FFE5E5E5">
                     <DataGrid x:Name="dataGridViewFast" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridViewFast_Loaded" AddingNewItem="dataGridViewFast_AddingNewItem" LayoutUpdated="dataGridViewFast_LayoutUpdated"/>
                     <Button x:Name="buttonViewFast"  Margin="85,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewFast_button}" HorizontalAlignment="Left" ToolTip='Загрузить и просмотреть данные из общего сводного файла расписания' Click="buttonView_Click"/>
@@ -338,15 +610,23 @@
             </TabItem>
             <TabItem x:Name="ViewTab" Header="Просмотр всех данных">
                 <Grid x:Name="gridDataGridView" Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridView" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridView_Loaded">
+                    <DataGrid x:Name="dataGridView" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridView_Loaded" AllowDrop="True">
                     </DataGrid>
                     <Button x:Name="buttonView"  Margin="85,0,0,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource View_button}" HorizontalAlignment="Left" ToolTip='Загрузить и просмотреть данные из общего сводного файла расписания' Click="buttonView_Click"/>
                     <Button x:Name="buttonView_Download"  Margin="0,0,85,10" Height="57" Width="300" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource View_button_download}" HorizontalAlignment="Right" ToolTip='Скачать данные из общего сводного файла расписания в отдельный файл на компьютер' Click="buttonView_Download_Click"/>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="ViewEditTab" Header="Просмотр и редактирование общих данных" IsEnabled="False">
+                <Grid x:Name="gridDataGridViewEdit" Background="#FFE5E5E5">
+                    <DataGrid x:Name="dataGridViewEdit" AutoGenerateColumns="True" Margin="0,0,0,72" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" Loaded="dataGridViewEdit_Loaded" AllowDrop="True" MouseDoubleClick="dataGridExport_MouseDoubleClick" KeyUp="dataGridExport_KeyUp" LayoutUpdated="dataGridViewEdit_LayoutUpdated"/>
+                    <Button x:Name="buttonViewEdit"  Margin="85,0,0,10" Height="57" Width="250" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewEdit_button}" HorizontalAlignment="Left" ToolTip='Подключить данные из общего сводного файла расписания' Click="buttonViewEdit_Click"/>
+                    <Button x:Name="buttonDisconnect"  Margin="0,0,0,10" Height="57" Width="60" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource Disconnect_button}" ToolTip='Отключиться от данных общего файла без сохранения изменений' IsEnabled="False" Click="buttonDisconnect_Click" HorizontalAlignment="Center"/>
+                    <Button x:Name="buttonViewEdit_Download"  Margin="0,0,85,10" Height="57" Width="250" VerticalAlignment="Bottom" IsDefault="True" Style="{StaticResource ViewEdit_button_download}" HorizontalAlignment="Right" ToolTip='Выгрузить данные в общий файл, сохранив все внесенные изменения.' IsEnabled="False" Click="buttonViewEdit_Download_Click"/>
+                </Grid>
+            </TabItem>
         </TabControl>
-        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,0" Height="74" VerticalAlignment="Bottom" Width="79"/>
-        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,0" Height="74" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right"/>
+        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,0,0,0" Height="74" VerticalAlignment="Bottom" Width="79" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom"/>
+        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,0,10,0" Height="74" VerticalAlignment="Bottom" Width="80" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom"/>
     </Grid>
     <!---->
 </Window>

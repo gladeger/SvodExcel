@@ -40,6 +40,7 @@
                             <TextBlock Text="Укажите время начала занятия."/>
                             <TextBlock Text="Временной интервал должен соответсвовать одному из заранее заданных шаблонов времени проведения занятий."/>
                             <TextBlock Text="8 и 9 часов утра записывайте как 08 и 09 соответсвенно."/>
+                            <TextBlock Text="Для просмотра возможных диапазонов нажмите на кнопку справки (?)."/>
                         </StackPanel>
                     </xctk:MaskedTextBox.ToolTip>
                 </xctk:MaskedTextBox>
@@ -52,6 +53,7 @@
                             <TextBlock Text="Укажите время завершения занятия."/>
                             <TextBlock Text="Временной интервал должен соответсвовать одному из заранее заданных шаблонов времени проведения занятий."/>
                             <TextBlock Text="8 и 9 часов утра записывайте как 08 и 09 соответсвенно."/>
+                            <TextBlock Text="Для просмотра возможных диапазонов нажмите на кнопку справки (?)."/>
                         </StackPanel>
                     </xctk:MaskedTextBox.ToolTip>
                 </xctk:MaskedTextBox>
@@ -70,6 +72,9 @@
                 </Grid>
                 <Button x:Name="buttonUpdateTimeTemplates" HorizontalAlignment="Left" Margin="467,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" Click="buttonUpdateTimeTemplates_Click" ToolTip="Обновить список шаблонов времени занятии из общего файла">
                     <Image Source="Images\Update.png" />
+                </Button>
+                <Button x:Name="buttonViewTimeTemplates" HorizontalAlignment="Left" Margin="424,10,0,0" VerticalAlignment="Top" Width="30" FontSize="14" Height="30" ToolTip="Просмотреть список шаблонов времени занятии из общего файла" Click="buttonViewTimeTemplates_Click">
+                    <Image Source="Images\Help.png" />
                 </Button>
 
             </Grid>

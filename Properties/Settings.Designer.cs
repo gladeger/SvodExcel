@@ -23,12 +23,15 @@ namespace SvodExcel.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel\\РАСП.xlsx")]
         public string PathToGlobalData {
             get {
                 return ((string)(this["PathToGlobalData"]));
+            }
+            set {
+                this["PathToGlobalData"] = value;
             }
         }
         
@@ -50,12 +53,15 @@ namespace SvodExcel.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
         public string PathToGlobal {
             get {
                 return ((string)(this["PathToGlobal"]));
+            }
+            set {
+                this["PathToGlobal"] = value;
             }
         }
         
@@ -152,6 +158,90 @@ namespace SvodExcel.Properties {
             }
             set {
                 this["ViewFast"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("RFadmin111")]
+        public string AdminPassword {
+            get {
+                return ((string)(this["AdminPassword"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel\\РАСП.xlsx")]
+        public string PathToGlobalDataDefault {
+            get {
+                return ((string)(this["PathToGlobalDataDefault"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\")]
+        public string PathLocalNewData {
+            get {
+                return ((string)(this["PathLocalNewData"]));
+            }
+            set {
+                this["PathLocalNewData"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("xls")]
+        public string ExtensionFileNewData {
+            get {
+                return ((string)(this["ExtensionFileNewData"]));
+            }
+            set {
+                this["ExtensionFileNewData"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double WaitingDisconnect {
+            get {
+                return ((double)(this["WaitingDisconnect"]));
+            }
+            set {
+                this["WaitingDisconnect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
+        public string PathToGlobalDefault {
+            get {
+                return ((string)(this["PathToGlobalDefault"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StartAdminMode {
+            get {
+                return ((bool)(this["StartAdminMode"]));
+            }
+            set {
+                this["StartAdminMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StartAdminModeDefault {
+            get {
+                return ((bool)(this["StartAdminModeDefault"]));
             }
         }
     }

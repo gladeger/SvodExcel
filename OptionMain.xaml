@@ -1,0 +1,60 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SvodExcel"
+      xmlns:Properties="clr-namespace:SvodExcel.Properties" x:Class="SvodExcel.OptionMain"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="OptionMain" Loaded="Page_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Путь к общему файлу:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBox x:Name="textBoxSettingPath" Grid.Column="1" Text="Setting" Height="30" VerticalAlignment="Center" Padding="0,5,0,0" TextChanged="textBoxSettingPath_TextChanged">
+            </TextBox>
+            <Button x:Name="buttonBrowseMainFile" Content="Обзор..." Grid.Column="2" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="100" Height="30" Click="buttonBrowseMainFile_Click"/>
+        </Grid>
+        <Grid Grid.Row="1" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox Content="Технические файлы хранятся в одной директории с общем файлом" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="true" IsEnabled="False" Grid.ColumnSpan="2"/>
+        </Grid>
+        <Grid Grid.Row="2" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Общая директория:" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            <TextBox x:Name="textBoxSettingPathGlobal" Grid.Column="1" Text="Setting" Height="30" VerticalAlignment="Center" Padding="0,5,0,0" TextChanged="textBoxSettingPath_TextChanged" IsEnabled="False">
+            </TextBox>
+            <Button x:Name="buttonBrowseMainFileGlobal" Content="Обзор..." Grid.Column="2" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="100" Height="30" Click="buttonBrowseMainFile_Click" IsEnabled="False"/>
+        </Grid>
+        <Grid Grid.Row="3" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="chechBoxStartAdminMode" Content="Запускать в режиме администратора" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="false" Grid.ColumnSpan="2" Unchecked="chechBoxStartAdminMode_Unchecked" Checked="chechBoxStartAdminMode_Checked"/>
+        </Grid>
+    </Grid>
+</Page>

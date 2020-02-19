@@ -1,0 +1,162 @@
+﻿<Window x:Class="SvodExcel.OpenFileTable"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SvodExcel"
+        mc:Ignorable="d"
+        Title="Добавить строки из файла" Width="800" Loaded="Window_Loaded" AllowDrop="True" Height="840" MinHeight="840" MinWidth="800">
+    <Window.Resources>
+        <Image x:Key="OpenFile_enable" Source="Images\OpenFile.png"></Image>
+        <Image x:Key="OpenFile_disable" Source="Images\OpenFile_disable.png"></Image>
+        <Image x:Key="Edit_enable" Source="Images/edit.png"/>
+        <Image x:Key="Edit_disable" Source="Images/edit_disable.png"/>
+        <Style TargetType="{x:Type DataGridCell}">
+            <EventSetter Event="MouseDoubleClick"    Handler="DataGridCell_PreviewMouseLeftButtonDown" />
+            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
+        </Style>
+        <Style TargetType="{x:Type DataGridRow}">
+            <EventSetter Event="Selected" Handler="DataGridCell_PreviewSelected"/>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="Edit_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content" Value="{StaticResource Edit_enable}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content" Value="{StaticResource Edit_disable}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Image x:Key="DeleteRecord_enable" Source="Images/DeleteRecord.png"/>
+        <Image x:Key="DeleteRecord_disable" Source="Images/DeleteRecord_disable.png"/>
+        <Style TargetType="{x:Type Button}" x:Key="DeleteRecord_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content" Value="{StaticResource DeleteRecord_enable}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content" Value="{StaticResource DeleteRecord_disable}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid  Height="800">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="400"/>
+            <RowDefinition Height="400"/>
+        </Grid.RowDefinitions>
+        <Label x:Name="labelTech2" Content="Бета-версия" HorizontalAlignment="Right" Margin="0,10,10,0" Height="74" VerticalAlignment="Top" Width="80" HorizontalContentAlignment="Right"/>
+        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="10,10,0,0" Height="74" VerticalAlignment="Top" Width="79"/>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="1" Margin="20,10,21,10" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center">
+                Укажите путь к файлу или нескольким файлам <LineBreak/>
+                (в качестве разделителя используйте символ '|' без пробелов) <LineBreak/>
+                с таблицей для экспорта в общий файл или <LineBreak/>
+                просто перетащите файлы и папки в это окно
+            </TextBlock>
+            <Label Grid.Row="1" Grid.Column="0" Content="Путь к файлу:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0"/>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="textBoxFileName" Text="Setting" Height="30" VerticalAlignment="Center" Padding="0,5,0,0" Margin="10"/>
+            <Button  Grid.Row="1" Grid.Column="2" x:Name="buttonBrowseMainFile" Content="Обзор..." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="100" Height="30" Click="buttonBrowseMainFile_Click" />
+            <Button Grid.Column="1" Grid.Row="2" x:Name="buttonOpenFile" Content="Открыть файлы" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="300" Height="30" Click="buttonOpenFile_Click"/>
+            <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10" Grid.Row="3">
+                <Grid Background="#3F1F7144" Drop="Grid_Drop">
+                    <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" Text="Перетаскивайте сюда файлы" TextAlignment="Center" VerticalAlignment="Top" FontSize="20" FontStyle="Italic"/>
+                    <Image x:Name="View_download_png" Margin="0,0,0,10" Source="View_download.png" Stretch="Fill" Width="231" Height="126" VerticalAlignment="Bottom"/>
+                </Grid>
+            </Border>
+        </Grid>
+        <Grid Margin="0,0,0,0" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ListBox Grid.Row="0" Grid.Column="0"  x:Name="listBoxInputFiles" HorizontalAlignment="Left" Margin="10,10,0,67" Width="180" SelectionChanged="listBoxInputFiles_SelectionChanged"/>
+            <Button Grid.Column="2" Grid.Row="1" x:Name="buttonCancelDown" Content="Отмена" IsCancel="True" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="150" Height="30"/>
+            <DataGrid Grid.Row="0" Grid.Column="2" x:Name="dataGridExport" AutoGenerateColumns="True" Margin="0,10,10,67" IsReadOnly="True" ColumnWidth="*" SelectionMode="Single" CanUserReorderColumns="False" KeyUp="dataGridExport_KeyUp"/>
+            <Button Grid.Row="1" x:Name="buttonOK" Content="Добавить записи" HorizontalAlignment="Right" Margin="0,0,40,10" VerticalAlignment="Bottom" Width="150" Height="30" Click="buttonOK_Click"/>
+            <Button x:Name="buttonDeleteFile" HorizontalAlignment="Right" Margin="0,0,10,300" VerticalAlignment="Bottom" Width="130" Height="40" Grid.Column="1" ToolTip="Удалить выбранный файл из списка для добавления в общий файл" Click="buttonDeleteFile_Click">
+                <Button.Content>
+                    <TextBlock HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Center">
+                        Удалить файл<LineBreak/>
+                        из списка
+                    </TextBlock>
+                </Button.Content>
+            </Button>
+            <StackPanel Grid.Column="2" Grid.Row="0" Margin="0,0,20,10" Orientation="Vertical" Width="auto"  Height="auto" VerticalAlignment="Bottom" >
+                <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Width="auto"  Height="auto" IsEnabled="False">
+                    <CheckBox x:Name="checkBoxFindDublicate" IsChecked="False" VerticalAlignment="Center" />
+                    <Label VerticalAlignment="Bottom" Margin="-5,0,0,0" HorizontalAlignment="Left" Content="Включить проверку на дубли перед добавлением">
+                        <Label.ToolTip>
+                            <StackPanel HorizontalAlignment="Left" >
+                                <TextBlock Text="Включенная опция означает, что перед добавлением программа будет проверять  "/>
+                                <TextBlock Text="все добавляемые из файлов строки на дубликаты."/>
+                            </StackPanel>
+                        </Label.ToolTip>
+                    </Label>
+                </StackPanel>
+                <StackPanel Grid.Row="0" Margin="0,0,0,0" Orientation="Horizontal" Width="auto"  Height="auto" >
+                    <Label x:Name="StatusStringConstTextFile" VerticalAlignment="Bottom" Margin="-5,0,0,0" HorizontalAlignment="Left" Content="Всего строк будет импортировано из этого файла:"/>
+                    <Label x:Name="StatusStringCountRecordFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="0"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="10,10,-10,-10" Orientation="Horizontal" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="auto">
+                <Label x:Name="StatusStringConstTextAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="Всего строк будет импортировано из всех файлов:"/>
+                <Label x:Name="StatusStringCountRecordAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="0"/>
+            </StackPanel>
+            <Button x:Name="buttonEditInputHot"  IsEnabled="False" Click="MenuItemEditInput_Click"  Style="{StaticResource Edit_button}" ToolTip='Изменить запись "Занятие" для экспорта в общий файл' Grid.Column="1" Width="26" Height="28" Margin="114,121,10,201"/>
+            <Button x:Name="buttonDeleteHot" IsEnabled="False"  Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых" Grid.Column="1" Width="26" Height="28" Margin="114,88,10,234"/>
+            <Button x:Name="buttonUpdateTimeTemplates" HorizontalAlignment="Left" Margin="10,180,0,0" VerticalAlignment="Top" Width="130" FontSize="14" Height="60" Click="buttonUpdateTimeTemplates_Click" ToolTip="Обновить список шаблонов времени занятии из общего файла" Grid.Column="1">
+                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTimeTemplates}" Height="{Binding Height, ElementName=buttonUpdateTimeTemplates}" HorizontalAlignment="Center">
+                    <Image Source="Images/Timer.png" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Center" Width="25" Height="25" />
+                    <TextBlock FontSize="12" TextAlignment="Center" Margin="0,5,0,0">
+                        Обновить<LineBreak/>
+                        шаблоны<LineBreak/>
+                        времени
+                    </TextBlock>
+                    <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
+                </Grid>
+            </Button>
+            <Button x:Name="buttonUpdateTeacherTemplates" HorizontalAlignment="Left" Margin="10,245,0,0" VerticalAlignment="Top" Width="130" FontSize="14" Height="60" Click="buttonUpdateTeacherTemplates_Click" ToolTip="Обновить список преподавателей из общего файла" Grid.Column="1">
+                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTimeTemplates}" Height="{Binding Height, ElementName=buttonUpdateTimeTemplates}" HorizontalAlignment="Center">
+                    <Image Source="Images/Instructor.png" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Center" Width="25" Height="25" />
+                    <TextBlock FontSize="12" TextAlignment="Center" Margin="0,5,0,0">
+                        Обновить<LineBreak/>
+                        список<LineBreak/>
+                        преподавателей
+                    </TextBlock>
+                    <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
+                </Grid>
+            </Button>
+            <Button x:Name="buttonFindDublicates" Content="Искать дубли" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="1" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" IsEnabled="False" Click="Button_Click"/>
+            <TextBlock x:Name="StatusStringConstTextAllFile_Copy" VerticalAlignment="Bottom" Margin="10,0,0,10" HorizontalAlignment="Left" Width="180" Height="48" TextAlignment="Center" Grid.Column="0" FontStyle="Italic">
+                Изменения внесенные здесь <LineBreak/>
+                не меняют содержимое <LineBreak/>
+                исходных файлов
+            </TextBlock>
+            <TextBlock x:Name="StatusStringConstTextAllFile_Copy1" VerticalAlignment="Bottom" Margin="10,0,0,175" HorizontalAlignment="Left" Width="99" Height="104" TextAlignment="Right" Grid.Column="1" FontStyle="Italic">
+            Изменения <LineBreak/>внесенные <LineBreak/>здесь <LineBreak/>
+                не меняют <LineBreak/>содержимое <LineBreak/>
+                исходных файлов
+            </TextBlock>
+
+        </Grid>
+
+    </Grid>
+</Window>

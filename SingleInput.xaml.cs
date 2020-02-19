@@ -48,6 +48,7 @@ namespace SvodExcel
             NotCheckTeacher.Add(ButtonWriteAndStop.Name);
             NotCheckTeacher.Add(ButtonCancel.Name);
             itisnotstart = true;
+            DatePicker_Date.Focus();
         }
 
         private void MaskedTextBoxStartTime_GotFocus(object sender, RoutedEventArgs e)
@@ -191,6 +192,7 @@ namespace SvodExcel
             string pathA = Properties.Settings.Default.PathToGlobalData;
             //string pathA = @"C:\\Users\\Илья\\Source\\Repos\\SvodExcel\\РАСП.xlsx";
             string pathER = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            FileInfo localdata;
             if (File.Exists(pathER))
             {
                 MessageBox.Show("К сожалению обновление списка сейчас невозможно, обновляется общий сводный файл.\nПопробуйте чуть позже.");
@@ -203,7 +205,12 @@ namespace SvodExcel
                     //string pathB = @".\\РАСП.xlsx";
                     string pathB = Properties.Settings.Default.PathToLocalData;
                     if (File.Exists(pathB))
+                    {
+                        localdata = new FileInfo(pathB);
+                        localdata.IsReadOnly = false;
                         File.Delete(pathB);
+                    }
+                        
                     File.Copy(pathA, pathB);
                     while (!File.Exists(pathB)) { };
                 //Microsoft.Office.Interop.Excel.XLCel
@@ -273,6 +280,8 @@ namespace SvodExcel
                 cmd.Dispose();
                 con.Close();
                 con.Dispose();
+                localdata = new FileInfo(pathB);
+                localdata.IsReadOnly = false;
                 File.Delete(pathB);
 
                     ListTeacher.Sort();
@@ -306,7 +315,7 @@ namespace SvodExcel
             this.Effect = objBlur;
             UpdateLayout();
         }
-        private void UpdateListTeacher()
+        public void UpdateListTeacher()
         {
             /*double This_TH2 = this.Top + this.Height / 2.0;
             double This_LW2 = this.Left + this.Width / 2.0;
@@ -342,6 +351,7 @@ namespace SvodExcel
 
             if (!File.Exists(path))
             {
+                comboBoxTeacher.Items.Add("Moodle");
                 comboBoxTeacher.Items.Add("Пронина Л.Н.");
                 comboBoxTeacher.Items.Add("Григорьева А.И.");
                 File.WriteAllText(path, comboBoxTeacher.Items[0].ToString());
@@ -373,9 +383,10 @@ namespace SvodExcel
             TimeTemplate.Clear();
             TimeTemplate = File.ReadAllLines(pathT).ToList<string>();
         }
-        private void UpdateListTimes()
+        public void UpdateListTimes(bool WatchonTimeCreate=false)
         {
             string pathT = @".\ListTime.dat";
+            FileInfo localdata;
 
                 string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
                 if (File.Exists(pathB))
@@ -385,10 +396,18 @@ namespace SvodExcel
                 else
                 {
                     string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
+                try
+                {
                     if (File.Exists(pathC))
                     {
+                        localdata = new FileInfo(pathC);
+                        localdata.IsReadOnly = false;
                         File.Delete(pathC);
                     }
+                }
+                catch{
+                    MessageBox.Show("Ошибка доступа к " + pathC,"Ошибка доступа",MessageBoxButton.OK,MessageBoxImage.Error);
+                }                    
                     string pathA = Properties.Settings.Default.PathToGlobalData;
                     File.Copy(pathA, pathC);
                 
@@ -396,8 +415,10 @@ namespace SvodExcel
                     var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                     string FormulCalculate = ExSheet.Cells[16, 8].Formula;
                     exBook.Close(true);
-                    //exApp.Quit();
-                    File.Delete(pathC);
+                //exApp.Quit();
+                localdata = new FileInfo(pathC);
+                localdata.IsReadOnly = false;
+                File.Delete(pathC);
                     //MessageBox.Show(FormulCalculate);
                     //@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$"
                     Regex regex = new Regex(@"\d{1,2}\.\d{2}\-\d{1,2}\.\d{2}");
@@ -647,8 +668,16 @@ namespace SvodExcel
                             
                             if(CorrectNewTeacher(comboBoxTeacher.Text))
                             {
+                                Regex regexTeacherMoodle = new Regex(@"moodle", RegexOptions.IgnoreCase);
+                                if (regexTeacherMoodle.IsMatch(comboBoxTeacher.Text))
+                                {
+                                    comboBoxTeacher.Text = "Moodle";
+                                }
                                 if (NewTeacher(comboBoxTeacher.Text))
+                                {
                                     MessageBox.Show("Запись нового преподавателя успеешно завершена.\nНо другие пользователи не увидят нового преподавателя, пока не будут сделаны новые записи в общее расписание.");
+                                }
+                                    
                                 else
                                     MessageBox.Show("Ошибка записи нового преподавателя");
                             }
@@ -686,6 +715,12 @@ namespace SvodExcel
             Regex regex = new Regex(@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$");
             if(regex.IsMatch(Teacher))
                 return true;
+            Regex regexTeacherMoodle = new Regex(@"moodle", RegexOptions.IgnoreCase);
+            if (regexTeacherMoodle.IsMatch(Teacher))
+            {
+                Teacher = "Moodle";
+                return true;
+            }
             return false;
         }
         private bool NewTeacher(string Teacher)
@@ -781,13 +816,45 @@ namespace SvodExcel
 
         private void NewRecord()
         {
-            MainWindow home = Application.Current.MainWindow as MainWindow;
-            if(RowIndex==-1)
-                home.AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
-            else
+            Window home=null;
+            switch(Owner.GetType().ToString())
             {
-                home.EditItem(RowIndex,new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                case ("SvodExcel.MainWindow"):
+                    home = Owner as MainWindow;
+                    switch((home as MainWindow).tabControl.SelectedIndex)
+                    {
+                        case 0:
+                            if (RowIndex == -1)
+                                (home as MainWindow).AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                            else
+                            {
+                                (home as MainWindow).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                            }
+                            break;
+                        case 3:
+                            if (RowIndex >= 0)
+                                (home as MainWindow).EditItemEdition(RowIndex, new DataViewTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case ("SvodExcel.OpenFileTable"):
+                    home = Owner as OpenFileTable;
+                    if (RowIndex >0)
+                        (home as OpenFileTable).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                    break;
+                default:
+                    home = Application.Current.MainWindow as MainWindow;
+                    if (RowIndex == -1)
+                        (home as MainWindow).AddNewItem(new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                    else
+                    {
+                        (home as MainWindow).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
+                    }
+                    break;
             }
+            
         }
         private void ClearData()
         {
@@ -826,6 +893,16 @@ namespace SvodExcel
                 return true;
             }
             return false;
+        }
+
+        private void buttonViewTimeTemplates_Click(object sender, RoutedEventArgs e)
+        {
+            string bufstr = "Диапазоны времени:\n";
+            for(int i=0;i<TimeTemplate.Count;i++)
+            {
+                bufstr += TimeTemplate[i]+"\n";
+            }
+            MessageBox.Show(bufstr,"Возможные диапазоны времени",MessageBoxButton.OK);
         }
     }
 }
