@@ -134,7 +134,7 @@
                 </Grid>
             </Button>
             <Button x:Name="buttonUpdateTeacherTemplates" HorizontalAlignment="Left" Margin="10,245,0,0" VerticalAlignment="Top" Width="130" FontSize="14" Height="60" Click="buttonUpdateTeacherTemplates_Click" ToolTip="Обновить список преподавателей из общего файла" Grid.Column="1">
-                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTimeTemplates}" Height="{Binding Height, ElementName=buttonUpdateTimeTemplates}" HorizontalAlignment="Center">
+                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTeacherTemplates}" Height="{Binding Height, ElementName=buttonUpdateTeacherTemplates}" HorizontalAlignment="Center">
                     <Image Source="Images/Instructor.png" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Center" Width="25" Height="25" />
                     <TextBlock FontSize="12" TextAlignment="Center" Margin="0,5,0,0">
                         Обновить<LineBreak/>
@@ -144,7 +144,7 @@
                     <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
                 </Grid>
             </Button>
-            <Button x:Name="buttonFindDublicates" Content="Искать наложения" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="1" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" Click="buttonFindDublicates_Click"/>
+            <Button x:Name="buttonFindDublicates" Content="Искать наложения" HorizontalAlignment="Right" Margin="0,0,10,32" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="2" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" Click="buttonFindDublicates_Click"/>
             <TextBlock x:Name="StatusStringConstTextAllFile_Copy" VerticalAlignment="Bottom" Margin="10,0,0,10" HorizontalAlignment="Left" Width="180" Height="48" TextAlignment="Center" Grid.Column="0" FontStyle="Italic">
                 Изменения внесенные здесь <LineBreak/>
                 не меняют содержимое <LineBreak/>
@@ -155,6 +155,13 @@
                 не меняют <LineBreak/>содержимое <LineBreak/>
                 исходных файлов
             </TextBlock>
+            <Button x:Name="buttonUpdateNoneTeacherTemplates" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" FontSize="14" Height="40" ToolTip="Сбросить список игнорируемых преподавателей (можно будет заполнить снова)" Grid.Column="1" Grid.RowSpan="2">
+                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateNoneTeacherTemplates}" Height="{Binding Height, ElementName=buttonUpdateNoneTeacherTemplates}" HorizontalAlignment="Center" IsEnabled="False">
+                    <Image Source="Images/Instructor.png" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Center" Width="25" Height="25" />
+                    <TextBlock FontSize="9" TextAlignment="Center" Margin="0,0,0,0"><Run Text="Сбросить"/><LineBreak/><Run Text="список"/><LineBreak/><Run Text="игнорирования"/></TextBlock>
+                    <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
+                </Grid>
+            </Button>
 
         </Grid>
 

@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Collections.Specialized;
 
-
 namespace SvodExcel
 {
     /// <summary>
@@ -31,6 +30,7 @@ namespace SvodExcel
         InputDataFile IDF = new InputDataFile();
         List<string> TimeTemplate = new List<string>();
         List<string> TeacherTemplate = new List<string>();
+        List<string> NoneTeacherTemplate = new List<string>();
         ulong countAllRecords = 0;
         private bool ClickToAddRow = true;
         public OpenFileTable(string[] dataString=null, Window OwnerWindow=null)
@@ -45,12 +45,21 @@ namespace SvodExcel
             if(dataString!=null)
             {
                 if(dataString.Length>0)
+                {
                     AddFilesToOpen(dataString);
+                    countAllRecords = 0;
+                    for (int i = 0; i < IDFs.Count; i++)
+                    {
+                        //if(IDFs[i].InputDataFileRows!=null)
+                        countAllRecords += (ulong)IDFs[i].InputDataFileRows.Count;
+                    }
+                    StatusStringCountRecordAllFile.Content = countAllRecords.ToString();
+                }                    
             }
             dataGridExport.ItemsSource = IDF.InputDataFileRows;
             countAllRecords = 0;
             ((INotifyCollectionChanged)listBoxInputFiles.Items).CollectionChanged += listBoxInputFilesItemsChanges;
-            //buttonFindDublicates.Visibility = Visibility.Collapsed;
+            buttonFindDublicates.Visibility = Visibility.Collapsed;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -67,6 +76,10 @@ namespace SvodExcel
             }
             dataGridExport.UpdateLayout();
             
+            if(listBoxInputFiles.Items.Count>0)
+            {
+                listBoxInputFiles.SelectedIndex=0;
+            }
             /*string bufstr = "";
             for(int i=0;i<TimeTemplate.Count;i++)
             {
@@ -110,10 +123,16 @@ namespace SvodExcel
             }
             else
             {
-                string[] Teachers = File.ReadAllLines(path);
                 TeacherTemplate.Clear();
                 TeacherTemplate = File.ReadAllLines(path).ToList<string>();
             }
+            path = @".\ListNoneTeacher.dat";
+            NoneTeacherTemplate.Clear();
+            if (File.Exists(path))
+            {                
+                NoneTeacherTemplate = File.ReadAllLines(path).ToList<string>();
+            }           
+
         }
 
         private void buttonBrowseMainFile_Click(object sender, RoutedEventArgs e)
@@ -290,6 +309,7 @@ namespace SvodExcel
                                     ,"Обнаружены наложения занятий",MessageBoxButton.OK,MessageBoxImage.Warning);
                             }
                             else
+                            { }
                         }
                     }
                 }
@@ -323,8 +343,47 @@ namespace SvodExcel
                     {
                         if (TeacherTemplate.IndexOf(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher) < 0)
                         {
-                            IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
-                            i-=1;
+                            if (NoneTeacherTemplate.IndexOf(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher) < 0)
+                            {
+                                if (MessageBox.Show("Обнаруженный не записанный ранее в общий файл расписания преподаватель:\n" +
+                                    IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher +
+                                    "\nВы хотите добавить его в общий файл?\n(Если ответите \"Нет\", то записи с этим преподавателем будут пропущены.)"
+                                    ,"Найден незарегистрированный преподаватель",MessageBoxButton.YesNo,MessageBoxImage.Warning
+                                    ) == MessageBoxResult.Yes
+                                    )
+                                {
+                                    TeacherTemplate.Add(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    string path = @".\ListTeacher.dat";
+                                    if (File.Exists(path))
+                                    {
+                                        File.AppendAllText(path, "\n" + IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    }
+                                }
+                                else
+                                {
+                                    string path = @".\ListNoneTeacher.dat";
+                                    if (File.Exists(path))
+                                    {
+                                        File.AppendAllText(path, "\n" + IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    }
+                                    NoneTeacherTemplate.Add(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
+                                    i -= 1;
+                                }
+                            }
+                            else
+                            {
+                                IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
+                                i -= 1;
+                            }
                         }
                             
                     }
@@ -421,12 +480,14 @@ namespace SvodExcel
             objBlur.Radius = 4;
             this.Effect = objBlur;
             UpdateLayout();
-
+            /*
             SingleInput SItemp = new SingleInput();
             SItemp.Owner = this;
             SItemp.exApp = (Owner as MainWindow).exApp;
             SItemp.UpdateListTimes();
             SItemp.Owner = null;
+            */
+            DataWork.UpdateListTimes((Owner as MainWindow).exApp);
             StartListTimes();
 
             this.Effect = null;
@@ -439,14 +500,15 @@ namespace SvodExcel
             objBlur.Radius = 4;
             this.Effect = objBlur;
             UpdateLayout();
-            
+            /*
             SingleInput SItemp = new SingleInput();
             SItemp.Owner = this;
             SItemp.exApp = (Owner as MainWindow).exApp;
             SItemp.UpdateListTeacher();
             SItemp.Owner = null;
+            */
+            DataWork.UpdateTeachersList((Owner as MainWindow).exApp);
             StartListTeacher();
-
             this.Effect = null;
             UpdateLayout();
         }

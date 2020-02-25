@@ -186,7 +186,7 @@ namespace SvodExcel
             }                       
         }
 
-        private void GetExcel()
+        private void UpdateTeachersList()
         {
             //string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
             string pathA = Properties.Settings.Default.PathToGlobalData;
@@ -337,7 +337,7 @@ namespace SvodExcel
             objBlur.Radius = 4;
             this.Effect = objBlur;
             UpdateLayout();            
-            GetExcel();
+            UpdateTeachersList();
             this.Effect = null;
             UpdateLayout();
             //PB.Close();

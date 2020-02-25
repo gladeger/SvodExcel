@@ -62,6 +62,12 @@ namespace SvodExcel
             ((INotifyCollectionChanged)dataGridExport.Items).CollectionChanged += dataGridExportItemsChanges;
 
             AdminModeActive(AdminMode);//вкл/выкл режим админа
+            if(Properties.Settings.Default.FirstStart)
+            {
+                Properties.Settings.Default.FirstStart = false;
+                DataWork.UpdateListTimes(exApp);
+                DataWork.UpdateTeachersList(exApp);
+            }
         }
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
         {
@@ -404,6 +410,7 @@ namespace SvodExcel
         public void ExportData()//вставляем в общий файл данные
         {           
             string pathB = Properties.Settings.Default.PathToGlobal+"\\"+Properties.Settings.Default.GlobalMarker;
+            FileInfo localdata;
             ClearHang();
             if (File.Exists(pathB))
             {
@@ -413,12 +420,17 @@ namespace SvodExcel
             {
                 string timeforname= DateTime.Now.ToString().Replace(':', '_');
                 string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
+                //MessageBox.Show("Смотри!.\n(" + pathC + ")\n");
                 if (File.Exists(pathC))
                 {
-                    try { File.Delete(pathC); }
+                    localdata = new FileInfo(pathC);    
+                    try {
+                        localdata.IsReadOnly = false;
+                        File.Delete(pathC); 
+                    }
                     catch
                     {
-                        MessageBox.Show("Ошибка обращения к локальной копии сводного документа.\nПерезапустите компьютер");
+                        MessageBox.Show("Ошибка обращения к локальной копии сводного документа.\n(" + pathC + ")\nПерезапустите компьютер");
                         return;
                     }
                     
@@ -431,8 +443,10 @@ namespace SvodExcel
                 string pathA = Properties.Settings.Default.PathToGlobalData;
                 File.Copy(pathA, pathC);
                 //var exApp = new Microsoft.Office.Interop.Excel.Application();
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                localdata = new FileInfo(pathC);
+                localdata.IsReadOnly = false;
                 var exBook = exApp.Workbooks.Open(pathC);
                 var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
                 int BlinkEnd = 0;
@@ -447,14 +461,19 @@ namespace SvodExcel
                     ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
                     ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
                     ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
-                }    
+                }
+                exBook.Save();
                 exBook.Close(true);            
                
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + timeforname + ".xlsx");
                 File.Copy(pathC, pathA);
+                localdata = new FileInfo(pathA);
+                localdata.IsReadOnly = true;
                 //File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
+                localdata = new FileInfo(pathC);
+                localdata.IsReadOnly = false;
                 File.Delete(pathC);
 
                 //*******************************************************************************************************************************************************************************************************************************
@@ -462,6 +481,8 @@ namespace SvodExcel
                     string pathD = Directory.GetCurrentDirectory() + "\\" + timeforname + " " + System.Net.Dns.GetHostName() + " " + System.Security.Principal.WindowsIdentity.GetCurrent().Name.Substring(System.Security.Principal.WindowsIdentity.GetCurrent().Name.LastIndexOf('\\') + 1) + "." + Properties.Settings.Default.ExtensionFileNewData;
                     if (File.Exists(pathD))
                     {
+                        localdata = new FileInfo(pathD);
+                        localdata.IsReadOnly = false;
                         File.Delete(pathD);
                     }
                     String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathD + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
@@ -500,12 +521,17 @@ namespace SvodExcel
                     ds.Dispose();
                     dt.Dispose();
                     File.Copy(pathD, Properties.Settings.Default.PathToGlobal+"\\"+pathD.Substring(pathD.LastIndexOf('\\')+1));
+                    localdata = new FileInfo(pathD);
+                    localdata.IsReadOnly = false;
                     File.Delete(pathD);
-                }               
-//*******************************************************************************************************************************************************************************************************************************
+                }
+                //*******************************************************************************************************************************************************************************************************************************
+                localdata = new FileInfo(pathB);
+                localdata.IsReadOnly = false;
                 File.Delete(pathB);
                 DTR.Clear();
                 CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+                
             }
         }
         public void ClearHang()
@@ -522,6 +548,8 @@ namespace SvodExcel
                 sw.Close();
                 if ((busy_customer == ip.ToString())||(DateTime.Now.Subtract(employed.CreationTime.ToLocalTime()).TotalMinutes > Properties.Settings.Default.WaitingInLine))
                 {
+                    FileInfo localdata = new FileInfo(pathB);
+                    localdata.IsReadOnly = false;
                     File.Delete(pathB);
                     int i = 0;
                     while (File.Exists(pathB)) {
@@ -1471,9 +1499,14 @@ namespace SvodExcel
                         ExSheet.Rows[MAD[i].IndexData + BlinkEnd].Delete(Microsoft.Office.Interop.Excel.XlDeleteShiftDirection.xlShiftUp);
                     }
                 }
+                localdata = new FileInfo(pathC);
+                localdata.IsReadOnly = false;
+                exBook.Save();
                 exBook.Close(true);
                 SW.Close();
                 File.Copy(pathD, Properties.Settings.Default.PathToGlobal + "\\" + pathD.Substring(pathD.LastIndexOf('\\') + 1));
+                localdata = new FileInfo(pathD);
+                localdata.IsReadOnly = false;
                 File.Delete(pathD);
 
                 localdata.IsReadOnly = true;
@@ -1481,6 +1514,8 @@ namespace SvodExcel
                 
                 File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + timeforname + ".xlsx");
                 File.Copy(pathC, pathA);
+                localdata = new FileInfo(pathA);
+                localdata.IsReadOnly = true;
                 //File.Replace(pathC,pathA,pathA.Substring(0, pathA.Length-5)+ " "+DateTime.Now.ToString().Replace(':','_')+ ".xlsx");
                 localdata.IsReadOnly = false;
                 File.Delete(pathC);
@@ -1646,6 +1681,8 @@ namespace SvodExcel
                     sw.Close();
                     if ((busy_customer == ip.ToString()) && (DateTime.Now.Subtract(employed.CreationTime.ToLocalTime()).TotalSeconds > Properties.Settings.Default.WaitingDisconnect))
                     {
+                        FileInfo localdata = new FileInfo(pathB);
+                        localdata.IsReadOnly = false;
                         File.Delete(pathB);
                         int i = 0;
                         while (File.Exists(pathB))
@@ -1664,7 +1701,7 @@ namespace SvodExcel
                         MAD.Clear();
                         if (File.Exists(pathC))
                         {
-                            FileInfo localdata = new FileInfo(pathC);
+                            localdata = new FileInfo(pathC);
                             localdata.IsReadOnly = false;
                             File.Delete(pathC);
                             while (File.Exists(pathB))

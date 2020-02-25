@@ -244,5 +244,17 @@ namespace SvodExcel.Properties {
                 return ((bool)(this["StartAdminModeDefault"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool FirstStart {
+            get {
+                return ((bool)(this["FirstStart"]));
+            }
+            set {
+                this["FirstStart"] = value;
+            }
+        }
     }
 }
