@@ -41,6 +41,7 @@ namespace SvodExcel
         public MainWindow()
         {
             InitializeComponent();
+            
             DTR.Clear();
             vDTR.Clear();
             vfDTR.Clear();
@@ -84,6 +85,8 @@ namespace SvodExcel
 
             ClearHang();
             buttonDebug.Visibility = Visibility.Collapsed;
+            Top = 0;
+            Left = 0;
         }
         private void SvodExcel_Closed(object sender, EventArgs e)
         {

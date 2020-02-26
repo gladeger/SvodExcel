@@ -7,7 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Ручной ввод по одному" Height="624.5" Width="800" Icon="Images/excel_import.ico" MinWidth="700" MinHeight="500" Closing="Single_manual_entry_Closing">
+        Title="Ручной ввод по одному" Height="624.5" Width="800" Icon="Images/Edit.png" MinWidth="700" MinHeight="500" Closing="Single_manual_entry_Closing" ShowInTaskbar="False">
     <Window.Resources>
         <Style x:Key="MaskedTextBoxStyle"
                TargetType="TextBox">

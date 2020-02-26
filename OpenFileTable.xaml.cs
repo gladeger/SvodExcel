@@ -30,7 +30,7 @@ namespace SvodExcel
         InputDataFile IDF = new InputDataFile();
         List<string> TimeTemplate = new List<string>();
         List<string> TeacherTemplate = new List<string>();
-        List<string> NoneTeacherTemplate = new List<string>();
+        public List<string> NoneTeacherTemplate = new List<string>();
         ulong countAllRecords = 0;
         private bool ClickToAddRow = true;
         public OpenFileTable(string[] dataString=null, Window OwnerWindow=null)
@@ -146,6 +146,10 @@ namespace SvodExcel
             if (dlg.ShowDialog() == true)
             {
                 AddFilesToOpen(dlg.FileNames);
+                if (listBoxInputFiles.Items.Count > 0)
+                {
+                    listBoxInputFiles.SelectedIndex = listBoxInputFiles.Items.Count - 1;
+                }
             }
         }
 
@@ -260,6 +264,10 @@ namespace SvodExcel
         {
             string[] dataString = textBoxFileName.Text.Split('|');
             AddFilesToOpen(dataString);
+            if (listBoxInputFiles.Items.Count > 0)
+            {
+                listBoxInputFiles.SelectedIndex = listBoxInputFiles.Items.Count - 1;
+            }
         }
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)
@@ -368,11 +376,11 @@ namespace SvodExcel
                                     string path = @".\ListNoneTeacher.dat";
                                     if (File.Exists(path))
                                     {
-                                        File.AppendAllText(path, "\n" + IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                        File.AppendAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher+"\n");
                                     }
                                     else
                                     {
-                                        File.WriteAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                        File.WriteAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher + "\n");
                                     }
                                     NoneTeacherTemplate.Add(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
                                     IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
@@ -668,6 +676,29 @@ namespace SvodExcel
                 IDFs[Ind].InputDataFileRows[RowIndex] = newDTR;
             }            
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+        }
+
+        private void buttonUpdateNot_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Вы действительно хотите обнулить список игнорируемых преподавателей при добавлении новых записей?", "Сброс Списка игнорируемых преподавателей", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+            {
+                string path = @".\ListNoneTeacher.dat";
+                NoneTeacherTemplate.Clear();
+                if (File.Exists(path))
+                {
+                    File.WriteAllText(path,"");
+                }
+            }                
+        }
+
+        private void buttonListNotTeachers_Click(object sender, RoutedEventArgs e)
+        {
+            ListViewEditWindow LVEW = new ListViewEditWindow();
+            LVEW.Title = "Список игнорируемых преподавателей";
+            LVEW.Owner = this;
+            LVEW.dataGrid.Columns[0].Header="ФИО";
+                LVEW.dataGrid.ItemsSource = NoneTeacherTemplate;
+            LVEW.Show();
         }
     }
 }

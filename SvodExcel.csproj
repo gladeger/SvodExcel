@@ -33,8 +33,8 @@
     <PublisherName>ИПК</PublisherName>
     <WebPage>publish.htm</WebPage>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>18</ApplicationRevision>
-    <ApplicationVersion>1.9.0225.%2a</ApplicationVersion>
+    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationVersion>1.10.0226.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -64,16 +64,17 @@
     <ApplicationIcon>Images\excel_import.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>2E841EBDF7959DF11DE45068437979B648438FF7</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>C304A6751F562AEEE72C00B9806CABD4D1243F5A</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>SvodExcel_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -102,6 +103,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>SvodExcel.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>SvodExcel_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ExcelLibrary">
@@ -234,6 +244,9 @@
     <Compile Include="InputPassword.xaml.cs">
       <DependentUpon>InputPassword.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ListViewEditWindow.xaml.cs">
+      <DependentUpon>ListViewEditWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OpenFileTable.xaml.cs">
       <DependentUpon>OpenFileTable.xaml</DependentUpon>
     </Compile>
@@ -251,6 +264,10 @@
       <DependentUpon>SingleInput.xaml</DependentUpon>
     </Compile>
     <Page Include="InputPassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListViewEditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -321,6 +338,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="SvodExcel_TemporaryKey.pfx" />
     <None Include="РАСП.xlsx" />
   </ItemGroup>
   <ItemGroup>
@@ -422,6 +440,8 @@
     <Content Include="ACEOLEDB.DLL">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\NotTeacher.png" />
+    <Resource Include="Images\updateNot.png" />
     <Resource Include="Images\Disconnect.png" />
     <Resource Include="Images\Disconnect_disable.png" />
     <Resource Include="Images\UploadEdit_disable.png" />
