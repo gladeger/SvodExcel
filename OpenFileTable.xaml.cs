@@ -691,13 +691,15 @@ namespace SvodExcel
             }                
         }
 
-        private void buttonListNotTeachers_Click(object sender, RoutedEventArgs e)
+        public void buttonListNotTeachers_Click(object sender, RoutedEventArgs e)
         {
             ListViewEditWindow LVEW = new ListViewEditWindow();
             LVEW.Title = "Список игнорируемых преподавателей";
             LVEW.Owner = this;
             LVEW.dataGrid.Columns[0].Header="ФИО";
                 LVEW.dataGrid.ItemsSource = NoneTeacherTemplate;
+            labelTech.Content = LVEW.dataGrid.ItemsSource.GetEnumerator().ToString();
+            //for (int i = 0; i < NoneTeacherTemplate.Count; i++) MessageBox.Show(NoneTeacherTemplate[i]);
             LVEW.Show();
         }
     }

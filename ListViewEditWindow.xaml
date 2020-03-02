@@ -40,10 +40,6 @@
         </Style>-->
     </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="129*"/>
-            <ColumnDefinition Width="158*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
@@ -54,7 +50,8 @@
         </StackPanel>
         <DataGrid x:Name="dataGrid" Margin="10,0,10,10" Grid.Row="1" ItemsSource="{Binding}" AutoGenerateColumns="False" Grid.ColumnSpan="2">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Mode=OneWay}" Header="One" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Mode=TwoWay, Path=.}" Header="One" Width="*"/>
+                <!--<DataGridTextColumn Binding="{Binding ListStringArrayProperty}" Header="One" Width="*"/>-->
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
