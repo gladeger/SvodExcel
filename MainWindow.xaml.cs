@@ -1242,7 +1242,7 @@ namespace SvodExcel
             //f.Hide();
             //if(dataString!=null)
               //  f.AddFilesToOpen(dataString);
-            f.ShowDialog();
+             f.ShowDialog();
 
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }

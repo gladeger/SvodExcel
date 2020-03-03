@@ -21,6 +21,10 @@ namespace SvodExcel
     /// Логика взаимодействия для OpenFileTable.xaml
     /// </summary>
     /// 
+    public struct NoneTeacher
+    {
+        public string Name { get; set; }
+    }
     public partial class OpenFileTable : Window
     {
         List<string> InputFileName = new List<string>();
@@ -31,8 +35,10 @@ namespace SvodExcel
         InputDataFile IDF = new InputDataFile();
         List<string> TimeTemplate = new List<string>();
         List<string> TeacherTemplate = new List<string>();
+        public List<string> NoneTeacherTemplate = new List<string>();
         ulong countAllRecords = 0;
         private bool ClickToAddRow = true;
+        public ListViewEditWindow LVEW = new ListViewEditWindow();
         public OpenFileTable(string[] dataString=null, Window OwnerWindow=null)
         {
             InitializeComponent();
@@ -67,6 +73,10 @@ namespace SvodExcel
             }
             dataGridExport.UpdateLayout();
             
+            if(listBoxInputFiles.Items.Count>0)
+            {
+                listBoxInputFiles.SelectedIndex=0;
+            }
             /*string bufstr = "";
             for(int i=0;i<TimeTemplate.Count;i++)
             {
@@ -579,6 +589,31 @@ namespace SvodExcel
                 IDFs[Ind].InputDataFileRows[RowIndex] = newDTR;
             }            
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+        }
+
+        private void buttonUpdateNot_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Вы действительно хотите обнулить список игнорируемых преподавателей при добавлении новых записей?", "Сброс Списка игнорируемых преподавателей", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+            {
+                string path = @".\ListNoneTeacher.dat";
+                NoneTeacherTemplate.Clear();
+                if (File.Exists(path))
+                {
+                    File.WriteAllText(path,"");
+                }
+            }                
+        }
+
+        public void buttonListNotTeachers_Click(object sender, RoutedEventArgs e)
+        {
+            ListViewEditWindow LVEW = new ListViewEditWindow();
+            LVEW.Title = "Список игнорируемых преподавателей";
+            LVEW.Owner = this;
+            LVEW.dataGrid.Columns[0].Header="ФИО";
+                LVEW.dataGrid.ItemsSource = NoneTeacherTemplate;
+            labelTech.Content = LVEW.dataGrid.ItemsSource.GetEnumerator().ToString();
+            //for (int i = 0; i < NoneTeacherTemplate.Count; i++) MessageBox.Show(NoneTeacherTemplate[i]);
+            LVEW.Show();
         }
     }
 }
