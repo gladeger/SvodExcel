@@ -20,6 +20,10 @@ namespace SvodExcel
     /// Логика взаимодействия для OpenFileTable.xaml
     /// </summary>
     /// 
+    public struct NoneTeacher
+    {
+        public string Name { get; set; }
+    }
     public partial class OpenFileTable : Window
     {
         List<string> InputFileName = new List<string>();
@@ -31,8 +35,10 @@ namespace SvodExcel
         List<string> TimeTemplate = new List<string>();
         List<string> TeacherTemplate = new List<string>();
         public List<string> NoneTeacherTemplate = new List<string>();
+        public List<NoneTeacher> NTT = new List<NoneTeacher>();
         ulong countAllRecords = 0;
         private bool ClickToAddRow = true;
+        public ListViewEditWindow LVEW = new ListViewEditWindow();
         public OpenFileTable(string[] dataString=null, Window OwnerWindow=null)
         {
             InitializeComponent();
@@ -80,6 +86,32 @@ namespace SvodExcel
             {
                 listBoxInputFiles.SelectedIndex=0;
             }
+
+            LVEW.Title = "Список игнорируемых преподавателей";
+            LVEW.Owner = this;
+
+            NTT.Clear();
+            for(int i=0;i<NoneTeacherTemplate.Count;i++)
+            {
+                NoneTeacher bNTT = new NoneTeacher();
+                bNTT.Name = NoneTeacherTemplate[i];
+                NTT.Add(bNTT);
+            }
+                
+            
+            Binding bind = new Binding();
+            bind.Path = new PropertyPath(".");
+            bind.Source = NTT;
+            //bind.XPath = ".";
+            bind.Mode = BindingMode.TwoWay;
+            LVEW.dataGrid.ItemsSource = NTT;
+            //labelTech.Content = NoneTeacherTemplate[0];
+
+            //LVEW.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+
+
+            CollectionViewSource.GetDefaultView(LVEW.dataGrid.ItemsSource).Refresh();            
+            //LVEW.dataGrid.Columns[0].Header = "ФИО";
             /*string bufstr = "";
             for(int i=0;i<TimeTemplate.Count;i++)
             {
@@ -693,14 +725,26 @@ namespace SvodExcel
 
         public void buttonListNotTeachers_Click(object sender, RoutedEventArgs e)
         {
-            ListViewEditWindow LVEW = new ListViewEditWindow();
-            LVEW.Title = "Список игнорируемых преподавателей";
-            LVEW.Owner = this;
-            LVEW.dataGrid.Columns[0].Header="ФИО";
-                LVEW.dataGrid.ItemsSource = NoneTeacherTemplate;
-            labelTech.Content = LVEW.dataGrid.ItemsSource.GetEnumerator().ToString();
+
+            //LVEW.SetBinding();
+            //labelTech.Content = LVEW.dataGrid.ItemsSource.GetEnumerator().ToString();
             //for (int i = 0; i < NoneTeacherTemplate.Count; i++) MessageBox.Show(NoneTeacherTemplate[i]);
+            //MessageBox.Show(LVEW.dataGrid.Items[0].ToString());
             LVEW.Show();
+            /*
+             * LVEW.Close();
+
+            LVEW = new ListViewEditWindow(NoneTeacherTemplate);
+            Binding bind = new Binding();
+            bind.Source = NoneTeacherTemplate;
+            bind.Path = new PropertyPath(".");
+            //bind.XPath = ".";
+            bind.Mode = BindingMode.TwoWay;
+            //LVEW.dataGrid.ItemsSource = NoneTeacherTemplate;
+            //LVEW.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+            //LVEW.dataGrid.Columns[0].Header = "ФИО";
+            LVEW.Show();
+            */
         }
     }
 }

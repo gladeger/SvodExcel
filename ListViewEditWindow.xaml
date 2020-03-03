@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="ListViewEditWindow" Height="450" Width="293.255" Icon="Images/NotTeacher.png" Topmost="True" WindowStartupLocation="CenterOwner" ResizeMode="CanMinimize" ShowInTaskbar="False" WindowStyle="ToolWindow">
+        Title="ListViewEditWindow" Height="450" Width="293.255" Icon="Images/NotTeacher.png" Topmost="True" WindowStartupLocation="CenterOwner" ResizeMode="CanMinimize" ShowInTaskbar="False" WindowStyle="ToolWindow" Closed="Window_Closed" Closing="Window_Closing">
     <Window.Resources>
         <Image x:Key="Edit_enable" Source="Images/Edit.png"/>
         <Image x:Key="Edit_disable" Source="Images/Edit_disable.png"/>
@@ -48,9 +48,9 @@
             <Button x:Name="buttonEditInputHot"  IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись'/>
             <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}"  ToolTip="Удалить выделенную запись"/>
         </StackPanel>
-        <DataGrid x:Name="dataGrid" Margin="10,0,10,10" Grid.Row="1" ItemsSource="{Binding}" AutoGenerateColumns="False" Grid.ColumnSpan="2">
+        <DataGrid x:Name="dataGrid" Margin="10,0,10,10" Grid.Row="1" ItemsSource="{Binding Path=.}" AutoGenerateColumns="False" Grid.ColumnSpan="2" CellEditEnding="dataGrid_CellEditEnding">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Mode=TwoWay, Path=.}" Header="One" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Name}" Header="One" Width="*"/>
                 <!--<DataGridTextColumn Binding="{Binding ListStringArrayProperty}" Header="One" Width="*"/>-->
             </DataGrid.Columns>
         </DataGrid>
