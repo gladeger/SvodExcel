@@ -41,6 +41,7 @@ namespace SvodExcel
                 dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bind);
 
             }*/
+
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -57,6 +58,40 @@ namespace SvodExcel
         private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             MessageBox.Show("Ничего не происходит но будет потом");
+        }
+
+        public void SaveEdit() { }
+
+        private void buttonEditInputHot_Click(object sender, RoutedEventArgs e)
+        {
+            dataGrid.BeginEdit();
+        }
+
+        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(dataGrid.Items.Count>1)
+            {
+                buttonEditInputHot.IsEnabled = true;
+                buttonDeleteHot.IsEnabled = true;
+            }
+            else
+            {
+                buttonEditInputHot.IsEnabled = false;
+                //buttonDeleteHot.IsEnabled = false;
+            }
+            //labelTech.Content = dataGrid.Items.Count.ToString();
+        }
+
+        private void MenuItemSingleInput_Click(object sender, RoutedEventArgs e)
+        {
+            //dataGrid.Items.Add();
+        }
+
+        private void buttonDeleteHot_Click(object sender, RoutedEventArgs e)
+        {
+            (dataGrid.ItemsSource as List<NoneTeacher>).Remove(dataGrid.SelectedItem as NoneTeacher);
+            CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
+
         }
     }
 }

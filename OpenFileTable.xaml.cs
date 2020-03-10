@@ -20,9 +20,10 @@ namespace SvodExcel
     /// Логика взаимодействия для OpenFileTable.xaml
     /// </summary>
     /// 
-    public struct NoneTeacher
+    public class NoneTeacher
     {
         public string Name { get; set; }
+        public NoneTeacher(){}
     }
     public partial class OpenFileTable : Window
     {
@@ -104,13 +105,18 @@ namespace SvodExcel
             bind.Source = NTT;
             //bind.XPath = ".";
             bind.Mode = BindingMode.TwoWay;
+            
+            
             LVEW.dataGrid.ItemsSource = NTT;
+            
+            
             //labelTech.Content = NoneTeacherTemplate[0];
 
-            //LVEW.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bind);
-
-
+            LVEW.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bind);
             CollectionViewSource.GetDefaultView(LVEW.dataGrid.ItemsSource).Refresh();
+            LVEW.dataGrid.CanUserAddRows = true;
+
+
             //LVEW.dataGrid.Columns[0].Header = "ФИО";
             /*string bufstr = "";
             for(int i=0;i<TimeTemplate.Count;i++)
@@ -118,6 +124,12 @@ namespace SvodExcel
                 bufstr += TimeTemplate[i] + "\n";
             }
             MessageBox.Show(bufstr);*/
+        }
+        private void Window_Closed(object sender, EventArgs e)
+        {
+
+            string path = @".\ListNoneTeacher.dat";
+            File.WriteAllLines(path, NoneTeacherTemplate);
         }
 
         private void StartListTimes()
@@ -746,5 +758,7 @@ namespace SvodExcel
             LVEW.Show();
             */
         }
+
+        
     }
 }

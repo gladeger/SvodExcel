@@ -8,7 +8,7 @@
         Title="ListViewEditWindow" Height="450" Width="293.255" Icon="Images/NotTeacher.png" Topmost="True" WindowStartupLocation="CenterOwner" ResizeMode="CanMinimize" ShowInTaskbar="False" WindowStyle="ToolWindow" Closed="Window_Closed" Closing="Window_Closing">
     <Window.Resources>
         <Image x:Key="Edit_enable" Source="Images/Edit.png"/>
-        <Image x:Key="Edit_disable" Source="Images/Edit_disable.png"/>
+        <Image x:Name="buttonEditInputHot1" x:Key="Edit_disable" Source="Images/Edit_disable.png"/>
         <Style TargetType="{x:Type Button}" x:Key="Edit_button">
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="True">
@@ -31,6 +31,18 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Image x:Key="SingleInput_enable" Source="Images/SingleInput.png"/>
+        <Image x:Key="SingleInput_disable" Source="Images/SingleInput_disable.png"/>
+        <Style TargetType="{x:Type Button}" x:Key="SingleInput_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content" Value="{StaticResource SingleInput_enable}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content" Value="{StaticResource SingleInput_disable}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <!--<Style TargetType="{x:Type DataGridCell}">
             <EventSetter Event="MouseDoubleClick" />
             <EventSetter Event="Selected"/>
@@ -45,14 +57,17 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel x:Name="menu_Hot_Edit" Height="28" VerticalAlignment="Top" Orientation="Horizontal" Grid.Row="0" Margin="0,5,0,0" Grid.ColumnSpan="2">
-            <Button x:Name="buttonEditInputHot"  IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись'/>
-            <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}"  ToolTip="Удалить выделенную запись"/>
+            <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
+            <Button x:Name="buttonEditInputHot"  IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись' Click="buttonEditInputHot_Click"/>
+            <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}"  ToolTip="Удалить выделенную запись" Click="buttonDeleteHot_Click"/>
         </StackPanel>
-        <DataGrid x:Name="dataGrid" Margin="10,0,10,10" Grid.Row="1" ItemsSource="{Binding Path=.}" AutoGenerateColumns="False" Grid.ColumnSpan="2" CellEditEnding="dataGrid_CellEditEnding">
+        <!---->
+        <DataGrid x:Name="dataGrid" Margin="10,0,10,10" ItemsSource="{Binding Path=.}" Grid.Row="1"  AutoGenerateColumns="False" CellEditEnding="dataGrid_CellEditEnding" CanUserAddRows="True" SelectionChanged="dataGrid_SelectionChanged" >
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path=Name}" Header="One" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Name}" Header="One" Width="*" />
                 <!--<DataGridTextColumn Binding="{Binding ListStringArrayProperty}" Header="One" Width="*"/>-->
             </DataGrid.Columns>
         </DataGrid>
+        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="198,0,0,0" Height="74" VerticalAlignment="Top" Width="79" Grid.RowSpan="2"/>
     </Grid>
 </Window>
