@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Добавить строки из файла" Width="800" Loaded="Window_Loaded" AllowDrop="True" Height="840" MinHeight="840" MinWidth="800">
+        Title="Добавить строки из файла" Width="800" Loaded="Window_Loaded" AllowDrop="True" Height="840" MinHeight="840" MinWidth="800" ShowInTaskbar="False" Icon="Images/OpenFile.png">
     <Window.Resources>
         <Image x:Key="OpenFile_enable" Source="Images\OpenFile.png"></Image>
         <Image x:Key="OpenFile_disable" Source="Images\OpenFile_disable.png"></Image>
@@ -116,7 +116,7 @@
                     <Label x:Name="StatusStringCountRecordFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="0"/>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="10,10,-10,-10" Orientation="Horizontal" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="auto">
+            <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="10,14,0,0" Orientation="Horizontal" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="auto">
                 <Label x:Name="StatusStringConstTextAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="Всего строк будет импортировано из всех файлов:"/>
                 <Label x:Name="StatusStringCountRecordAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="0"/>
             </StackPanel>
@@ -134,7 +134,7 @@
                 </Grid>
             </Button>
             <Button x:Name="buttonUpdateTeacherTemplates" HorizontalAlignment="Left" Margin="10,245,0,0" VerticalAlignment="Top" Width="130" FontSize="14" Height="60" Click="buttonUpdateTeacherTemplates_Click" ToolTip="Обновить список преподавателей из общего файла" Grid.Column="1">
-                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTimeTemplates}" Height="{Binding Height, ElementName=buttonUpdateTimeTemplates}" HorizontalAlignment="Center">
+                <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTeacherTemplates}" Height="{Binding Height, ElementName=buttonUpdateTeacherTemplates}" HorizontalAlignment="Center">
                     <Image Source="Images/Instructor.png" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Center" Width="25" Height="25" />
                     <TextBlock FontSize="12" TextAlignment="Center" Margin="0,5,0,0">
                         Обновить<LineBreak/>
@@ -144,7 +144,7 @@
                     <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
                 </Grid>
             </Button>
-            <Button x:Name="buttonFindDublicates" Content="Искать дубли" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="1" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" IsEnabled="False" Click="Button_Click"/>
+            <Button x:Name="buttonFindDublicates" Content="Искать наложения" HorizontalAlignment="Right" Margin="0,0,10,32" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="2" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" Click="buttonFindDublicates_Click"/>
             <TextBlock x:Name="StatusStringConstTextAllFile_Copy" VerticalAlignment="Bottom" Margin="10,0,0,10" HorizontalAlignment="Left" Width="180" Height="48" TextAlignment="Center" Grid.Column="0" FontStyle="Italic">
                 Изменения внесенные здесь <LineBreak/>
                 не меняют содержимое <LineBreak/>
@@ -155,7 +155,22 @@
                 не меняют <LineBreak/>содержимое <LineBreak/>
                 исходных файлов
             </TextBlock>
-
+            <GroupBox x:Name="gropboxNotTeachersList" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" FontSize="9" Height="58" Grid.Column="1" Grid.RowSpan="2">
+                <GroupBox.Header>
+                    <TextBlock>
+                        Список игнорируемых<LineBreak/>
+                        преподавателей
+                    </TextBlock>
+                </GroupBox.Header>
+                <Grid>
+                    <Button x:Name="buttonUpdateNot"  Margin="0,0,10,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="26" ToolTip="Сбросить список игнорируемых преподавателей" HorizontalAlignment="Right" Click="buttonUpdateNot_Click">
+                        <Image Source="Images\UpdateNot.png" />
+                    </Button>
+                    <Button x:Name="buttonListNotTeachers"  Margin="10,0,0,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="26" ToolTip="Открыть список игнорируемых преподавателей" HorizontalAlignment="Left" Click="buttonListNotTeachers_Click">
+                        <Image Source="Images\NotTeacher.png" />
+                    </Button>
+                </Grid>
+            </GroupBox>
         </Grid>
 
     </Grid>

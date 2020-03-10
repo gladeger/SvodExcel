@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Collections.Specialized;
 
-
 namespace SvodExcel
 {
     /// <summary>
@@ -28,7 +27,7 @@ namespace SvodExcel
     public partial class OpenFileTable : Window
     {
         List<string> InputFileName = new List<string>();
-        BitmapImage BitmapOpenFile =new BitmapImage(new Uri(@"Images\OpenFile.png", UriKind.Relative));
+        BitmapImage BitmapOpenFile = new BitmapImage(new Uri(@"Images\OpenFile.png", UriKind.Relative));
         BitmapImage BitmapOpenFileDisable = new BitmapImage(new Uri(@"Images\OpenFile_disable.png", UriKind.Relative));
         List<InputDataFile> IDFs = new List<InputDataFile>();
         List<int> IDFsIndex = new List<int>();
@@ -36,10 +35,11 @@ namespace SvodExcel
         List<string> TimeTemplate = new List<string>();
         List<string> TeacherTemplate = new List<string>();
         public List<string> NoneTeacherTemplate = new List<string>();
+        public List<NoneTeacher> NTT = new List<NoneTeacher>();
         ulong countAllRecords = 0;
         private bool ClickToAddRow = true;
         public ListViewEditWindow LVEW = new ListViewEditWindow();
-        public OpenFileTable(string[] dataString=null, Window OwnerWindow=null)
+        public OpenFileTable(string[] dataString = null, Window OwnerWindow = null)
         {
             InitializeComponent();
             StartListTimes();
@@ -48,10 +48,19 @@ namespace SvodExcel
             IDFsIndex.Clear();
             if (OwnerWindow != null)
                 Owner = OwnerWindow;
-            if(dataString!=null)
+            if (dataString != null)
             {
-                if(dataString.Length>0)
+                if (dataString.Length > 0)
+                {
                     AddFilesToOpen(dataString);
+                    countAllRecords = 0;
+                    for (int i = 0; i < IDFs.Count; i++)
+                    {
+                        //if(IDFs[i].InputDataFileRows!=null)
+                        countAllRecords += (ulong)IDFs[i].InputDataFileRows.Count;
+                    }
+                    StatusStringCountRecordAllFile.Content = countAllRecords.ToString();
+                }
             }
             dataGridExport.ItemsSource = IDF.InputDataFileRows;
             countAllRecords = 0;
@@ -62,7 +71,7 @@ namespace SvodExcel
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             textBoxFileName.Text = "";
-            if(dataGridExport.Columns.Count>0)
+            if (dataGridExport.Columns.Count > 0)
             {
                 dataGridExport.Columns[0].Header = "Дата проведения";
                 dataGridExport.Columns[1].Header = "Время проведения";
@@ -72,11 +81,37 @@ namespace SvodExcel
                 dataGridExport.Columns[5].Header = "Место проведения";
             }
             dataGridExport.UpdateLayout();
-            
-            if(listBoxInputFiles.Items.Count>0)
+
+            if (listBoxInputFiles.Items.Count > 0)
             {
-                listBoxInputFiles.SelectedIndex=0;
+                listBoxInputFiles.SelectedIndex = 0;
             }
+
+            LVEW.Title = "Список игнорируемых преподавателей";
+            LVEW.Owner = this;
+
+            NTT.Clear();
+            for (int i = 0; i < NoneTeacherTemplate.Count; i++)
+            {
+                NoneTeacher bNTT = new NoneTeacher();
+                bNTT.Name = NoneTeacherTemplate[i];
+                NTT.Add(bNTT);
+            }
+
+
+            Binding bind = new Binding();
+            bind.Path = new PropertyPath(".");
+            bind.Source = NTT;
+            //bind.XPath = ".";
+            bind.Mode = BindingMode.TwoWay;
+            LVEW.dataGrid.ItemsSource = NTT;
+            //labelTech.Content = NoneTeacherTemplate[0];
+
+            //LVEW.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+
+
+            CollectionViewSource.GetDefaultView(LVEW.dataGrid.ItemsSource).Refresh();
+            //LVEW.dataGrid.Columns[0].Header = "ФИО";
             /*string bufstr = "";
             for(int i=0;i<TimeTemplate.Count;i++)
             {
@@ -97,9 +132,9 @@ namespace SvodExcel
 
             TimeTemplate.Clear();
             TimeTemplate = File.ReadAllLines(pathT).ToList<string>();
-            for(int i=0;i<TimeTemplate.Count;i++)
+            for (int i = 0; i < TimeTemplate.Count; i++)
             {
-                if(TimeTemplate[i][0]=='0')
+                if (TimeTemplate[i][0] == '0')
                 {
                     TimeTemplate[i] = TimeTemplate[i].Substring(1);
                 }
@@ -114,16 +149,22 @@ namespace SvodExcel
             if (!File.Exists(path))
             {
                 File.WriteAllText(path, "");
-                File.WriteAllText(path, "\n"+"Moodle");
+                File.WriteAllText(path, "\n" + "Moodle");
                 File.AppendAllText(path, "\n" + "Пронина Л.Н.");
                 File.AppendAllText(path, "\n" + "Григорьева А.И.");
             }
             else
             {
-                string[] Teachers = File.ReadAllLines(path);
                 TeacherTemplate.Clear();
                 TeacherTemplate = File.ReadAllLines(path).ToList<string>();
             }
+            path = @".\ListNoneTeacher.dat";
+            NoneTeacherTemplate.Clear();
+            if (File.Exists(path))
+            {
+                NoneTeacherTemplate = File.ReadAllLines(path).ToList<string>();
+            }
+
         }
 
         private void buttonBrowseMainFile_Click(object sender, RoutedEventArgs e)
@@ -137,6 +178,10 @@ namespace SvodExcel
             if (dlg.ShowDialog() == true)
             {
                 AddFilesToOpen(dlg.FileNames);
+                if (listBoxInputFiles.Items.Count > 0)
+                {
+                    listBoxInputFiles.SelectedIndex = listBoxInputFiles.Items.Count - 1;
+                }
             }
         }
 
@@ -152,9 +197,9 @@ namespace SvodExcel
                 //string dataString = (string)e.Data.GetData(DataFormats.StringFormat);
                 string[] dataString = (string[])e.Data.GetData(DataFormats.FileDrop);
                 AddFilesToOpen(dataString);
-                if(listBoxInputFiles.Items.Count>0)
+                if (listBoxInputFiles.Items.Count > 0)
                 {
-                    listBoxInputFiles.SelectedIndex= listBoxInputFiles.Items.Count - 1;
+                    listBoxInputFiles.SelectedIndex = listBoxInputFiles.Items.Count - 1;
                 }
 
                 this.Effect = null;
@@ -162,7 +207,7 @@ namespace SvodExcel
             }
         }
 
-        public void AddFilesToOpen(string[] FileNames, bool Recursia=false)
+        public void AddFilesToOpen(string[] FileNames, bool Recursia = false)
         {
             textBoxFileName.Text = "";
             for (int i = 0; i < FileNames.Length; i++)
@@ -172,7 +217,7 @@ namespace SvodExcel
                     string buf = FileNames[i].Substring(FileNames[i].LastIndexOf('.') + 1);
                     if (buf == "xlsx" || buf == "xls")
                     {
-                        if(InputFileName.IndexOf(FileNames[i])<0)
+                        if (InputFileName.IndexOf(FileNames[i]) < 0)
                         {
                             InputFileName.Add(FileNames[i]);
                             StackPanel stk = new StackPanel();
@@ -188,7 +233,7 @@ namespace SvodExcel
                             {
                                 ttpi.Content = "Подходит для экспорта данных";
                                 img.Source = BitmapOpenFile;
-                            }                                
+                            }
                             img.ToolTip = ttpi;
                             TextBlock tbl = new TextBlock();
                             tbl.Text = FileNames[i].Substring(FileNames[i].LastIndexOf('\\') + 1);
@@ -212,13 +257,13 @@ namespace SvodExcel
                             AddFilesToOpen(SubfileNames, true);
                         }
                     }
-                }                    
+                }
             }
         }
 
         private void DeleteFilesToOpen(string[] FileNames)
         {
-            for(int i=0;i<FileNames.Length;i++)
+            for (int i = 0; i < FileNames.Length; i++)
                 DeleteFilesToOpen(InputFileName.IndexOf(FileNames[i]));
         }
         private void DeleteFilesToOpen(string FileName)
@@ -251,39 +296,71 @@ namespace SvodExcel
         {
             string[] dataString = textBoxFileName.Text.Split('|');
             AddFilesToOpen(dataString);
+            if (listBoxInputFiles.Items.Count > 0)
+            {
+                listBoxInputFiles.SelectedIndex = listBoxInputFiles.Items.Count - 1;
+            }
         }
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)
         {
-            if(checkBoxFindDublicate.IsChecked.Value)
+            if (checkBoxFindDublicate.IsChecked.Value)
             {
                 FindDublicateRecord();
             }
 
             MainWindow home = Application.Current.MainWindow as MainWindow;
-            for(int i=0;i<IDFs.Count;i++)
+            for (int i = 0; i < IDFs.Count; i++)
             {
-                for(int j=0;j< IDFs[i].InputDataFileRows.Count;j++)
+                for (int j = 0; j < IDFs[i].InputDataFileRows.Count; j++)
                 {
                     home.AddNewItem(IDFs[i].InputDataFileRows[j]);
                 }
             }
             Close();
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void buttonFindDublicates_Click(object sender, RoutedEventArgs e)
         {
             FindDublicateRecord();
+
         }
         private void FindDublicateRecord()
         {
- //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            for (int i = 0; i < IDFs.Count; i++)
+            {
+                for (int j = 0; j < IDFs[i].InputDataFileRows.Count; j++)
+                {
+                    for (int k = i; k < IDFs.Count; k++)
+                    {
+                        int m = 0;
+                        if (k == i)
+                            m = j + 1;
+                        else
+                            m = 0;
+                        for (; m < IDFs[k].InputDataFileRows.Count; m++)
+                        {
+                            if (IDFs[i].InputDataFileRows[j].Intersection(IDFs[k].InputDataFileRows[m]))
+                            {
+                                MessageBox.Show(
+                                    "Пересекаются записи \n" +
+                                    IDFs[i].InputDataFileRows[j].Date + " " + IDFs[i].InputDataFileRows[j].Time + " " + IDFs[i].InputDataFileRows[j].Teacher + " " +
+                                    "\n и \n" +
+                                    IDFs[k].InputDataFileRows[m].Date + " " + IDFs[k].InputDataFileRows[m].Time + " " + IDFs[k].InputDataFileRows[m].Teacher + " "
+                                    , "Обнаружены наложения занятий", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            }
+                            else
+                            { }
+                        }
+                    }
+                }
+            }
         }
         private void buttonDeleteFile_Click(object sender, RoutedEventArgs e)
         {
-            if(listBoxInputFiles.SelectedItem!=null)
+            if (listBoxInputFiles.SelectedItem != null)
             {
                 int Ind = listBoxInputFiles.SelectedIndex;
-                DeleteFilesToOpen(Ind);                
+                DeleteFilesToOpen(Ind);
             }
         }
 
@@ -294,8 +371,8 @@ namespace SvodExcel
             if (tempIDF.OpenFile(FileName))
             {
                 IDFs.Add(new InputDataFile(FileName));
-                
-                for(int i=0;i<IDFs[IDFs.Count-1].InputDataFileRows.Count;i++)
+
+                for (int i = 0; i < IDFs[IDFs.Count - 1].InputDataFileRows.Count; i++)
                 {
                     if (TimeTemplate.IndexOf(IDFs[IDFs.Count - 1].InputDataFileRows[i].Time) < 0)
                     {
@@ -306,42 +383,81 @@ namespace SvodExcel
                     {
                         if (TeacherTemplate.IndexOf(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher) < 0)
                         {
-                            IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
-                            i-=1;
+                            if (NoneTeacherTemplate.IndexOf(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher) < 0)
+                            {
+                                if (MessageBox.Show("Обнаруженный не записанный ранее в общий файл расписания преподаватель:\n" +
+                                    IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher +
+                                    "\nВы хотите добавить его в общий файл?\n(Если ответите \"Нет\", то записи с этим преподавателем будут пропущены.)"
+                                    , "Найден незарегистрированный преподаватель", MessageBoxButton.YesNo, MessageBoxImage.Warning
+                                    ) == MessageBoxResult.Yes
+                                    )
+                                {
+                                    TeacherTemplate.Add(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    string path = @".\ListTeacher.dat";
+                                    if (File.Exists(path))
+                                    {
+                                        File.AppendAllText(path, "\n" + IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    }
+                                }
+                                else
+                                {
+                                    string path = @".\ListNoneTeacher.dat";
+                                    if (File.Exists(path))
+                                    {
+                                        File.AppendAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher + "\n");
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher + "\n");
+                                    }
+                                    NoneTeacherTemplate.Add(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
+                                    i -= 1;
+                                }
+                            }
+                            else
+                            {
+                                IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
+                                i -= 1;
+                            }
                         }
-                            
+
                     }
                 }
-                if (IDFs[IDFs.Count - 1].InputDataFileRows.Count<=0)
+                if (IDFs[IDFs.Count - 1].InputDataFileRows.Count <= 0)
                 {
                     IDFs[IDFs.Count - 1].InputDataFileRows.Clear();
                     return false;
                 }
                 return true;
-            }                
+            }
             else
             {
                 IDFs.Add(new InputDataFile());
                 return false;
             }
-                
-                
+
+
         }
         private void listBoxInputFiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int Ind = listBoxInputFiles.SelectedIndex;
-            if(Ind>=0)
+            if (Ind >= 0)
             {
                 if (IDFs[Ind] != null)
                 {
                     dataGridExport.ItemsSource = IDFs[Ind].InputDataFileRows;
                     StatusStringCountRecordFile.Content = IDFs[Ind].InputDataFileRows.Count.ToString();
-                }                    
+                }
                 else
                 {
                     dataGridExport.ItemsSource = null;
                     StatusStringCountRecordFile.Content = "0";
-                }                    
+                }
             }
             else
             {
@@ -374,16 +490,16 @@ namespace SvodExcel
 
         private void listBoxInputFilesItemsChanges(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if(listBoxInputFiles.Items.Count==0)
+            if (listBoxInputFiles.Items.Count == 0)
             {
                 InputFileName.Clear();
                 IDFsIndex.Clear();
             }
             countAllRecords = 0;
-            for(int i=0;i< IDFs.Count;i++)
+            for (int i = 0; i < IDFs.Count; i++)
             {
                 //if(IDFs[i].InputDataFileRows!=null)
-                    countAllRecords += (ulong)IDFs[i].InputDataFileRows.Count;
+                countAllRecords += (ulong)IDFs[i].InputDataFileRows.Count;
             }
             StatusStringCountRecordAllFile.Content = countAllRecords.ToString();
             if (dataGridExport.SelectedIndex >= 0)
@@ -404,12 +520,14 @@ namespace SvodExcel
             objBlur.Radius = 4;
             this.Effect = objBlur;
             UpdateLayout();
-
+            /*
             SingleInput SItemp = new SingleInput();
             SItemp.Owner = this;
             SItemp.exApp = (Owner as MainWindow).exApp;
             SItemp.UpdateListTimes();
             SItemp.Owner = null;
+            */
+            DataWork.UpdateListTimes((Owner as MainWindow).exApp);
             StartListTimes();
 
             this.Effect = null;
@@ -422,14 +540,15 @@ namespace SvodExcel
             objBlur.Radius = 4;
             this.Effect = objBlur;
             UpdateLayout();
-            
+            /*
             SingleInput SItemp = new SingleInput();
             SItemp.Owner = this;
             SItemp.exApp = (Owner as MainWindow).exApp;
             SItemp.UpdateListTeacher();
             SItemp.Owner = null;
+            */
+            DataWork.UpdateTeachersList((Owner as MainWindow).exApp);
             StartListTeacher();
-
             this.Effect = null;
             UpdateLayout();
         }
@@ -449,7 +568,7 @@ namespace SvodExcel
                 int Ind = listBoxInputFiles.SelectedIndex;
                 if (Ind >= 0)
                 {
-                    if (MessageBox.Show("Вы действительно хотите удалить из экспортируемых данных файла\n"+ InputFileName[Ind]+"\n запись\n" + IDFs[Ind].InputDataFileRows[RowIndex].Date + " " + IDFs[Ind].InputDataFileRows[RowIndex].Time + " " + IDFs[Ind].InputDataFileRows[RowIndex].Teacher + "\n?", "Удаление элемента из экспорта", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                    if (MessageBox.Show("Вы действительно хотите удалить из экспортируемых данных файла\n" + InputFileName[Ind] + "\n запись\n" + IDFs[Ind].InputDataFileRows[RowIndex].Date + " " + IDFs[Ind].InputDataFileRows[RowIndex].Time + " " + IDFs[Ind].InputDataFileRows[RowIndex].Teacher + "\n?", "Удаление элемента из экспорта", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
                     {
 
                         if (IDFs[Ind] != null)
@@ -469,7 +588,7 @@ namespace SvodExcel
                         buttonDeleteHot.IsEnabled = false;
                         buttonEditInputHot.IsEnabled = false;
                     }
-                }                    
+                }
             }
             else
                 MessageBox.Show("Ошибка удаления элемента");
@@ -506,7 +625,7 @@ namespace SvodExcel
         {
             int Ind = listBoxInputFiles.SelectedIndex;
             int RowIndex = dataGridExport.SelectedIndex;
-            if (dataGridExport.SelectedIndex>=0)
+            if (dataGridExport.SelectedIndex >= 0)
             {
                 {
                     int SI = dataGridExport.SelectedIndex;
@@ -584,10 +703,10 @@ namespace SvodExcel
         public void EditItem(int RowIndex, DataTableRow newDTR)
         {
             int Ind = listBoxInputFiles.SelectedIndex;
-            if(Ind>0)
+            if (Ind >= 0)
             {
                 IDFs[Ind].InputDataFileRows[RowIndex] = newDTR;
-            }            
+            }
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
         }
 
@@ -599,21 +718,33 @@ namespace SvodExcel
                 NoneTeacherTemplate.Clear();
                 if (File.Exists(path))
                 {
-                    File.WriteAllText(path,"");
+                    File.WriteAllText(path, "");
                 }
-            }                
+            }
         }
 
         public void buttonListNotTeachers_Click(object sender, RoutedEventArgs e)
         {
-            ListViewEditWindow LVEW = new ListViewEditWindow();
-            LVEW.Title = "Список игнорируемых преподавателей";
-            LVEW.Owner = this;
-            LVEW.dataGrid.Columns[0].Header="ФИО";
-                LVEW.dataGrid.ItemsSource = NoneTeacherTemplate;
-            labelTech.Content = LVEW.dataGrid.ItemsSource.GetEnumerator().ToString();
+
+            //LVEW.SetBinding();
+            //labelTech.Content = LVEW.dataGrid.ItemsSource.GetEnumerator().ToString();
             //for (int i = 0; i < NoneTeacherTemplate.Count; i++) MessageBox.Show(NoneTeacherTemplate[i]);
+            //MessageBox.Show(LVEW.dataGrid.Items[0].ToString());
             LVEW.Show();
+            /*
+             * LVEW.Close();
+
+            LVEW = new ListViewEditWindow(NoneTeacherTemplate);
+            Binding bind = new Binding();
+            bind.Source = NoneTeacherTemplate;
+            bind.Path = new PropertyPath(".");
+            //bind.XPath = ".";
+            bind.Mode = BindingMode.TwoWay;
+            //LVEW.dataGrid.ItemsSource = NoneTeacherTemplate;
+            //LVEW.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bind);
+            //LVEW.dataGrid.Columns[0].Header = "ФИО";
+            LVEW.Show();
+            */
         }
     }
 }

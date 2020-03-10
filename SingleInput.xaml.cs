@@ -20,18 +20,18 @@ namespace SvodExcel
     public partial class SingleInput : System.Windows.Window
     {
         public int RowIndex;
-        private string DefaultTimes="__:__";
+        private string DefaultTimes = "__:__";
         private bool FlagStartCursorMST = true;
         private bool itisclickcombobox = true;
         private bool itisclose = false;
-        private List<string> NotCheckTeacher=new List<string>();
+        private List<string> NotCheckTeacher = new List<string>();
         private bool itisnotstart = false;
         List<string> TimeTemplate = new List<string>();
         public Microsoft.Office.Interop.Excel.Application exApp;
 
 
         System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
-        
+
         public SingleInput()
         {
             InitializeComponent();
@@ -122,7 +122,7 @@ namespace SvodExcel
 
         private void MaskedTextBoxStartTime_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(!itisclose)
+            if (!itisclose)
             {
                 string NewFocusElement = (FocusManager.GetFocusedElement(this) as FrameworkElement).Name;
                 if (NewFocusElement != checkBoxAutoEdit.Name)
@@ -133,7 +133,7 @@ namespace SvodExcel
                         PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
                     }
                 }
-            }                        
+            }
         }
         private void NormMST(Xceed.Wpf.Toolkit.MaskedTextBox MST)
         {
@@ -183,10 +183,10 @@ namespace SvodExcel
                         PositionMST(MaskedTextBoxStartTime, MaskedTextBoxEndTime);
                     }
                 }
-            }                       
+            }
         }
 
-        private void GetExcel()
+        private void UpdateTeachersList()
         {
             //string pathA = @"C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
             string pathA = Properties.Settings.Default.PathToGlobalData;
@@ -199,20 +199,20 @@ namespace SvodExcel
             }
             else
                 if (File.Exists(pathA))
+            {
+                string pathC = Directory.GetCurrentDirectory() + ".\\РАСП.xlsx";
+                //string path = "C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
+                //string pathB = @".\\РАСП.xlsx";
+                string pathB = Properties.Settings.Default.PathToLocalData;
+                if (File.Exists(pathB))
                 {
-                    string pathC = Directory.GetCurrentDirectory() + ".\\РАСП.xlsx";
-                    //string path = "C:\\Users\\Администратор ОК\\source\\repos\\SvodExcel\\РАСП.xlsx";
-                    //string pathB = @".\\РАСП.xlsx";
-                    string pathB = Properties.Settings.Default.PathToLocalData;
-                    if (File.Exists(pathB))
-                    {
-                        localdata = new FileInfo(pathB);
-                        localdata.IsReadOnly = false;
-                        File.Delete(pathB);
-                    }
-                        
-                    File.Copy(pathA, pathB);
-                    while (!File.Exists(pathB)) { };
+                    localdata = new FileInfo(pathB);
+                    localdata.IsReadOnly = false;
+                    File.Delete(pathB);
+                }
+
+                File.Copy(pathA, pathB);
+                while (!File.Exists(pathB)) { };
                 //Microsoft.Office.Interop.Excel.XLCel
                 /*
                 var exBook = exApp.Workbooks.Open(pathC);
@@ -284,19 +284,19 @@ namespace SvodExcel
                 localdata.IsReadOnly = false;
                 File.Delete(pathB);
 
-                    ListTeacher.Sort();
-                    string pathData = @".\ListTeacher.dat";
-                    File.WriteAllText(pathData, ListTeacher[0]);
-                    for (int i = 1; i < ListTeacher.Count; i++)
-                    {
-                        File.AppendAllText(pathData, "\n" + ListTeacher[i]);
-                    }
-                    StartListTeacher();
-                }
-                else
+                ListTeacher.Sort();
+                string pathData = @".\ListTeacher.dat";
+                File.WriteAllText(pathData, ListTeacher[0]);
+                for (int i = 1; i < ListTeacher.Count; i++)
                 {
-                    MessageBox.Show("Не удалось подключиться к общему сводному файлу!", "Ошибка обновления", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+                    File.AppendAllText(pathData, "\n" + ListTeacher[i]);
                 }
+                StartListTeacher();
+            }
+            else
+            {
+                MessageBox.Show("Не удалось подключиться к общему сводному файлу!", "Ошибка обновления", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+            }
         }
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
@@ -336,8 +336,8 @@ namespace SvodExcel
             System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
             objBlur.Radius = 4;
             this.Effect = objBlur;
-            UpdateLayout();            
-            GetExcel();
+            UpdateLayout();
+            UpdateTeachersList();
             this.Effect = null;
             UpdateLayout();
             //PB.Close();
@@ -376,26 +376,26 @@ namespace SvodExcel
 
             if (!File.Exists(pathT))
             {
-                    File.WriteAllText(pathT, "10:00-16:40");
-                    File.AppendAllText(pathT, "\n" + "12:00-18:40");
+                File.WriteAllText(pathT, "10:00-16:40");
+                File.AppendAllText(pathT, "\n" + "12:00-18:40");
             }
 
             TimeTemplate.Clear();
             TimeTemplate = File.ReadAllLines(pathT).ToList<string>();
         }
-        public void UpdateListTimes(bool WatchonTimeCreate=false)
+        public void UpdateListTimes(bool WatchonTimeCreate = false)
         {
             string pathT = @".\ListTime.dat";
             FileInfo localdata;
 
-                string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
-                if (File.Exists(pathB))
-                {
-                    MessageBox.Show("К сожалению обновление списка сейчас невозможно, обновляется общий сводный файл.\nПопробуйте чуть позже.");
-                }
-                else
-                {
-                    string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
+            string pathB = Properties.Settings.Default.PathToGlobal + Properties.Settings.Default.GlobalMarker;
+            if (File.Exists(pathB))
+            {
+                MessageBox.Show("К сожалению обновление списка сейчас невозможно, обновляется общий сводный файл.\nПопробуйте чуть позже.");
+            }
+            else
+            {
+                string pathC = Directory.GetCurrentDirectory() + "\\" + Properties.Settings.Default.GlobalData;
                 try
                 {
                     if (File.Exists(pathC))
@@ -405,53 +405,54 @@ namespace SvodExcel
                         File.Delete(pathC);
                     }
                 }
-                catch{
-                    MessageBox.Show("Ошибка доступа к " + pathC,"Ошибка доступа",MessageBoxButton.OK,MessageBoxImage.Error);
-                }                    
-                    string pathA = Properties.Settings.Default.PathToGlobalData;
-                    File.Copy(pathA, pathC);
-                
-                    var exBook = exApp.Workbooks.Open(pathC);
-                    var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
-                    string FormulCalculate = ExSheet.Cells[16, 8].Formula;
-                    exBook.Close(true);
+                catch
+                {
+                    MessageBox.Show("Ошибка доступа к " + pathC, "Ошибка доступа", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                string pathA = Properties.Settings.Default.PathToGlobalData;
+                File.Copy(pathA, pathC);
+
+                var exBook = exApp.Workbooks.Open(pathC);
+                var ExSheet = (Microsoft.Office.Interop.Excel.Worksheet)exBook.Sheets[1];
+                string FormulCalculate = ExSheet.Cells[16, 8].Formula;
+                exBook.Close(true);
                 //exApp.Quit();
                 localdata = new FileInfo(pathC);
                 localdata.IsReadOnly = false;
                 File.Delete(pathC);
-                    //MessageBox.Show(FormulCalculate);
-                    //@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$"
-                    Regex regex = new Regex(@"\d{1,2}\.\d{2}\-\d{1,2}\.\d{2}");
-                    MatchCollection matchList = regex.Matches(FormulCalculate);
-                    File.WriteAllText(pathT, "10:00-16:40");
-                    for (int i = 1; i < matchList.Count; i++)
+                //MessageBox.Show(FormulCalculate);
+                //@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$"
+                Regex regex = new Regex(@"\d{1,2}\.\d{2}\-\d{1,2}\.\d{2}");
+                MatchCollection matchList = regex.Matches(FormulCalculate);
+                File.WriteAllText(pathT, "10:00-16:40");
+                for (int i = 1; i < matchList.Count; i++)
+                {
+                    string tempstring = matchList[i].Value.Replace('.', ':');
+                    switch (tempstring.Length)
                     {
-                        string tempstring = matchList[i].Value.Replace('.', ':');
-                        switch (tempstring.Length)
-                        {
-                            case 10:
-                                if (matchList[i].Value.IndexOf('.') == 2)
-                                {
-                                    File.AppendAllText(pathT, "\n" + matchList[i].Value.Substring(0, 6).Replace('.', ':') + "0" + matchList[i].Value.Substring(6, 4).Replace('.', ':'));
-                                }
-                                else
-                                {
-                                    File.AppendAllText(pathT, "\n" + "0" + matchList[i].Value.Replace('.', ':'));
-                                }
-                                break;
-                            case 9:
-                                File.AppendAllText(pathT, "\n" + "0" + matchList[i].Value.Substring(0, 5).Replace('.', ':') + "0" + matchList[i].Value.Substring(5, 4).Replace('.', ':'));
-                                break;
-                            default:
-                                File.AppendAllText(pathT, "\n" + matchList[i].Value.Replace('.', ':'));
-                                break;
-                        }
-
+                        case 10:
+                            if (matchList[i].Value.IndexOf('.') == 2)
+                            {
+                                File.AppendAllText(pathT, "\n" + matchList[i].Value.Substring(0, 6).Replace('.', ':') + "0" + matchList[i].Value.Substring(6, 4).Replace('.', ':'));
+                            }
+                            else
+                            {
+                                File.AppendAllText(pathT, "\n" + "0" + matchList[i].Value.Replace('.', ':'));
+                            }
+                            break;
+                        case 9:
+                            File.AppendAllText(pathT, "\n" + "0" + matchList[i].Value.Substring(0, 5).Replace('.', ':') + "0" + matchList[i].Value.Substring(5, 4).Replace('.', ':'));
+                            break;
+                        default:
+                            File.AppendAllText(pathT, "\n" + matchList[i].Value.Replace('.', ':'));
+                            break;
                     }
-                    //TimeTemplate = regex.Matches(FormulCalculate).Val;
-                    //if (regex.IsMatch(Teacher))
-                    //List<int> TimeTemplateIndexs = ;
+
                 }
+                //TimeTemplate = regex.Matches(FormulCalculate).Val;
+                //if (regex.IsMatch(Teacher))
+                //List<int> TimeTemplateIndexs = ;
+            }
 
             TimeTemplate.Clear();
             TimeTemplate = File.ReadAllLines(pathT).ToList<string>();
@@ -474,7 +475,7 @@ namespace SvodExcel
                     {
                         MessageBox.Show("Введенное время занятия не соответсвует возможным диапазонам.\nПроверьте еще раз времена начала и завершения занятий");
                     }
-                    
+
                     break;
                 case 2:
                     MessageBox.Show("Были внесены корректировки записи, убедитесь что новые данные действительны");
@@ -501,7 +502,7 @@ namespace SvodExcel
             }
             else
             {
-                if(System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(3, 2))>59)
+                if (System.Convert.ToInt32(MaskedTextBoxStartTime.Text.Substring(3, 2)) > 59)
                 {
                     flag = 0;
                     flag_time = 0;
@@ -588,7 +589,7 @@ namespace SvodExcel
                     GridTime.Background = null;
                     break;
             }
-            if(!CorrectAndAddTeacher()||comboBoxTeacher.Text.Length<1)
+            if (!CorrectAndAddTeacher() || comboBoxTeacher.Text.Length < 1)
             {
                 if (flag == 2)
                     flag = 3;
@@ -612,8 +613,8 @@ namespace SvodExcel
                 case 0:
                     MessageBox.Show("Ошибка во введенных данных");
                     break;
-                case 1:         
-                    if(ConfirmTime())
+                case 1:
+                    if (ConfirmTime())
                     {
                         NewRecord();
                         ClearData();
@@ -637,21 +638,21 @@ namespace SvodExcel
 
         private void comboBoxTeacher_LostFocus(object sender, RoutedEventArgs e)
         {
-           
-                if(!itisclose)
-                {
+
+            if (!itisclose)
+            {
                 string NewFocusElement = (FocusManager.GetFocusedElement(this) as FrameworkElement).Name;
-                if(NotCheckTeacher.IndexOf(NewFocusElement)<0)
-                        CorrectAndAddTeacher(!itisclickcombobox);
-                }
-  
+                if (NotCheckTeacher.IndexOf(NewFocusElement) < 0)
+                    CorrectAndAddTeacher(!itisclickcombobox);
+            }
+
         }
 
-        private bool CorrectAndAddTeacher(bool silence=false)
+        private bool CorrectAndAddTeacher(bool silence = false)
         {
             if (comboBoxTeacher.Items.IndexOf(comboBoxTeacher.Text) < 0)
             {
-                if(comboBoxTeacher.SelectedIndex >= 0)
+                if (comboBoxTeacher.SelectedIndex >= 0)
                 {
                     comboBoxTeacher.Text = comboBoxTeacher.SelectedValue.ToString();
                     ButtonNewTeacher.IsEnabled = false;
@@ -660,13 +661,13 @@ namespace SvodExcel
                 {
                     if (comboBoxTeacher.Text.Length > 0)
                     {
-                        MessageBoxResult DR= MessageBoxResult.No;
-                        if(!silence)
-                            DR = MessageBox.Show("Преподавателя \""+comboBoxTeacher.Text+"\" нет в списке преподавателей. Добавить нового преподавателя?", "Новый преподаватель", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                        MessageBoxResult DR = MessageBoxResult.No;
+                        if (!silence)
+                            DR = MessageBox.Show("Преподавателя \"" + comboBoxTeacher.Text + "\" нет в списке преподавателей. Добавить нового преподавателя?", "Новый преподаватель", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
                         if (DR == MessageBoxResult.Yes)
                         {
-                            
-                            if(CorrectNewTeacher(comboBoxTeacher.Text))
+
+                            if (CorrectNewTeacher(comboBoxTeacher.Text))
                             {
                                 Regex regexTeacherMoodle = new Regex(@"moodle", RegexOptions.IgnoreCase);
                                 if (regexTeacherMoodle.IsMatch(comboBoxTeacher.Text))
@@ -677,7 +678,7 @@ namespace SvodExcel
                                 {
                                     MessageBox.Show("Запись нового преподавателя успеешно завершена.\nНо другие пользователи не увидят нового преподавателя, пока не будут сделаны новые записи в общее расписание.");
                                 }
-                                    
+
                                 else
                                     MessageBox.Show("Ошибка записи нового преподавателя");
                             }
@@ -685,7 +686,7 @@ namespace SvodExcel
                             {
                                 MessageBox.Show("Строка \"" + comboBoxTeacher.Text + "\" не удовлетворяет формату записи преподавателя - Фамилия и инициалы.\nК примеру, Иванов И.И.\nФИО должно записываться только из букв русского алфавита, пробела и символа точки.");
                                 return false;
-                            }                      
+                            }
                         }
                         else
                         {
@@ -693,7 +694,7 @@ namespace SvodExcel
                             return false;
                         }
                     }
-                }           
+                }
             }
             else
             {
@@ -709,11 +710,11 @@ namespace SvodExcel
             itisclickcombobox = false;
             itisclose = true;
         }
-        
+
         private bool CorrectNewTeacher(string Teacher)
         {
             Regex regex = new Regex(@"^[А-Я][а-я]*\s[А-Я]\.[А-Я]\.$");
-            if(regex.IsMatch(Teacher))
+            if (regex.IsMatch(Teacher))
                 return true;
             Regex regexTeacherMoodle = new Regex(@"moodle", RegexOptions.IgnoreCase);
             if (regexTeacherMoodle.IsMatch(Teacher))
@@ -752,7 +753,7 @@ namespace SvodExcel
                 catch
                 {
                     return false;
-                }                
+                }
             }
             return true;
         }
@@ -760,17 +761,17 @@ namespace SvodExcel
         private void comboBoxTeacher_MouseEnter(object sender, MouseEventArgs e)
         {
             itisclickcombobox = false;
-            
+
         }
 
         private void comboBoxTeacher_MouseLeave(object sender, MouseEventArgs e)
         {
             itisclickcombobox = true;
-            
+
         }
 
         private void comboBoxTeacher_GotFocus(object sender, RoutedEventArgs e)
-        { 
+        {
             itisclickcombobox = true;
         }
 
@@ -789,17 +790,17 @@ namespace SvodExcel
 
         private void MaskedTextBoxEndTime_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if(itisnotstart)
+            if (itisnotstart)
                 OutCalcTime();
         }
 
         private void OutCalcTime()
         {
-            Xceed.Wpf.Toolkit.MaskedTextBox MSTS=MaskedTextBoxStartTime, MSTE=MaskedTextBoxEndTime;
-            if (ReadyMST(MSTS)&& ReadyMST(MSTE))
+            Xceed.Wpf.Toolkit.MaskedTextBox MSTS = MaskedTextBoxStartTime, MSTE = MaskedTextBoxEndTime;
+            if (ReadyMST(MSTS) && ReadyMST(MSTE))
             {
                 GridCalcTime.Visibility = Visibility.Visible;
-                labelCalcTime.Content=((System.Convert.ToInt32(MSTE.Text.Substring(0, 2)) * 60 + System.Convert.ToInt32(MSTE.Text.Substring(3, 2))) - (System.Convert.ToInt32(MSTS.Text.Substring(0, 2)) * 60 + System.Convert.ToInt32(MSTS.Text.Substring(3, 2)))).ToString();
+                labelCalcTime.Content = ((System.Convert.ToInt32(MSTE.Text.Substring(0, 2)) * 60 + System.Convert.ToInt32(MSTE.Text.Substring(3, 2))) - (System.Convert.ToInt32(MSTS.Text.Substring(0, 2)) * 60 + System.Convert.ToInt32(MSTS.Text.Substring(3, 2)))).ToString();
                 labelCalcTime.Content = labelCalcTime.Content + " мин.";
 
             }
@@ -816,12 +817,12 @@ namespace SvodExcel
 
         private void NewRecord()
         {
-            Window home=null;
-            switch(Owner.GetType().ToString())
+            Window home = null;
+            switch (Owner.GetType().ToString())
             {
                 case ("SvodExcel.MainWindow"):
                     home = Owner as MainWindow;
-                    switch((home as MainWindow).tabControl.SelectedIndex)
+                    switch ((home as MainWindow).tabControl.SelectedIndex)
                     {
                         case 0:
                             if (RowIndex == -1)
@@ -841,7 +842,7 @@ namespace SvodExcel
                     break;
                 case ("SvodExcel.OpenFileTable"):
                     home = Owner as OpenFileTable;
-                    if (RowIndex >0)
+                    if (RowIndex > 0)
                         (home as OpenFileTable).EditItem(RowIndex, new DataTableRow(DatePicker_Date.Text, MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text, comboBoxTeacher.Text, textboxGroup.Text, textBoxCategory.Text, textBoxPlace.Text));
                     break;
                 default:
@@ -854,7 +855,7 @@ namespace SvodExcel
                     }
                     break;
             }
-            
+
         }
         private void ClearData()
         {
@@ -888,7 +889,7 @@ namespace SvodExcel
         }
         public bool ConfirmTime()
         {
-            if(TimeTemplate.IndexOf(MaskedTextBoxStartTime.Text+"-"+ MaskedTextBoxEndTime.Text)>=0)
+            if (TimeTemplate.IndexOf(MaskedTextBoxStartTime.Text + "-" + MaskedTextBoxEndTime.Text) >= 0)
             {
                 return true;
             }
@@ -898,11 +899,11 @@ namespace SvodExcel
         private void buttonViewTimeTemplates_Click(object sender, RoutedEventArgs e)
         {
             string bufstr = "Диапазоны времени:\n";
-            for(int i=0;i<TimeTemplate.Count;i++)
+            for (int i = 0; i < TimeTemplate.Count; i++)
             {
-                bufstr += TimeTemplate[i]+"\n";
+                bufstr += TimeTemplate[i] + "\n";
             }
-            MessageBox.Show(bufstr,"Возможные диапазоны времени",MessageBoxButton.OK);
+            MessageBox.Show(bufstr, "Возможные диапазоны времени", MessageBoxButton.OK);
         }
     }
 }

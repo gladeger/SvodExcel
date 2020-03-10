@@ -230,8 +230,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataGridExcel.cs" />
+    <Compile Include="DataWork.cs" />
     <Compile Include="InputPassword.xaml.cs">
       <DependentUpon>InputPassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListViewEditWindow.xaml.cs">
+      <DependentUpon>ListViewEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="OpenFileTable.xaml.cs">
       <DependentUpon>OpenFileTable.xaml</DependentUpon>
@@ -250,6 +254,10 @@
       <DependentUpon>SingleInput.xaml</DependentUpon>
     </Compile>
     <Page Include="InputPassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListViewEditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -421,6 +429,8 @@
     <Content Include="ACEOLEDB.DLL">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\NotTeacher.png" />
+    <Resource Include="Images\updateNot.png" />
     <Resource Include="Images\Disconnect.png" />
     <Resource Include="Images\Disconnect_disable.png" />
     <Resource Include="Images\UploadEdit_disable.png" />
