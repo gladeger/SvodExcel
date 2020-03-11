@@ -25,6 +25,7 @@ namespace SvodExcel
         public string Name { get; set; }
         public NoneTeacher(){}
     }
+
     public partial class OpenFileTable : Window
     {
         List<string> InputFileName = new List<string>();
@@ -37,9 +38,11 @@ namespace SvodExcel
         List<string> TeacherTemplate = new List<string>();
         public List<string> NoneTeacherTemplate = new List<string>();
         public List<NoneTeacher> NTT = new List<NoneTeacher>();
+        public List<NoneTeacher> YTT = new List<NoneTeacher>();
         ulong countAllRecords = 0;
         private bool ClickToAddRow = true;
         public ListViewEditWindow LVEW = new ListViewEditWindow();
+        public ListViewEditWindow LVEWY = new ListViewEditWindow();
         public OpenFileTable(string[] dataString = null, Window OwnerWindow = null)
         {
             InitializeComponent();
@@ -115,19 +118,46 @@ namespace SvodExcel
             LVEW.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bind);
             CollectionViewSource.GetDefaultView(LVEW.dataGrid.ItemsSource).Refresh();
             LVEW.dataGrid.CanUserAddRows = true;
+            LVEW.dataGrid.Columns[0].Header = "ФИО";
+            LVEW.textBlockInfo.Text = "\tПреподаватели из этого списка игнорируются при добавлении новых записей из файлов, но только в том случае, если данного преподавателя еще нет в общем файле расписания.";
 
-
-            //LVEW.dataGrid.Columns[0].Header = "ФИО";
             /*string bufstr = "";
             for(int i=0;i<TimeTemplate.Count;i++)
             {
                 bufstr += TimeTemplate[i] + "\n";
             }
             MessageBox.Show(bufstr);*/
+
+
+            LVEWY.Title = "Список известных преподавателей";
+            LVEWY.Owner = this;
+
+            YTT.Clear();
+            for (int i = 0; i < TeacherTemplate.Count; i++)
+            {
+                NoneTeacher bYTT = new NoneTeacher();
+                bYTT.Name = TeacherTemplate[i];
+                YTT.Add(bYTT);
+            }
+
+
+            Binding bindY = new Binding();
+            bindY.Path = new PropertyPath(".");
+            bindY.Source = YTT;
+            //bind.XPath = ".";
+            bindY.Mode = BindingMode.OneWay;
+
+
+            LVEWY.dataGrid.ItemsSource = YTT;
+
+            LVEWY.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bindY);
+            CollectionViewSource.GetDefaultView(LVEWY.dataGrid.ItemsSource).Refresh();
+            LVEWY.dataGrid.CanUserAddRows = true;
+            LVEWY.dataGrid.Columns[0].Header = "ФИО";
+            LVEWY.textBlockInfo.Text = "\tПреподаватели из этого списка известны системе, часть из них взята из общего файла расписания, часть из добавляемых вами записей";
         }
         private void Window_Closed(object sender, EventArgs e)
         {
-
             string path = @".\ListNoneTeacher.dat";
             File.WriteAllLines(path, NoneTeacherTemplate);
         }
@@ -176,7 +206,16 @@ namespace SvodExcel
             {
                 NoneTeacherTemplate = File.ReadAllLines(path).ToList<string>();
             }
-
+            NTT.Clear();
+            for (int i = 0; i < NoneTeacherTemplate.Count; i++)
+            {
+                NoneTeacher bNTT = new NoneTeacher();
+                bNTT.Name = NoneTeacherTemplate[i];
+                NTT.Add(bNTT);
+            }
+            if(LVEW.dataGrid!=null)
+                if(LVEW.dataGrid.ItemsSource!=null)
+                    CollectionViewSource.GetDefaultView(LVEW.dataGrid.ItemsSource).Refresh();
         }
 
         private void buttonBrowseMainFile_Click(object sender, RoutedEventArgs e)
@@ -427,6 +466,12 @@ namespace SvodExcel
                                         File.WriteAllText(path, IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher + "\n");
                                     }
                                     NoneTeacherTemplate.Add(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    
+                                        NoneTeacher bNTT = new NoneTeacher();
+                                        bNTT.Name = NoneTeacherTemplate[NoneTeacherTemplate.Count-1];
+                                        NTT.Add(bNTT);
+                                    CollectionViewSource.GetDefaultView(LVEW.dataGrid.ItemsSource).Refresh();
+
                                     IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
                                     i -= 1;
                                 }
@@ -732,6 +777,8 @@ namespace SvodExcel
                 {
                     File.WriteAllText(path, "");
                 }
+                NTT.Clear();
+                CollectionViewSource.GetDefaultView(LVEW.dataGrid.ItemsSource).Refresh();
             }
         }
 
@@ -743,6 +790,7 @@ namespace SvodExcel
             //for (int i = 0; i < NoneTeacherTemplate.Count; i++) MessageBox.Show(NoneTeacherTemplate[i]);
             //MessageBox.Show(LVEW.dataGrid.Items[0].ToString());
             LVEW.Show();
+            this.Activate();
             /*
              * LVEW.Close();
 
@@ -758,7 +806,19 @@ namespace SvodExcel
             LVEW.Show();
             */
         }
-
         
+        public void SaveDataListViewEditWindow()
+        {
+            NoneTeacherTemplate.Clear();
+            for (int i = 0; i < NTT.Count; i++)
+            {
+                NoneTeacherTemplate.Add(NTT[i].Name);
+            }
+        }
+
+        private void buttonListTeacher_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

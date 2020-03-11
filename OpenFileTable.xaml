@@ -40,6 +40,18 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Image x:Key="MultiInput_enable" Source="Images/MultiInput.png"/>
+        <Image x:Key="MultiInput_disable" Source="Images/MultiInput_disable.png"/>
+        <Style TargetType="{x:Type Button}" x:Key="MultiInput_button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content" Value="{StaticResource MultiInput_enable}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content" Value="{StaticResource MultiInput_disable}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid  Height="800">
         <Grid.RowDefinitions>
@@ -120,8 +132,7 @@
                 <Label x:Name="StatusStringConstTextAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="Всего строк будет импортировано из всех файлов:"/>
                 <Label x:Name="StatusStringCountRecordAllFile" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Content="0"/>
             </StackPanel>
-            <Button x:Name="buttonEditInputHot"  IsEnabled="False" Click="MenuItemEditInput_Click"  Style="{StaticResource Edit_button}" ToolTip='Изменить запись "Занятие" для экспорта в общий файл' Grid.Column="1" Width="26" Height="28" Margin="114,121,10,201"/>
-            <Button x:Name="buttonDeleteHot" IsEnabled="False"  Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых" Grid.Column="1" Width="26" Height="28" Margin="114,88,10,234"/>
+
             <Button x:Name="buttonUpdateTimeTemplates" HorizontalAlignment="Left" Margin="10,180,0,0" VerticalAlignment="Top" Width="130" FontSize="14" Height="60" Click="buttonUpdateTimeTemplates_Click" ToolTip="Обновить список шаблонов времени занятии из общего файла" Grid.Column="1">
                 <Grid Margin="0,0,0,0" Width="{Binding Width, ElementName=buttonUpdateTimeTemplates}" Height="{Binding Height, ElementName=buttonUpdateTimeTemplates}" HorizontalAlignment="Center">
                     <Image Source="Images/Timer.png" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Center" Width="25" Height="25" />
@@ -150,18 +161,33 @@
                 не меняют содержимое <LineBreak/>
                 исходных файлов
             </TextBlock>
-            <TextBlock x:Name="StatusStringConstTextAllFile_Copy1" VerticalAlignment="Bottom" Margin="10,0,0,175" HorizontalAlignment="Left" Width="99" Height="104" TextAlignment="Right" Grid.Column="1" FontStyle="Italic">
+            <StackPanel  VerticalAlignment="Bottom" Margin="10,0,0,175" HorizontalAlignment="Left" Height="104" Grid.Column="1" Orientation="Horizontal">
+                <TextBlock x:Name="StatusStringConstTextAllFile_Copy1" VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Left" Width="99" TextAlignment="Right" Grid.Column="1" FontStyle="Italic" Padding="0,0,5,0">
             Изменения <LineBreak/>внесенные <LineBreak/>здесь <LineBreak/>
                 не меняют <LineBreak/>содержимое <LineBreak/>
                 исходных файлов
-            </TextBlock>
+                </TextBlock>
+                <StackPanel>
+                    <Button x:Name="buttonEditInputHot"  IsEnabled="False" Click="MenuItemEditInput_Click"  Style="{StaticResource Edit_button}" ToolTip='Изменить запись "Занятие" для экспорта в общий файл' Grid.Column="1" Width="26" Height="28" Margin="5,5,0,0"/>
+                    <Button x:Name="buttonDeleteHot" IsEnabled="False"  Style="{StaticResource DeleteRecord_button}" Click="buttonDeleteHot_Click" ToolTip="Удалить выделенную запись из перечня экспортируемых" Grid.Column="1" Width="26" Height="28" Margin="5,5,0,0"/>
+                    <Button x:Name="buttonListTeacher" IsEnabled="False" Style="{StaticResource MultiInput_button}" ToolTip="Открыть список известных преподавателей"  Width="26" Height="28" Margin="5,5,0,0" Click="buttonListTeacher_Click"/>
+                </StackPanel>
+            </StackPanel>
+
             <GroupBox x:Name="gropboxNotTeachersList" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" FontSize="9" Height="58" Grid.Column="1" Grid.RowSpan="2">
                 <GroupBox.Header>
                     <TextBlock>
                         Список игнорируемых<LineBreak/>
-                        преподавателей
+                        новых преподавателей
                     </TextBlock>
                 </GroupBox.Header>
+                <GroupBox.ToolTip>
+                    <TextBlock>
+                        В этом списке содержаться имена преподавателей, которых необходимо игнорировать при добавлении новых записей.
+                        Внимание! Этот список действителен только для новых преподавателей.
+                        Преподаватели уже добавленный в общую базу не проверяются этим списком.
+                    </TextBlock>
+                </GroupBox.ToolTip>
                 <Grid>
                     <Button x:Name="buttonUpdateNot"  Margin="0,0,10,0" VerticalAlignment="Top" Width="26" FontSize="14" Height="26" ToolTip="Сбросить список игнорируемых преподавателей" HorizontalAlignment="Right" Click="buttonUpdateNot_Click">
                         <Image Source="Images\UpdateNot.png" />

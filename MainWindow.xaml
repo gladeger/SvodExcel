@@ -569,7 +569,7 @@
                 <Button x:Name="buttonExportHot" Width="26" Margin="10,0,0,0" Style="{StaticResource excel_import_button}" IsEnabled="False" Click="buttonExportHot_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
                 <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
                 <Button x:Name="buttonFileInputHot" Width="26"  Margin="10,0,0,0" Style="{StaticResource FileInput_button}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="buttonFileInputHot_Click"/>
-                <Button x:Name="buttonMultiInputHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
+                <Button x:Name="buttonListTeacher" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Открыть список известных преподавателей"/>
             </StackPanel>
             <StackPanel x:Name="menu_Hot_Edit" Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
                 <Button x:Name="buttonEditInputHot"  IsEnabled="False" Click="MenuItemEditInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись "Занятие" для экспорта в общий файл'/>

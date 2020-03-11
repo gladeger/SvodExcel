@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace SvodExcel
 {
@@ -57,14 +59,17 @@ namespace SvodExcel
 
         private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            MessageBox.Show("Ничего не происходит но будет потом");
+            SaveEdit();
         }
 
-        public void SaveEdit() { }
+       
 
         private void buttonEditInputHot_Click(object sender, RoutedEventArgs e)
         {
-            dataGrid.BeginEdit();
+            dataGrid.Focus();
+            dataGrid.BeginEdit() ;
+            dataGrid.CommitEdit();
+            MessageBox.Show("Простите, сервис временно не работает по этой кнопке.\nЕсли хотите редактировать запись в списке, сдеолайте по ней двойной клик или клавишу F2.");            
         }
 
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -84,7 +89,8 @@ namespace SvodExcel
 
         private void MenuItemSingleInput_Click(object sender, RoutedEventArgs e)
         {
-            //dataGrid.Items.Add();
+            dataGrid.SelectedIndex = dataGrid.Items.Count - 1;
+            dataGrid.Focus();
         }
 
         private void buttonDeleteHot_Click(object sender, RoutedEventArgs e)
@@ -92,6 +98,26 @@ namespace SvodExcel
             (dataGrid.ItemsSource as List<NoneTeacher>).Remove(dataGrid.SelectedItem as NoneTeacher);
             CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
 
+        }
+
+        public void SaveEdit() 
+        {
+            switch (Owner.GetType().ToString())
+            {
+                case ("SvodExcel.MainWindow"):
+                    break;
+                case ("SvodExcel.OpenFileTable"):
+                    (Owner as OpenFileTable).SaveDataListViewEditWindow();
+                    break;
+                default:
+                    break;
+            }
+                    
+        }
+
+        private void dataGrid_UnloadingRow(object sender, DataGridRowEventArgs e)
+        {
+            SaveEdit();
         }
     }
 }

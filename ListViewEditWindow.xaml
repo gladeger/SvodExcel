@@ -53,21 +53,24 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel x:Name="menu_Hot_Edit" Height="28" VerticalAlignment="Top" Orientation="Horizontal" Grid.Row="0" Margin="0,5,0,0" Grid.ColumnSpan="2">
+
+        <StackPanel Grid.ColumnSpan="2" Grid.Row="1" x:Name="menu_Hot_Edit" Height="28" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
             <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
             <Button x:Name="buttonEditInputHot"  IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись' Click="buttonEditInputHot_Click"/>
             <Button x:Name="buttonDeleteHot" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource DeleteRecord_button}"  ToolTip="Удалить выделенную запись" Click="buttonDeleteHot_Click"/>
         </StackPanel>
         <!---->
-        <DataGrid x:Name="dataGrid" Margin="10,0,10,10" ItemsSource="{Binding Path=.}" Grid.Row="1"  AutoGenerateColumns="False" CellEditEnding="dataGrid_CellEditEnding" CanUserAddRows="True" SelectionChanged="dataGrid_SelectionChanged" >
+        <DataGrid Grid.Row="2" x:Name="dataGrid" Margin="10,0,10,10" ItemsSource="{Binding Path=.}"  AutoGenerateColumns="False" CellEditEnding="dataGrid_CellEditEnding" CanUserAddRows="True" SelectionChanged="dataGrid_SelectionChanged" UnloadingRow="dataGrid_UnloadingRow">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=Name}" Header="One" Width="*" />
                 <!--<DataGridTextColumn Binding="{Binding ListStringArrayProperty}" Header="One" Width="*"/>-->
             </DataGrid.Columns>
         </DataGrid>
-        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="198,0,0,0" Height="74" VerticalAlignment="Top" Width="79" Grid.RowSpan="2"/>
+        <Label x:Name="labelTech" Content="Бета-версия" HorizontalAlignment="Left" Margin="208,0,0,0" Height="74" VerticalAlignment="Top" Width="79" Grid.RowSpan="2" Grid.Row="1"/>
+        <TextBlock Grid.Row="0" x:Name="textBlockInfo" TextWrapping="WrapWithOverflow" Text="Информация о списке." RenderTransformOrigin="2.061,2.021" Padding="5,3" TextAlignment="Justify" LineStackingStrategy="BlockLineHeight"/>
     </Grid>
 </Window>
