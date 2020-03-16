@@ -69,7 +69,7 @@ namespace SvodExcel
             dataGridExport.ItemsSource = IDF.InputDataFileRows;
             countAllRecords = 0;
             ((INotifyCollectionChanged)listBoxInputFiles.Items).CollectionChanged += listBoxInputFilesItemsChanges;
-            buttonFindDublicates.Visibility = Visibility.Collapsed;
+            //buttonFindDublicates.Visibility = Visibility.Collapsed;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -397,7 +397,9 @@ namespace SvodExcel
                                     "Пересекаются записи \n" +
                                     IDFs[i].InputDataFileRows[j].Date + " " + IDFs[i].InputDataFileRows[j].Time + " " + IDFs[i].InputDataFileRows[j].Teacher + " " +
                                     "\n и \n" +
-                                    IDFs[k].InputDataFileRows[m].Date + " " + IDFs[k].InputDataFileRows[m].Time + " " + IDFs[k].InputDataFileRows[m].Teacher + " "
+                                    IDFs[k].InputDataFileRows[m].Date + " " + IDFs[k].InputDataFileRows[m].Time + " " + IDFs[k].InputDataFileRows[m].Teacher + " " + 
+                                    "\n"+
+                                    ""
                                     , "Обнаружены наложения занятий", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }
                             else
