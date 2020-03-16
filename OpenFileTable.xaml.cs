@@ -154,7 +154,9 @@ namespace SvodExcel
             CollectionViewSource.GetDefaultView(LVEWY.dataGrid.ItemsSource).Refresh();
             LVEWY.dataGrid.CanUserAddRows = true;
             LVEWY.dataGrid.Columns[0].Header = "ФИО";
-            LVEWY.textBlockInfo.Text = "\tПреподаватели из этого списка известны системе, часть из них взята из общего файла расписания, часть из добавляемых вами записей";
+            LVEWY.textBlockInfo.Text = "\tПреподаватели из этого списка \bизвестны\b системе, часть из них взята из общего файла расписания, часть из добавляемых вами записей";
+            LVEWY.buttonSingleInputHot.IsEnabled = false;
+            LVEWY.dataGrid.IsReadOnly = true;
         }
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -195,11 +197,10 @@ namespace SvodExcel
                 File.AppendAllText(path, "\n" + "Пронина Л.Н.");
                 File.AppendAllText(path, "\n" + "Григорьева А.И.");
             }
-            else
-            {
+
                 TeacherTemplate.Clear();
                 TeacherTemplate = File.ReadAllLines(path).ToList<string>();
-            }
+
             path = @".\ListNoneTeacher.dat";
             NoneTeacherTemplate.Clear();
             if (File.Exists(path))
@@ -400,7 +401,9 @@ namespace SvodExcel
                                     , "Обнаружены наложения занятий", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }
                             else
-                            { }
+                            { 
+
+                            }
                         }
                     }
                 }
@@ -818,7 +821,7 @@ namespace SvodExcel
 
         private void buttonListTeacher_Click(object sender, RoutedEventArgs e)
         {
-
+            LVEWY.Show();
         }
     }
 }

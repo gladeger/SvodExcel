@@ -59,6 +59,7 @@ namespace SvodExcel
 
         private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
+            //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
             SaveEdit();
         }
 
@@ -76,8 +77,11 @@ namespace SvodExcel
         {
             if(dataGrid.Items.Count>1)
             {
-                buttonEditInputHot.IsEnabled = true;
-                buttonDeleteHot.IsEnabled = true;
+                if (!dataGrid.IsReadOnly)
+                {
+                    buttonEditInputHot.IsEnabled = true;
+                    buttonDeleteHot.IsEnabled = true;
+                }
             }
             else
             {
@@ -117,6 +121,12 @@ namespace SvodExcel
 
         private void dataGrid_UnloadingRow(object sender, DataGridRowEventArgs e)
         {
+            SaveEdit();
+        }
+
+        private void dataGrid_CurrentCellChanged(object sender, EventArgs e)
+        {
+            //CollectionViewSource.GetDefaultView(dataGrid.ItemsSource).Refresh();
             SaveEdit();
         }
     }

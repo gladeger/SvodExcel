@@ -19,8 +19,8 @@
         <Image x:Key="View_enable" Source="Images\View.png"></Image>
         <Image x:Key="Save_disable" Source="Images\Save_disable.png"></Image>
         <Image x:Key="Save_enable" Source="Images\Save.png"></Image>
-        <Image x:Key="Save_disable_m" Source="Images\Save_disable.png" Width="20" Height="20"></Image>
-        <Image x:Key="Save_enable_m" Source="Images\Save.png" Width="20" Height="20"></Image>
+        <Image x:Key="Save_disable_m" Source="Images\Save_disable.png" Width="15" Height="15" Stretch="Fill"></Image>
+        <Image x:Key="Save_enable_m" Source="Images\Save.png" Width="15" Height="15" Stretch="Fill"></Image>
         <Image x:Key="View_disable" Source="Images\View_disable.png"></Image>
         <Image x:Key="View_download_enable" Source="Images\View_download.png"></Image>
         <Image x:Key="View_download_disable" Source="Images\View_download_disable.png"></Image>
@@ -28,26 +28,26 @@
         <Image x:Key="DeleteRecord_disable" Source="Images\DeleteRecord_disable.png"></Image>
         <Image x:Key="Key_enable" Source="Images\key.png"></Image>
         <Image x:Key="Key_disable" Source="Images\key_disable.png"></Image>
-        <Image x:Key="Key_enable_m" Source="Images\key.png" Width="20" Height="20"></Image>
-        <Image x:Key="Key_disable_m" Source="Images\key_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="Key_enable_m" Source="Images\key.png" Width="15" Height="15" Stretch="Fill"></Image>
+        <Image x:Key="Key_disable_m" Source="Images\key_disable.png" Width="15" Height="15" Stretch="Fill" ></Image>
         <Image x:Key="KeyOff_enable" Source="Images\KeyOff.png"></Image>
         <Image x:Key="KeyOff_disable" Source="Images\KeyOff_disable.png"></Image>
-        <Image x:Key="KeyOff_enable_m" Source="Images\KeyOff.png" Width="20" Height="20"></Image>
-        <Image x:Key="KeyOff_disable_m" Source="Images\KeyOff_disable.png" Width="20" Height="20"></Image>
-        <Image x:Key="SingleInput_enable_m" Source="Images\SingleInput.png" Width="20" Height="20"></Image>
-        <Image x:Key="SingleInput_disable_m" Source="Images\SingleInput_disable.png" Width="20" Height="20"></Image>
-        <Image x:Key="MultiInput_enable_m" Source="Images\MultiInput.png" Width="20" Height="20"></Image>
-        <Image x:Key="MultiInput_disable_m" Source="Images\MultiInput_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="KeyOff_enable_m" Source="Images\KeyOff.png" Width="15" Height="15" Stretch="Fill"></Image>
+        <Image x:Key="KeyOff_disable_m" Source="Images\KeyOff_disable.png" Width="15" Height="15" Stretch="Fill"></Image>
+        <Image x:Key="SingleInput_enable_m" Source="Images\SingleInput.png" Width="15" Height="15" Stretch="Fill"></Image>
+        <Image x:Key="SingleInput_disable_m" Source="Images\SingleInput_disable.png" Width="15" Height="15" Stretch="Fill"></Image>
+        <Image x:Key="MultiInput_enable_m" Source="Images\MultiInput.png" Width="15" Height="15" Stretch="UniformToFill"></Image>
+        <Image x:Key="MultiInput_disable_m" Source="Images\MultiInput_disable.png" Width="15" Height="15" Stretch="Fill"></Image>
         <Image x:Key="FileInput_enable" Source="Images\OpenFile.png"></Image>
         <Image x:Key="FileInput_disable" Source="Images\OpenFile_disable.png"></Image>
-        <Image x:Key="FileInput_enable_m" Source="Images\OpenFile.png" Width="20" Height="20"></Image>
-        <Image x:Key="FileInput_disable_m" Source="Images\OpenFile_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="FileInput_enable_m" Source="Images\OpenFile.png" Width="15" Height="15" Stretch="Fill"></Image>
+        <Image x:Key="FileInput_disable_m" Source="Images\OpenFile_disable.png" Width="15" Height="15" Stretch="Fill"></Image>
         <Image x:Key="Edit_enable" Source="Images\Edit.png"></Image>
         <Image x:Key="Edit_disable" Source="Images\Edit_disable.png"></Image>
         <Image x:Key="Disconnect_enable" Source="Images\Disconnect.png"></Image>
         <Image x:Key="Disconnect_disable" Source="Images\Disconnect_disable.png"></Image>
-        <Image x:Key="Edit_enable_m" Source="Images\Edit.png" Width="20" Height="20"></Image>
-        <Image x:Key="Edit_disable_m" Source="Images\Edit_disable.png" Width="20" Height="20"></Image>
+        <Image x:Key="Edit_enable_m" Source="Images\Edit.png" Width="15" Height="15" Stretch="Fill"></Image>
+        <Image x:Key="Edit_disable_m" Source="Images\Edit_disable.png" Width="15" Height="15" Stretch="Fill"></Image>
         <Grid x:Key="Upload_enable_grid"  Margin="0,0,0,0" Width="280" >
             <TextBlock Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">Отправить данные в общий файл</TextBlock>
             <Image Source="Images\Upload.png" Margin="0,5,10,5" VerticalAlignment="Center" HorizontalAlignment="Right" />
@@ -557,7 +557,7 @@
             <MenuItem x:Name="MenuInputData" Header="Ввод данных">
                 <MenuItem Header="Ручной ввод по одному" Click="MenuItemSingleInput_Click"  Style="{StaticResource SingleInput_MenuItem}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
                 <MenuItem x:Name="MenuItemFileInput" Header="Импорт из Excel" Style="{StaticResource FileInput_MenuItem}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="MenuItemFileInput_Click"/>
-                <MenuItem Header="Свободный ввод в таблицу" IsEnabled="False" Style="{StaticResource MultiInput_MenuItem}" ToolTip="Множественный перенос данных таблицы для экспорта в общий файл"/>
+                <MenuItem Header="Известные преподаватели" IsEnabled="True" Style="{StaticResource MultiInput_MenuItem}" ToolTip="Открыть список известных преподавателей" Click="MenuItem_Click_1"/>
             </MenuItem>
             <MenuItem x:Name="MenuItemOptions" Header="Настройки..." ToolTip="Для включения настроек необходимо перейти в режим администратора." IsEnabled="False" Click="MenuItemOptions_Click"/>
             <MenuItem Header="Справка">
@@ -569,7 +569,7 @@
                 <Button x:Name="buttonExportHot" Width="26" Margin="10,0,0,0" Style="{StaticResource excel_import_button}" IsEnabled="False" Click="buttonExportHot_Click" ToolTip='Отправить введенные данные (см. в таблице "Экспорт") в общий сводный файл расписания'/>
                 <Button x:Name="buttonSingleInputHot" Click="MenuItemSingleInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource SingleInput_button}" ToolTip='Добавить новую запись "Занятия" для экспорта в общий файл'/>
                 <Button x:Name="buttonFileInputHot" Width="26"  Margin="10,0,0,0" Style="{StaticResource FileInput_button}" ToolTip="Множественный перенос данных из файла Excel для экспорта в общий файл" Click="buttonFileInputHot_Click"/>
-                <Button x:Name="buttonListTeacher" IsEnabled="False" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Открыть список известных преподавателей"/>
+                <Button x:Name="buttonListTeacher" IsEnabled="True" Width="26"  Margin="10,0,0,0" Style="{StaticResource MultiInput_button}" ToolTip="Открыть список известных преподавателей" Click="buttonListTeacher_Click"/>
             </StackPanel>
             <StackPanel x:Name="menu_Hot_Edit" Height="28" VerticalAlignment="Top" Orientation="Horizontal" >
                 <Button x:Name="buttonEditInputHot"  IsEnabled="False" Click="MenuItemEditInput_Click" Width="26"  Margin="10,0,0,0" Style="{StaticResource Edit_button}" ToolTip='Изменить запись "Занятие" для экспорта в общий файл'/>

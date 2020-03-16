@@ -16,6 +16,8 @@ using System.Runtime.InteropServices;
 using ExcelLibrary;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Linq;
+
 
 
 namespace SvodExcel
@@ -33,7 +35,13 @@ namespace SvodExcel
         public List<DataTableRow> DTR = new List<DataTableRow>();
         public List<DataViewTableRow> vDTR = new List<DataViewTableRow>();
         public List<DataViewFastTableRow> vfDTR = new List<DataViewFastTableRow>();
+
+        List<string> TeacherTemplate = new List<string>();
+        public List<NoneTeacher> YTT = new List<NoneTeacher>();
+        public ListViewEditWindow LVEWY = new ListViewEditWindow();
+
         private bool ClickToAddRow = true;
+        
         private struct markerActionData
         {
             public int IndexData { get; set; }
@@ -44,7 +52,7 @@ namespace SvodExcel
         public MainWindow()
         {
             InitializeComponent();
-
+            StartListTeacher();
             DTR.Clear();
             vDTR.Clear();
             vfDTR.Clear();
@@ -112,6 +120,35 @@ namespace SvodExcel
             Top = 0;
             Left = 0;
             //MessageBox.Show(Properties.Settings.Default.LastExcelStartID.ToString());
+
+            LVEWY.Title = "Список известных преподавателей";
+            LVEWY.Owner = this;
+
+            YTT.Clear();
+            for (int i = 0; i < TeacherTemplate.Count; i++)
+            {
+                NoneTeacher bYTT = new NoneTeacher();
+                bYTT.Name = TeacherTemplate[i];
+                YTT.Add(bYTT);
+            }
+
+
+            Binding bindY = new Binding();
+            bindY.Path = new PropertyPath(".");
+            bindY.Source = YTT;
+            //bind.XPath = ".";
+            bindY.Mode = BindingMode.OneWay;
+
+
+            LVEWY.dataGrid.ItemsSource = YTT;
+
+            LVEWY.dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, bindY);
+            CollectionViewSource.GetDefaultView(LVEWY.dataGrid.ItemsSource).Refresh();
+            LVEWY.dataGrid.CanUserAddRows = true;
+            LVEWY.dataGrid.Columns[0].Header = "ФИО";
+            LVEWY.textBlockInfo.Text = "\tПреподаватели из этого списка \bизвестны\b системе, часть из них взята из общего файла расписания, часть из добавляемых вами записей";
+            LVEWY.buttonSingleInputHot.IsEnabled = false;
+            LVEWY.dataGrid.IsReadOnly = true;
         }
         private void SvodExcel_Closed(object sender, EventArgs e)
         {
@@ -132,6 +169,23 @@ namespace SvodExcel
             catch { }
         }
 
+        private void StartListTeacher()
+        {
+
+            string path = @".\ListTeacher.dat";
+
+            if (!File.Exists(path))
+            {
+                File.WriteAllText(path, "");
+                File.WriteAllText(path, "\n" + "Moodle");
+                File.AppendAllText(path, "\n" + "Пронина Л.Н.");
+                File.AppendAllText(path, "\n" + "Григорьева А.И.");
+            }
+                TeacherTemplate.Clear();
+                TeacherTemplate = File.ReadAllLines(path).ToList<string>();
+
+        }
+
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -139,7 +193,7 @@ namespace SvodExcel
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            AboutBox1 f = new AboutBox1();
+            AboutBox f = new AboutBox();
             f.ShowDialog();
         }
 
@@ -1592,6 +1646,17 @@ namespace SvodExcel
             MAD.Clear();
             buttonViewEdit.IsEnabled = false;
         }
+
+        private void buttonListTeacher_Click(object sender, RoutedEventArgs e)
+        {
+            LVEWY.Show();
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            LVEWY.Show();
+        }
+
         public void ConnectDisconnect()
         {
             ConnectDisconnect(ConnectMode);
