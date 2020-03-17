@@ -525,19 +525,19 @@ namespace SvodExcel
                             {
                                 if(
                                     MessageBox.Show(
-                                    "Пересекаются записи \n" +
-                                    "из файла\n" +
-                                    InputFileName[i] +
-                                    ":\n" +
-                                    IDFs[i].InputDataFileRows[j].Date + " " + IDFs[i].InputDataFileRows[j].Time + " " + IDFs[i].InputDataFileRows[j].Teacher + " " +
-                                    "\n и \n" +
-                                    "из файла\n" +
-                                    InputFileName[k] +
-                                    ":\n" +
-                                    IDFs[k].InputDataFileRows[m].Date + " " + IDFs[k].InputDataFileRows[m].Time + " " + IDFs[k].InputDataFileRows[m].Teacher + " " +
-                                    "\n" +
-                                    "ОК - продолжить проверку,\nОтмена - прекратить проверку."
-                                    , "Обнаружены наложения занятий", MessageBoxButton.OKCancel, MessageBoxImage.Warning)
+                                        "Пересекаются записи \n" +
+                                        "из файла\n" +
+                                        InputFileName[i] +
+                                        ":\n" +
+                                        IDFs[i].InputDataFileRows[j].Date + " " + IDFs[i].InputDataFileRows[j].Time + " " + IDFs[i].InputDataFileRows[j].Teacher + " " +
+                                        "\n и \n" +
+                                        "из файла\n" +
+                                        InputFileName[k] +
+                                        ":\n" +
+                                        IDFs[k].InputDataFileRows[m].Date + " " + IDFs[k].InputDataFileRows[m].Time + " " + IDFs[k].InputDataFileRows[m].Teacher + " " +
+                                        "\n" +
+                                        "ОК - продолжить проверку,\nОтмена - прекратить проверку."
+                                        , "Обнаружены наложения занятий", MessageBoxButton.OKCancel, MessageBoxImage.Warning)
                                     ==MessageBoxResult.Cancel
                                     )
                                 {

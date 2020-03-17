@@ -119,6 +119,15 @@ namespace SvodExcel
                     bufInputTime = bufInputTime.Substring(0, endindex + 1);
                     Regex regexTimeDigit = new Regex(@"\d");
                     Regex regexTimeSeparate = new Regex(@"[\.,:;\-\/ ]");
+                    Regex regexTimeSeparateDubl = new Regex(@"\D{2,}");
+                    //bufInputTime = bufInputTime.Replace(" ", "");
+                    MatchCollection matchesTimeSeparateDubl = regexTimeSeparateDubl.Matches(bufInputTime);
+                    int sdvig = 0;
+                    for (int i=0;i<matchesTimeSeparateDubl.Count;i++)
+                    {
+                        bufInputTime=bufInputTime.Remove(matchesTimeSeparateDubl[i].Index-sdvig+1, matchesTimeSeparateDubl[i].Length-1);
+                        sdvig += matchesTimeSeparateDubl[i].Length - 1;
+                    }
                     List<bool> bufFlags = new List<bool>();
                     for (int i = 0; i < bufInputTime.Length; i++)
                     {
@@ -166,6 +175,7 @@ namespace SvodExcel
                     {
                         Time = "";
                     }
+                    MessageBox.Show(Time);
                 }
 
                 string bufInputTeacher = inputTeacher;
@@ -181,7 +191,8 @@ namespace SvodExcel
                     }
                     else
                     {
-                        Regex regexTeacherSeparate = new Regex(@"[\.,:;\-\/ ]");
+                        Regex regexTeacherSeparate = new Regex(@"[\.,:;\-\/ ]");///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Сепараты надо не буквы!!!
+                        //Regex regexTeacherSeparate = new Regex(@"([А-Я]|Ё)|([а-я]|ё)");
                         Regex regexTeacherChar = new Regex(@"([А-Я]|Ё)|([а-я]|ё)");
                         bufInputTeacher += ".";
                         MatchCollection matchTeacherChar = regexTeacherChar.Matches(bufInputTeacher);
@@ -208,7 +219,7 @@ namespace SvodExcel
                             if (bufFlags[i])
                                 bufCharTeacher.Add(bufInputTeacher[i]);
                         }
-                        //MessageBox.Show("To " + bufInputTeacher);
+                        MessageBox.Show("To " + (new string(bufCharTeacher.ToArray())));
                         bufInputTeacher = new string(bufCharTeacher.ToArray());
                         matchesTeacherSeparate = regexTeacherSeparate.Matches(bufInputTeacher);
                         bufInputTeacher = regexTeacherSeparate.Replace(bufInputTeacher, ".");

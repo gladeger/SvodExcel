@@ -21,7 +21,7 @@
     <PublishUrl>\\192.168.1.251\Distrib\SvodExcel\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
@@ -33,7 +33,7 @@
     <PublisherName>ИПК</PublisherName>
     <WebPage>publish.htm</WebPage>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.9.0317.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -231,6 +231,9 @@
     </ApplicationDefinition>
     <Compile Include="DataGridExcel.cs" />
     <Compile Include="DataWork.cs" />
+    <Compile Include="Duplicates.xaml.cs">
+      <DependentUpon>Duplicates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InputPassword.xaml.cs">
       <DependentUpon>InputPassword.xaml</DependentUpon>
     </Compile>
@@ -253,6 +256,10 @@
     <Compile Include="SingleInput.xaml.cs">
       <DependentUpon>SingleInput.xaml</DependentUpon>
     </Compile>
+    <Page Include="Duplicates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="InputPassword.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

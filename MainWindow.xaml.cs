@@ -934,6 +934,7 @@ namespace SvodExcel
                            ));
                         }
                         CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+                        dataGridViewFast.UpdateLayout();
                     }
                     cmd.Dispose();
                     con.Close();
@@ -961,6 +962,7 @@ namespace SvodExcel
                 dataGridViewFast.Columns[1].Header = "Всего часов";
             }
             CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+            dataGridViewFast.UpdateLayout();
         }
 
 
@@ -986,6 +988,7 @@ namespace SvodExcel
                         File.Copy(pathA, pathC);
                         localdata.IsReadOnly = true;
                         CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+                        dataGridView.UpdateLayout();
                     }
                     else
                     {
@@ -1064,6 +1067,7 @@ namespace SvodExcel
                 con.Dispose();
                 //exApp.Quit();
                 CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+                dataGridView.UpdateLayout();
             }
         }
 
@@ -1085,6 +1089,7 @@ namespace SvodExcel
                 dataGridView.Columns[6].MaxWidth = 60;
             }
             CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+            dataGridView.UpdateLayout();
 
         }
         private void dataGridViewFast_Loaded(object sender, RoutedEventArgs e)
@@ -1096,6 +1101,7 @@ namespace SvodExcel
                 dataGridViewFast.Columns[1].Header = "Всего часов";
             }
             CollectionViewSource.GetDefaultView(dataGridViewFast.ItemsSource).Refresh();
+            dataGridViewFast.UpdateLayout();
         }
         private void dataGridExport_Loaded(object sender, RoutedEventArgs e)
         {
@@ -1113,6 +1119,7 @@ namespace SvodExcel
                 dataGridExport.Columns[3].MaxWidth = 120;
             }
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+            dataGridExport.UpdateLayout();
         }
 
         private void buttonView_Download_Click(object sender, RoutedEventArgs e)
@@ -1372,6 +1379,7 @@ namespace SvodExcel
             f.ShowDialog();
 
             CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+            dataGridExport.UpdateLayout();
         }
 
 
@@ -1461,6 +1469,7 @@ namespace SvodExcel
             }
             if (dataGridViewEdit.ItemsSource != null)
                 CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
+            dataGridViewEdit.UpdateLayout();
         }
 
         private void buttonDisconnect_Click(object sender, RoutedEventArgs e)
@@ -1701,6 +1710,7 @@ namespace SvodExcel
                                 File.Copy(pathA, pathC);
                                 localdata.IsReadOnly = true;
                                 CollectionViewSource.GetDefaultView(dataGridView.ItemsSource).Refresh();
+                                dataGridView.UpdateLayout();
                             }
                             //else
                             {
@@ -1791,6 +1801,7 @@ namespace SvodExcel
                     dataGridViewEdit.ItemsSource = vDTR;
 
                     CollectionViewSource.GetDefaultView(dataGridViewEdit.ItemsSource).Refresh();
+                    dataGridViewEdit.UpdateLayout();
                     if (dataGridViewEdit.Columns.Count > 0)
                     {
                         dataGridViewEdit.Columns.Remove(dataGridViewEdit.Columns[dataGridViewEdit.Columns.Count - 1]);
