@@ -13,6 +13,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using System.Collections.Specialized;
+using System.Text.RegularExpressions;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.OleDb;
 
 namespace SvodExcel
 {
@@ -39,6 +43,7 @@ namespace SvodExcel
         public List<string> NoneTeacherTemplate = new List<string>();
         public List<NoneTeacher> NTT = new List<NoneTeacher>();
         public List<NoneTeacher> YTT = new List<NoneTeacher>();
+        public List<DataTableRow> SvodData =new List<DataTableRow>();
         ulong countAllRecords = 0;
         private bool ClickToAddRow = true;
         public ListViewEditWindow LVEW = new ListViewEditWindow();
@@ -375,10 +380,134 @@ namespace SvodExcel
         private void buttonFindDublicates_Click(object sender, RoutedEventArgs e)
         {
             FindDublicateRecord();
-
         }
+
+        public void UpdateView()
+        {
+            string pathB = Properties.Settings.Default.PathToGlobal + "\\" + Properties.Settings.Default.GlobalMarker;
+            if (File.Exists(pathB))
+            {
+                MessageBox.Show("К сожалению, на данный момент обновление невозможно - другой пользователь обновляет общий файл.\nПопробуйте еще раз чуть позже");
+            }
+            else
+            {
+                string pathA = Properties.Settings.Default.PathToGlobalData;
+                string pathC = Directory.GetCurrentDirectory() + "\\" + "View_" + Properties.Settings.Default.GlobalData;
+                if (File.Exists(pathC))
+                {
+                    FileInfo localdata = new FileInfo(pathC);
+                    FileInfo globaldata = new FileInfo(pathA);
+                    if (globaldata.LastWriteTime.ToLocalTime() > localdata.LastWriteTime.ToLocalTime())
+                    {
+                        localdata.IsReadOnly = false;
+                        File.Delete(pathC);
+                        File.Copy(pathA, pathC);
+                        localdata.IsReadOnly = true;
+                    }
+                }
+                else
+                {
+                    File.Copy(pathA, pathC);
+                    FileInfo localdata = new FileInfo(pathC);
+                    localdata.IsReadOnly = true;
+
+                }
+
+                int i;
+                String connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                switch (pathC.Substring(pathC.LastIndexOf('.')))
+                {
+                    case ".xls":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 8.0;HDR=YES;\"";
+                        break;
+                    case ".xlsx":
+                        connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathC + ";Extended Properties=\"Excel 12.0 Xml;HDR=YES;\"";
+                        break;
+                    default:
+                        MessageBox.Show("Ошибка неизвестного формата файла " + pathC.Substring(pathC.LastIndexOf('.')), "Ошибка расширения", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                        break;
+                }
+                OleDbConnection con = new OleDbConnection(connection);
+                DataTable dtExcelSchema;
+                con.Open();
+                dtExcelSchema = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                //con.Close();
+                DataSet ds = new DataSet();
+
+                string SheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                String Command = "Select * from [" + SheetName + "A15:H]";
+                //String Command = "Select * from [Лист1$A15:H]";
+
+                OleDbCommand cmd = new OleDbCommand(Command, con);
+                OleDbDataAdapter db = new OleDbDataAdapter(cmd);
+                DataTable dt_input = new DataTable();
+                db.Fill(dt_input);
+
+                for (i = 0; i < dt_input.Rows.Count; i++)
+                {
+                    if (dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length == 0 && dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length == 0)
+                    {
+                        dt_input.Rows[i].Delete();
+                        //i -= 1;
+                    }
+                }
+                dt_input.AcceptChanges();
+                SvodData.Clear();
+                for (i = 0; i < dt_input.Rows.Count; i++)
+                {
+                    SvodData.Add(new DataTableRow(
+                            dt_input.Rows[i].ItemArray.GetValue(1).ToString().Length > 0 ? (dt_input.Rows[i].ItemArray.GetValue(1).ToString().LastIndexOf(" ") > 0 ? dt_input.Rows[i].ItemArray.GetValue(1).ToString().Substring(0, (dt_input.Rows[i].ItemArray.GetValue(1).ToString().IndexOf(" "))) : dt_input.Rows[i].ItemArray.GetValue(1).ToString()) : "",
+                            dt_input.Rows[i].ItemArray.GetValue(2).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(2).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(3).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(3).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(4).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(4).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(5).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(5).ToString() : "",
+                            dt_input.Rows[i].ItemArray.GetValue(6).ToString().Length > 0 ? dt_input.Rows[i].ItemArray.GetValue(6).ToString() : ""
+                            ));
+                }
+                //dataGridViewFast.ItemsSource = dt_input.AsDataView();
+                cmd.Dispose();
+                con.Close();
+                con.Dispose();
+                //exApp.Quit();
+            }
+        }
+
+
         private void FindDublicateRecord()
         {
+            UpdateView();
+            for(int i=0;i<IDFs.Count;i++)
+            {
+                for (int j = 0; j < IDFs[i].InputDataFileRows.Count; j++)
+                {
+                    for(int l=0;l<SvodData.Count;l++)
+                    {
+                        if (IDFs[i].InputDataFileRows[j].Intersection(SvodData[l]))
+                        {
+                            if(
+                                MessageBox.Show(
+                                    "Пересекаются записи \n" +
+                                    "из файла\n" +
+                                    InputFileName[i] +
+                                    ":\n" +
+                                    IDFs[i].InputDataFileRows[j].Date + " " + IDFs[i].InputDataFileRows[j].Time + " " + IDFs[i].InputDataFileRows[j].Teacher + " " +
+                                    "\n и \n" +
+                                    "из общего сводного файла:\n" +
+                                    SvodData[l].Date + " " + SvodData[l].Time + " " + SvodData[l].Teacher + " " +
+                                    "\n" +
+                                    "ОК - продолжить проверку,\nОтмена - прекратить проверку."
+                                    , "Обнаружены наложения занятий", MessageBoxButton.OKCancel, MessageBoxImage.Warning)
+                                ==MessageBoxResult.Cancel
+                                )
+                            {
+                                return;
+                            }
+                            
+                        }
+                    }
+                }
+            }
             for (int i = 0; i < IDFs.Count; i++)
             {
                 for (int j = 0; j < IDFs[i].InputDataFileRows.Count; j++)
@@ -394,18 +523,31 @@ namespace SvodExcel
                         {
                             if (IDFs[i].InputDataFileRows[j].Intersection(IDFs[k].InputDataFileRows[m]))
                             {
-                                MessageBox.Show(
+                                if(
+                                    MessageBox.Show(
                                     "Пересекаются записи \n" +
+                                    "из файла\n" +
+                                    InputFileName[i] +
+                                    ":\n" +
                                     IDFs[i].InputDataFileRows[j].Date + " " + IDFs[i].InputDataFileRows[j].Time + " " + IDFs[i].InputDataFileRows[j].Teacher + " " +
                                     "\n и \n" +
-                                    IDFs[k].InputDataFileRows[m].Date + " " + IDFs[k].InputDataFileRows[m].Time + " " + IDFs[k].InputDataFileRows[m].Teacher + " " + 
-                                    "\n"+
-                                    ""
-                                    , "Обнаружены наложения занятий", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                    "из файла\n" +
+                                    InputFileName[k] +
+                                    ":\n" +
+                                    IDFs[k].InputDataFileRows[m].Date + " " + IDFs[k].InputDataFileRows[m].Time + " " + IDFs[k].InputDataFileRows[m].Teacher + " " +
+                                    "\n" +
+                                    "ОК - продолжить проверку,\nОтмена - прекратить проверку."
+                                    , "Обнаружены наложения занятий", MessageBoxButton.OKCancel, MessageBoxImage.Warning)
+                                    ==MessageBoxResult.Cancel
+                                    )
+                                {
+                                    return;
+                                }
+                                
                             }
                             else
                             { 
-
+                                
                             }
                         }
                     }
@@ -428,7 +570,7 @@ namespace SvodExcel
             if (tempIDF.OpenFile(FileName))
             {
                 IDFs.Add(new InputDataFile(FileName));
-
+                int AllNoneCreatedRecords = 0;
                 for (int i = 0; i < IDFs[IDFs.Count - 1].InputDataFileRows.Count; i++)
                 {
                     if (TimeTemplate.IndexOf(IDFs[IDFs.Count - 1].InputDataFileRows[i].Time) < 0)
@@ -480,16 +622,22 @@ namespace SvodExcel
 
                                     IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
                                     i -= 1;
+                                    AllNoneCreatedRecords += 1;
                                 }
                             }
                             else
                             {
                                 IDFs[IDFs.Count - 1].InputDataFileRows.RemoveAt(i);
                                 i -= 1;
+                                AllNoneCreatedRecords += 1;
                             }
                         }
 
                     }
+                }
+                if(AllNoneCreatedRecords >0)
+                {
+                    MessageBox.Show("Из файла \n" + FileName + "\nне удалось добавить из-за ошибок ввода или ФИО преподавателя " + AllNoneCreatedRecords.ToString() + " запис(ь/и/ей)", "Неудачные записи", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 if (IDFs[IDFs.Count - 1].InputDataFileRows.Count <= 0)
                 {

@@ -155,7 +155,7 @@
                     <Image Source="Images/Update.png" Margin="0,-2,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
                 </Grid>
             </Button>
-            <Button x:Name="buttonFindDublicates" Content="Искать наложения" HorizontalAlignment="Right" Margin="0,0,10,32" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="2" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" Click="buttonFindDublicates_Click" IsEnabled="False"/>
+            <Button x:Name="buttonFindDublicates" Content="Искать наложения" HorizontalAlignment="Right" Margin="0,0,10,32" VerticalAlignment="Bottom" Width="130" Height="30" Grid.Column="2" ToolTip="Искать среди записей во всех добавленных файлах совпадающие строки" Click="buttonFindDublicates_Click"/>
             <TextBlock x:Name="StatusStringConstTextAllFile_Copy" VerticalAlignment="Bottom" Margin="10,0,0,10" HorizontalAlignment="Left" Width="180" Height="48" TextAlignment="Center" Grid.Column="0" FontStyle="Italic">
                 Изменения внесенные здесь <LineBreak/>
                 не меняют содержимое <LineBreak/>
