@@ -169,7 +169,7 @@ namespace SvodExcel
             catch { }
         }
 
-        private void StartListTeacher()
+        public void StartListTeacher()
         {
 
             string path = @".\ListTeacher.dat";
@@ -1362,7 +1362,7 @@ namespace SvodExcel
         private void openWindowOpenFileTable(string[] dataString = null)
         {
             OpenFileTable f = new OpenFileTable(dataString, this);
-            //f.Owner = this;
+            f.Owner = this;
             f.Top = this.Top + 50;
             f.Left = this.Left + 50;
             //f.Show();

@@ -361,7 +361,7 @@ namespace SvodExcel
                 FindDublicateRecord();
             }
 
-            MainWindow home = Application.Current.MainWindow as MainWindow;
+            MainWindow home = this.Owner as MainWindow;
             for (int i = 0; i < IDFs.Count; i++)
             {
                 for (int j = 0; j < IDFs[i].InputDataFileRows.Count; j++)
@@ -369,6 +369,7 @@ namespace SvodExcel
                     home.AddNewItem(IDFs[i].InputDataFileRows[j]);
                 }
             }
+            home.StartListTeacher();
             Close();
         }
         private void buttonFindDublicates_Click(object sender, RoutedEventArgs e)

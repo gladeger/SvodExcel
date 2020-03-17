@@ -839,6 +839,7 @@ namespace SvodExcel
                         default:
                             break;
                     }
+                    (home as MainWindow).StartListTeacher();
                     break;
                 case ("SvodExcel.OpenFileTable"):
                     home = Owner as OpenFileTable;
