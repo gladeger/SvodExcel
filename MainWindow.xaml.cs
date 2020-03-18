@@ -97,7 +97,9 @@ namespace SvodExcel
                        
             if (Properties.Settings.Default.FirstStart)
             {
+                MessageBox.Show("Это первый запуск приложения.\nПриложение попытается связаться с общим файлом расписания для обновления доступных данных (время занятий, перечень преподавателей и т.п.).\nЭто может занять некоторое время.\nДля продолжения работы нажмите OK");
                 Properties.Settings.Default.FirstStart = false;
+                Properties.Settings.Default.Save();
                 DataWork.UpdateListTimes(exApp);
                 DataWork.UpdateTeachersList(exApp);
             }
@@ -183,7 +185,19 @@ namespace SvodExcel
             }
                 TeacherTemplate.Clear();
                 TeacherTemplate = File.ReadAllLines(path).ToList<string>();
-
+            YTT.Clear();
+            for (int i = 0; i < TeacherTemplate.Count; i++)
+            {
+                NoneTeacher bYTT = new NoneTeacher();
+                bYTT.Name = TeacherTemplate[i];
+                YTT.Add(bYTT);
+            }
+            if (LVEWY.dataGrid != null)
+                if (LVEWY.dataGrid.ItemsSource != null)
+                {
+                    CollectionViewSource.GetDefaultView(LVEWY.dataGrid.ItemsSource).Refresh();
+                    LVEWY.dataGrid.UpdateLayout();
+                }
         }
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
@@ -1658,11 +1672,13 @@ namespace SvodExcel
 
         private void buttonListTeacher_Click(object sender, RoutedEventArgs e)
         {
+            StartListTeacher();
             LVEWY.Show();
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
+            StartListTeacher();
             LVEWY.Show();
         }
 

@@ -167,6 +167,8 @@ namespace SvodExcel
         {
             string path = @".\ListNoneTeacher.dat";
             File.WriteAllLines(path, NoneTeacherTemplate);
+            path = @".\ListTeacher.dat";
+            File.WriteAllLines(path, TeacherTemplate);
         }
 
         private void StartListTimes()
@@ -202,9 +204,25 @@ namespace SvodExcel
                 File.AppendAllText(path, "\n" + "Пронина Л.Н.");
                 File.AppendAllText(path, "\n" + "Григорьева А.И.");
             }
+            TeacherTemplate.Clear();
+            TeacherTemplate = File.ReadAllLines(path).ToList<string>();
 
-                TeacherTemplate.Clear();
-                TeacherTemplate = File.ReadAllLines(path).ToList<string>();
+            //MessageBox.Show(TeacherTemplate[TeacherTemplate.Count - 1]);
+
+            YTT.Clear();
+            for (int i = 0; i < TeacherTemplate.Count; i++)
+            {
+                NoneTeacher bYTT = new NoneTeacher();
+                bYTT.Name = TeacherTemplate[i];
+                YTT.Add(bYTT);
+            }
+            if (LVEWY.dataGrid != null)
+                if (LVEWY.dataGrid.ItemsSource != null)
+                {
+                    CollectionViewSource.GetDefaultView(LVEWY.dataGrid.ItemsSource).Refresh();
+                    LVEWY.dataGrid.UpdateLayout();
+                }                   
+
 
             path = @".\ListNoneTeacher.dat";
             NoneTeacherTemplate.Clear();
@@ -221,7 +239,11 @@ namespace SvodExcel
             }
             if(LVEW.dataGrid!=null)
                 if(LVEW.dataGrid.ItemsSource!=null)
+                {
                     CollectionViewSource.GetDefaultView(LVEW.dataGrid.ItemsSource).Refresh();
+                    LVEW.dataGrid.UpdateLayout();
+                }
+                    
         }
 
         private void buttonBrowseMainFile_Click(object sender, RoutedEventArgs e)
@@ -592,6 +614,15 @@ namespace SvodExcel
                                     )
                                 {
                                     TeacherTemplate.Add(IDFs[IDFs.Count - 1].InputDataFileRows[i].Teacher);
+                                    NoneTeacher bYTT = new NoneTeacher();
+                                    bYTT.Name = TeacherTemplate[TeacherTemplate.Count - 1];
+                                    YTT.Add(bYTT);                                
+                                    if (LVEWY.dataGrid != null)
+                                        if (LVEWY.dataGrid.ItemsSource != null)
+                                        {
+                                            CollectionViewSource.GetDefaultView(LVEWY.dataGrid.ItemsSource).Refresh();
+                                            LVEWY.dataGrid.UpdateLayout();
+                                        }
                                     string path = @".\ListTeacher.dat";
                                     if (File.Exists(path))
                                     {

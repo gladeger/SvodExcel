@@ -175,7 +175,7 @@ namespace SvodExcel
                     {
                         Time = "";
                     }
-                    MessageBox.Show(Time);
+                    //MessageBox.Show(Time);
                 }
 
                 string bufInputTeacher = inputTeacher;
@@ -188,24 +188,27 @@ namespace SvodExcel
                     {
                         bufInputTeacher = "Moodle";
                         Teacher = "Moodle";
+                       // MessageBox.Show("To Moodle");
                     }
                     else
                     {
-                        Regex regexTeacherSeparate = new Regex(@"[\.,:;\-\/ ]");///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Сепараты надо не буквы!!!
-                        //Regex regexTeacherSeparate = new Regex(@"([А-Я]|Ё)|([а-я]|ё)");
+                        //MessageBox.Show("From " + bufInputTeacher);
+                        //Regex regexTeacherSeparate = new Regex(@"[\.,:;\-\/ ]");
+                        Regex regexTeacherSeparate = new Regex(@"([А-Я]|Ё)|([а-я]|ё)");
                         Regex regexTeacherChar = new Regex(@"([А-Я]|Ё)|([а-я]|ё)");
                         bufInputTeacher += ".";
                         MatchCollection matchTeacherChar = regexTeacherChar.Matches(bufInputTeacher);
                         bufInputTeacher = bufInputTeacher.Substring(matchTeacherChar[0].Index, matchTeacherChar[matchTeacherChar.Count - 1].Index + 2);
+                        MatchCollection matchesTeacherSeparate = regexTeacherSeparate.Matches(bufInputTeacher);
                         //MessageBox.Show("From (" + startindex + " - " + (endindex + 1) + ") " + bufInputTeacher);
                         //bufInputTeacher = bufInputTeacher.Substring(0, endindex + 1);
                         //MessageBox.Show("From ("+startindex+" - "+endindex+") "+bufInputTeacher);
-                        List<bool> bufFlags = new List<bool>();
+                        /*List<bool> bufFlags = new List<bool>();
                         for (int i = 0; i < bufInputTeacher.Length; i++)
                         {
                             bufFlags.Add(true);
                         }
-                        MatchCollection matchesTeacherSeparate = regexTeacherSeparate.Matches(bufInputTeacher);
+                        
                         for (int i = 1; i < matchesTeacherSeparate.Count; i++)
                         {
                             if (matchesTeacherSeparate[i].Index == (matchesTeacherSeparate[i - 1].Index - 1))
@@ -219,8 +222,100 @@ namespace SvodExcel
                             if (bufFlags[i])
                                 bufCharTeacher.Add(bufInputTeacher[i]);
                         }
-                        MessageBox.Show("To " + (new string(bufCharTeacher.ToArray())));
+                        */
+                        string bufCharTeacher = "";
+                        bufCharTeacher += matchTeacherChar[0].Value;
+                        for (int i = 1; i < matchTeacherChar.Count; i++)
+                        {
+                            if (matchTeacherChar[i].Index!=(matchTeacherChar[i-1].Index+1))
+                            {
+                                bufCharTeacher += " ";
+                                bufCharTeacher += matchTeacherChar[i].Value.ToUpper();
+                            }
+                            else
+                            {
+                                if((((matchTeacherChar[i].Value[0]>='А')&& (matchTeacherChar[i].Value[0] <= 'Я'))|| (matchTeacherChar[i].Value[0] == 'Ё')) || ((matchTeacherChar[i].Value[0] >= 'A') && (matchTeacherChar[i].Value[0] <= 'Z')))
+                                {
+                                    if ((((matchTeacherChar[i-1].Value[0] >= 'А') && (matchTeacherChar[i-1].Value[0] <= 'Я')) || (matchTeacherChar[i-1].Value[0] == 'Ё')) || ((matchTeacherChar[i-1].Value[0] >= 'A') && (matchTeacherChar[i-1].Value[0] <= 'Z')))
+                                    {
+                                        bufCharTeacher += matchTeacherChar[i].Value.ToLower();
+                                    }
+                                    else
+                                    {
+                                        bufCharTeacher += " ";
+                                        bufCharTeacher += matchTeacherChar[i].Value;
+                                    }
+                                        
+                                }
+                                else
+                                {
+                                    bufCharTeacher += matchTeacherChar[i].Value;
+                                }
+                            }
+                                
+                        }
                         bufInputTeacher = new string(bufCharTeacher.ToArray());
+                        Regex regexTeacherNames = new Regex(@"(([А-Я]|Ё)(([а-я]|ё)*))|(([A-Z])(([a-z])*))");
+                        MatchCollection matchTeacherNames = regexTeacherNames.Matches(bufInputTeacher);
+                        if(matchTeacherNames.Count>2)
+                        {
+                            int fathernameIndex = -1;
+                            for(int i=1;i<matchTeacherNames.Count;i++)
+                            {
+                                if (matchTeacherNames[i].Length>=3)
+                                    if((matchTeacherNames[i].Value.Substring(matchTeacherNames[i].Length-3,3)=="вна")|| (matchTeacherNames[i].Value.Substring(matchTeacherNames[i].Length - 3, 3) == "вич"))
+                                    {
+                                        fathernameIndex = i;
+                                        break;
+                                    }
+                            }
+                            if(fathernameIndex>0)
+                            {
+                                if(fathernameIndex>1)
+                                    Teacher = matchTeacherNames[fathernameIndex - 2].Value + " " + matchTeacherNames[fathernameIndex - 1].Value[0] + "." + matchTeacherNames[fathernameIndex].Value[0] + ".";
+                                else
+                                    Teacher = matchTeacherNames[fathernameIndex + 1].Value + " " + matchTeacherNames[fathernameIndex - 1].Value[0] + "." + matchTeacherNames[fathernameIndex].Value[0] + ".";
+                            }
+                            else
+                            {
+                                int longnameindex=-1;
+                                for (int i = 0; i < matchTeacherNames.Count; i++)
+                                {
+                                    if(matchTeacherNames[i].Length > 2)
+                                    {
+                                        longnameindex = i;
+                                        break;
+                                    }
+                                }
+                                if(longnameindex == -1)
+                                {
+                                    Teacher = matchTeacherNames[0].Value+" "+ matchTeacherNames[1].Value[0]+"."+ matchTeacherNames[2].Value[0]+".";
+                                }
+                                else
+                                {
+                                    Teacher = matchTeacherNames[longnameindex].Value + " ";
+                                    if ((longnameindex + 2) < matchTeacherNames.Count)
+                                        Teacher += matchTeacherNames[longnameindex + 1].Value[0] + "." + matchTeacherNames[longnameindex + 2].Value[0] + ".";
+                                    else
+                                    {
+                                        if ((longnameindex - 2) >= 0)
+                                            Teacher += matchTeacherNames[longnameindex - 2].Value[0] + "." + matchTeacherNames[longnameindex - 1].Value[0] + ".";
+                                        else
+                                        {
+                                            Teacher += matchTeacherNames[longnameindex - 1].Value[0] + "." + matchTeacherNames[longnameindex + 1].Value[0] + ".";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(matchTeacherNames.Count > 0)
+                            Teacher = matchTeacherNames[0].Value;
+                            if(matchTeacherNames.Count > 1)
+                                Teacher += " "+matchTeacherNames[0].Value[0]+".";
+                        }
+                        /*
                         matchesTeacherSeparate = regexTeacherSeparate.Matches(bufInputTeacher);
                         bufInputTeacher = regexTeacherSeparate.Replace(bufInputTeacher, ".");
                         if (matchesTeacherSeparate.Count > 0)
@@ -245,6 +340,7 @@ namespace SvodExcel
                             else
                                 Teacher = "";
                         }
+                        */
                     }
                 }
             }
