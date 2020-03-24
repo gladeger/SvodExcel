@@ -20,10 +20,17 @@ namespace SvodExcel
     public partial class ProgressBar : Window
     {
         bool flagActive = true;
+        public bool ViewProgress = false;
         public ProgressBar()
         {
             InitializeComponent();
+            ProgressText.Visibility = Visibility.Hidden;
             flagActive = true;
+            if(ViewProgress)
+            {
+                PB.IsIndeterminate = false;
+                PB.UpdateLayout();
+            }
         }
 
         private void Window_Activated(object sender, EventArgs e)

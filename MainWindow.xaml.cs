@@ -31,6 +31,7 @@ namespace SvodExcel
         static extern int GetWindowThreadProcessId(int hWnd, out int lpdwProcessId);
 
         public Microsoft.Office.Interop.Excel.Application exApp = new Microsoft.Office.Interop.Excel.Application();
+
         public bool AdminMode, ConnectMode, NoneSave;
         public List<DataTableRow> DTR = new List<DataTableRow>();
         public List<DataViewTableRow> vDTR = new List<DataViewTableRow>();
@@ -41,7 +42,10 @@ namespace SvodExcel
         public ListViewEditWindow LVEWY = new ListViewEditWindow();
 
         private bool ClickToAddRow = true;
-        
+
+        public SvodExcel.ProgressBar PB;
+        public static int ExportCursor=0;
+
         private struct markerActionData
         {
             public int IndexData { get; set; }
@@ -103,6 +107,94 @@ namespace SvodExcel
                 DataWork.UpdateListTimes(exApp);
                 DataWork.UpdateTeachersList(exApp);
             }
+
+            //TimerCallback timeCB = new TimerCallback(UpdateProgress);
+
+            //Timer time = new Timer(timeCB, null, 0, 100);
+        }
+        //public delegate void NextPrimeDelegate();
+        private void UpdateProgress(object state)
+        {
+            double pb_max=0;
+            double pb_value=0;
+            bool uiAccess = PB.Dispatcher.CheckAccess();
+            if (uiAccess)
+            {
+                pb_max = PB.PB.Maximum;
+                pb_value = PB.PB.Value;
+            }
+            else
+                PB.Dispatcher.Invoke(
+                        () =>
+                        {
+                            pb_max = PB.PB.Maximum;
+                            pb_value = PB.PB.Value;
+                        }, System.Windows.Threading.DispatcherPriority.Normal
+                    );
+            if (pb_value < (pb_max - 1))
+            {
+                //MessageBox.Show(pb_value.ToString() + " < " + (pb_max - 1).ToString());
+
+                
+
+                if (uiAccess)
+                {
+                    PB.PB.Value = ExportCursor;
+                    PB.ProgressText.Content = ExportCursor.ToString();
+                    PB.UpdateLayout();
+                    pb_max = PB.PB.Maximum;
+                    pb_value = PB.PB.Value;
+                }
+                else
+                    PB.Dispatcher.Invoke(
+                        () =>
+                        {
+                            PB.PB.Value = ExportCursor;
+                            PB.ProgressText.Content = ExportCursor.ToString();
+                            PB.UpdateLayout();
+                            pb_max = PB.PB.Maximum;
+                            pb_value = PB.PB.Value;
+                        }, System.Windows.Threading.DispatcherPriority.Normal
+                    );
+            }
+            else
+            {
+                uiAccess = PB.Dispatcher.CheckAccess();
+                if (uiAccess)
+                    PB.Close();
+                else
+                    PB.Dispatcher.Invoke(
+                            () =>
+                            {
+                                PB.Close();
+                            }, System.Windows.Threading.DispatcherPriority.Normal
+                        );
+                uiAccess = this.Dispatcher.CheckAccess();
+                if (uiAccess)
+                {
+                    this.IsEnabled = true;
+                    this.Effect = null;
+                }
+                else
+                    this.Dispatcher.Invoke(
+                        () =>
+                        {
+                            this.IsEnabled = true;
+                            this.Effect = null;
+                        }, System.Windows.Threading.DispatcherPriority.Normal
+                    );
+                Thread.CurrentThread.Abort();
+            }     
+
+            //bool uiAccess = labelTech.Dispatcher.CheckAccess();
+            //if (uiAccess)
+            //{
+            //    labelTech.Content = ExportCursor.ToString();
+            //    ExportCursor += 1;
+            //}                
+            //else
+            //    labelTech.Dispatcher.Invoke(() => { labelTech.Content = ExportCursor.ToString(); ExportCursor += 1; });
+            //System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(new NextPrimeDelegate(CheckNextNumber),System.Windows.Threading.DispatcherPriority.Normal);
         }
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
         {
@@ -151,7 +243,9 @@ namespace SvodExcel
             LVEWY.textBlockInfo.Text = "\tПреподаватели из этого списка \bизвестны\b системе, часть из них взята из общего файла расписания, часть из добавляемых вами записей";
             LVEWY.buttonSingleInputHot.IsEnabled = false;
             LVEWY.dataGrid.IsReadOnly = true;
+
         }
+        
         private void SvodExcel_Closed(object sender, EventArgs e)
         {
             ClearHang();
@@ -475,36 +569,183 @@ namespace SvodExcel
             }
         }
 
+
         private void Export_Click()
         {
             System.Windows.Media.Effects.BlurEffect objBlur = new System.Windows.Media.Effects.BlurEffect();
             objBlur.Radius = 4;
             this.Effect = objBlur;
+            this.IsEnabled = false;
             UpdateLayout();
             if (MessageBox.Show("Вы действительно хотите добавить в общий файл все созданные ранее записи?\nВсего записей для экспорта: " + DTR.Count, "Экспот данных в общий файл", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
-                double This_TH2 = this.Top + this.Height / 2.0;
-                double This_LW2 = this.Left + this.Width / 2.0;
-                /*
-                Thread newWindowThread = new Thread(new ThreadStart(() =>
+                double This_TH2 = this.Top + (this.Height / 2.0);
+                double This_LW2 = this.Left + (this.Width / 2.0);
+                Window This_window = this;
+                if (DTR.Count>50)
+                //if (true)
                 {
-                    SvodExcel.ProgressBar PB = new SvodExcel.ProgressBar();
-                    PB.Top = This_TH2 - PB.Height / 2.0;
-                    PB.Left = This_LW2 - PB.Width / 2.0;
-                    PB.Topmost = false;
-                    PB.ShowDialog();
-                    System.Windows.Threading.Dispatcher.Run();
-                }));
+                PB = new SvodExcel.ProgressBar();
+                PB.Owner = this;
+                PB.ProgressText.Visibility = Visibility.Visible;
+                PB.ViewProgress = true;
+                    //Binding binding = new Binding();
+                    //binding.ElementName = "Owner.Top"; // элемент-источник
+                    //binding.Path = new PropertyPath("Top"); // свойство элемента-источника
+                    //PB.SetBinding(TextBlock.TextProperty, binding); // установка привязки для элемента-приемника
+                    //PB.Top = "{Binding Owner.Top, ElementName=window}";
+                //PB.Topmost = true;
+                PB.PB.Maximum = DTR.Count;
+                PB.PB.Minimum = 0;
+                PB.PB.Value = 0;
+                PB.PB.IsIndeterminate = false;
+                ExportCursor = 0;
+                double pb_max= PB.PB.Maximum;
+                double pb_value= PB.PB.Value;
+                Thread newWindowThread = new Thread(new ThreadStart(async () =>
+                     {
+                         bool uiAccess = PB.Dispatcher.CheckAccess();
+                         if (uiAccess)
+                         {
+                             PB.Show();
+                             PB.Activate();
+                             PB.Focus();
+                             PB.UpdateLayout();
+                         }
+                         else
+                             PB.Dispatcher.Invoke(
+                                     () =>
+                                     {
+                                         PB.Show();
+                                         PB.Activate();
+                                         PB.Focus();
+                                         PB.UpdateLayout();
+                                     }
+                                 );
+                         uiAccess = this.Dispatcher.CheckAccess();
+                         if (uiAccess)
+                         {
+                             objBlur = new System.Windows.Media.Effects.BlurEffect();
+                             objBlur.Radius = 4;
+                             this.Effect = objBlur;
+                             this.IsEnabled = false;
+                         }
+                         else
+                             this.Dispatcher.Invoke(
+                                 () =>
+                                 {
+                                     objBlur = new System.Windows.Media.Effects.BlurEffect();
+                                     objBlur.Radius = 4;
+                                     this.Effect = objBlur;
+                                     this.IsEnabled = false;
+                                 }, System.Windows.Threading.DispatcherPriority.Normal
+                             );
+
+
+                         //TimerCallback timeCB = new TimerCallback(UpdateProgress);
+                         //Timer time = new Timer(timeCB, null, 0, 100);
+
+                         //MessageBox.Show(pb_value.ToString() + " < " + (pb_max - 1).ToString());
+
+                         
+                         while (pb_value < (pb_max - 1))
+                         {
+                             //MessageBox.Show(pb_value.ToString() + " < " + (pb_max - 1).ToString());
+
+                             uiAccess = PB.Dispatcher.CheckAccess();
+                             if (uiAccess)
+                             {
+                                 PB.PB.Value = ExportCursor;
+                                 PB.ProgressText.Content = ExportCursor.ToString();
+                                 PB.UpdateLayout();
+                                 pb_max = PB.PB.Maximum;
+                                 pb_value = PB.PB.Value;
+                             }
+                             else
+                                 PB.Dispatcher.Invoke(
+                                     () =>
+                                     {
+                                         PB.PB.Value = ExportCursor;
+                                         PB.ProgressText.Content = ExportCursor.ToString();
+                                         PB.UpdateLayout();
+                                         pb_max = PB.PB.Maximum;
+                                         pb_value = PB.PB.Value;
+                                     }, System.Windows.Threading.DispatcherPriority.Normal
+                                 );
+                             await System.Threading.Tasks.Task.Delay(2000);
+                         }
+                         uiAccess = PB.Dispatcher.CheckAccess();
+                         if (uiAccess)
+                             PB.Close();
+                         else
+                             PB.Dispatcher.Invoke(
+                                     () =>
+                                     {
+                                         PB.Close();
+                                     }, System.Windows.Threading.DispatcherPriority.Normal
+                                 );
+                         uiAccess = this.Dispatcher.CheckAccess();
+                         if (uiAccess)
+                         {
+                             this.IsEnabled = true;
+                             this.Effect = null;
+                         }
+                         else
+                             this.Dispatcher.Invoke(
+                                 () =>
+                                 {
+                                     this.IsEnabled = true;
+                                     this.Effect = null;
+                                 }, System.Windows.Threading.DispatcherPriority.Normal
+                             );
+                     }));
+                
                 newWindowThread.SetApartmentState(ApartmentState.STA);
+                // newWindowThread.Priority = ThreadPriority.Normal;
                 newWindowThread.IsBackground = true;
                 newWindowThread.Start();
-                */
-                ExportData();
+
+                //Thread thread = new Thread(UpdateProgress);
+                //thread.Start(PB);
+                Thread newWindowThread2 = new Thread(new ThreadStart(() =>
+                {
+                    ExportData();
+                    bool uiAccess = dataGridExport.Dispatcher.CheckAccess();
+                    DTR.Clear();
+                    if (uiAccess)
+                    {                        
+                        CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+                    }
+                    else
+                        dataGridExport.Dispatcher.Invoke(
+                                    () =>
+                                    {
+                                        CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+                                    }, System.Windows.Threading.DispatcherPriority.Normal
+                                );
+                }));
+                newWindowThread2.SetApartmentState(ApartmentState.STA);
+                // newWindowThread.Priority = ThreadPriority.Normal;
+                newWindowThread2.IsBackground = true;
+                newWindowThread2.Start();
+                //System.Windows.Threading.Dispatcher.Run();
+                // ExportData();
                 //newWindowThread.Abort();
+                }
+                   else
+                {
+                    ExportData();
+                    DTR.Clear();
+                    CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+                }
+                    
+
             }
+            this.IsEnabled = true;
             this.Effect = null;
             UpdateLayout();
         }
+
         private void buttonExport_Click(object sender, RoutedEventArgs e)
         {
             Export_Click();
@@ -514,8 +755,9 @@ namespace SvodExcel
             Export_Click();
         }
 
-        public void ExportData()//вставляем в общий файл данные
+        public void ExportData(SvodExcel.ProgressBar PBn=null)//вставляем в общий файл данные
         {
+            //MessageBox.Show(PBn.ToString());
             string pathB = Properties.Settings.Default.PathToGlobal + "\\" + Properties.Settings.Default.GlobalMarker;
             FileInfo localdata;
             ClearHang();
@@ -563,16 +805,18 @@ namespace SvodExcel
                     BlinkEnd = 1;
                 for (int i = BlinkEnd; i < (DTR.Count + BlinkEnd); i++)
                 {
+                    //System.Windows.Threading.Dispatcher.Run();
+                    //System.Windows.Threading.Dispatcher disp = System.Windows.Threading.Dispatcher.CurrentDispatcher;
                     ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
                     ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
                     ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
                     ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
                     ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
                     ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
+                    ExportCursor = i- BlinkEnd;
                 }
                 exBook.Save();
                 exBook.Close(true);
-
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 File.Move(pathA, pathA.Substring(0, pathA.Length - 5) + " " + timeforname + ".xlsx");
@@ -637,9 +881,6 @@ namespace SvodExcel
                 localdata = new FileInfo(pathB);
                 localdata.IsReadOnly = false;
                 File.Delete(pathB);
-                DTR.Clear();
-                CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
-
             }
         }
         public void ClearHang()
@@ -1680,6 +1921,15 @@ namespace SvodExcel
         {
             StartListTeacher();
             LVEWY.Show();
+        }
+
+        private void SvodExcel_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if(OwnedWindows.Count>0)
+            {
+                for(int i=0;i>)
+            }
+            
         }
 
         public void ConnectDisconnect()
