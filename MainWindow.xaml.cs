@@ -108,94 +108,9 @@ namespace SvodExcel
                 DataWork.UpdateTeachersList(exApp);
             }
 
-            //TimerCallback timeCB = new TimerCallback(UpdateProgress);
-
-            //Timer time = new Timer(timeCB, null, 0, 100);
         }
-        //public delegate void NextPrimeDelegate();
-        private void UpdateProgress(object state)
-        {
-            double pb_max=0;
-            double pb_value=0;
-            bool uiAccess = PB.Dispatcher.CheckAccess();
-            if (uiAccess)
-            {
-                pb_max = PB.PB.Maximum;
-                pb_value = PB.PB.Value;
-            }
-            else
-                PB.Dispatcher.Invoke(
-                        () =>
-                        {
-                            pb_max = PB.PB.Maximum;
-                            pb_value = PB.PB.Value;
-                        }, System.Windows.Threading.DispatcherPriority.Normal
-                    );
-            if (pb_value < (pb_max - 1))
-            {
-                //MessageBox.Show(pb_value.ToString() + " < " + (pb_max - 1).ToString());
-
-                
-
-                if (uiAccess)
-                {
-                    PB.PB.Value = ExportCursor;
-                    PB.ProgressText.Content = ExportCursor.ToString();
-                    PB.UpdateLayout();
-                    pb_max = PB.PB.Maximum;
-                    pb_value = PB.PB.Value;
-                }
-                else
-                    PB.Dispatcher.Invoke(
-                        () =>
-                        {
-                            PB.PB.Value = ExportCursor;
-                            PB.ProgressText.Content = ExportCursor.ToString();
-                            PB.UpdateLayout();
-                            pb_max = PB.PB.Maximum;
-                            pb_value = PB.PB.Value;
-                        }, System.Windows.Threading.DispatcherPriority.Normal
-                    );
-            }
-            else
-            {
-                uiAccess = PB.Dispatcher.CheckAccess();
-                if (uiAccess)
-                    PB.Close();
-                else
-                    PB.Dispatcher.Invoke(
-                            () =>
-                            {
-                                PB.Close();
-                            }, System.Windows.Threading.DispatcherPriority.Normal
-                        );
-                uiAccess = this.Dispatcher.CheckAccess();
-                if (uiAccess)
-                {
-                    this.IsEnabled = true;
-                    this.Effect = null;
-                }
-                else
-                    this.Dispatcher.Invoke(
-                        () =>
-                        {
-                            this.IsEnabled = true;
-                            this.Effect = null;
-                        }, System.Windows.Threading.DispatcherPriority.Normal
-                    );
-                Thread.CurrentThread.Abort();
-            }     
-
-            //bool uiAccess = labelTech.Dispatcher.CheckAccess();
-            //if (uiAccess)
-            //{
-            //    labelTech.Content = ExportCursor.ToString();
-            //    ExportCursor += 1;
-            //}                
-            //else
-            //    labelTech.Dispatcher.Invoke(() => { labelTech.Content = ExportCursor.ToString(); ExportCursor += 1; });
-            //System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(new NextPrimeDelegate(CheckNextNumber),System.Windows.Threading.DispatcherPriority.Normal);
-        }
+       
+       
         private void SvodExcel_Loaded(object sender, RoutedEventArgs e)
         {
             DTR.Clear();
@@ -587,6 +502,7 @@ namespace SvodExcel
                 {
                 PB = new SvodExcel.ProgressBar();
                 PB.Owner = this;
+                WindowStartupLocation = WindowStartupLocation.Manual;
                 PB.ProgressText.Visibility = Visibility.Visible;
                 PB.ViewProgress = true;
                     //Binding binding = new Binding();
@@ -641,24 +557,17 @@ namespace SvodExcel
                                  }, System.Windows.Threading.DispatcherPriority.Normal
                              );
 
-
-                         //TimerCallback timeCB = new TimerCallback(UpdateProgress);
-                         //Timer time = new Timer(timeCB, null, 0, 100);
-
-                         //MessageBox.Show(pb_value.ToString() + " < " + (pb_max - 1).ToString());
-
                          
                          while (pb_value < (pb_max - 1))
                          {
-                             //MessageBox.Show(pb_value.ToString() + " < " + (pb_max - 1).ToString());
 
                              uiAccess = PB.Dispatcher.CheckAccess();
                              if (uiAccess)
                              {
                                  PB.PB.Value = ExportCursor;
-                                 PB.ProgressText.Content = ExportCursor.ToString();
+                                 PB.ProgressText.Content = ExportCursor.ToString() + " / " + PB.PB.Maximum.ToString();
                                  PB.UpdateLayout();
-                                 pb_max = PB.PB.Maximum;
+                                 //pb_max = PB.PB.Maximum;
                                  pb_value = PB.PB.Value;
                              }
                              else
@@ -666,9 +575,9 @@ namespace SvodExcel
                                      () =>
                                      {
                                          PB.PB.Value = ExportCursor;
-                                         PB.ProgressText.Content = ExportCursor.ToString();
+                                         PB.ProgressText.Content = ExportCursor.ToString() + " / " + PB.PB.Maximum.ToString();
                                          PB.UpdateLayout();
-                                         pb_max = PB.PB.Maximum;
+                                        // pb_max = PB.PB.Maximum;
                                          pb_value = PB.PB.Value;
                                      }, System.Windows.Threading.DispatcherPriority.Normal
                                  );
@@ -709,9 +618,10 @@ namespace SvodExcel
                 //thread.Start(PB);
                 Thread newWindowThread2 = new Thread(new ThreadStart(() =>
                 {
-                    ExportData();
+                    while(DTR.Count>0)
+                        ExportData();
                     bool uiAccess = dataGridExport.Dispatcher.CheckAccess();
-                    DTR.Clear();
+                    //DTR.Clear();
                     if (uiAccess)
                     {                        
                         CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
@@ -734,8 +644,9 @@ namespace SvodExcel
                 }
                    else
                 {
-                    ExportData();
-                    DTR.Clear();
+                    while (DTR.Count > 0)
+                        ExportData();
+                    //DTR.Clear();
                     CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
                 }
                     
@@ -783,18 +694,18 @@ namespace SvodExcel
                         MessageBox.Show("Ошибка обращения к локальной копии сводного документа.\n(" + pathC + ")\nПерезапустите компьютер");
                         return;
                     }
-
                 }
                 StreamWriter sw = File.CreateText(pathB);
                 String host = System.Net.Dns.GetHostName();
                 System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList[0];
                 sw.WriteLine(ip.ToString());
                 sw.Close();
+                FileInfo employed = new FileInfo(pathB);
                 string pathA = Properties.Settings.Default.PathToGlobalData;
                 File.Copy(pathA, pathC);
                 //var exApp = new Microsoft.Office.Interop.Excel.Application();
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+                
                 localdata = new FileInfo(pathC);
                 localdata.IsReadOnly = false;
                 var exBook = exApp.Workbooks.Open(pathC);
@@ -803,17 +714,45 @@ namespace SvodExcel
                 var lastcell = ExSheet.Cells.SpecialCells(Type: Microsoft.Office.Interop.Excel.XlCellType.xlCellTypeLastCell);
                 if (ExSheet.Cells[lastcell.Row, 2].Value != null || ExSheet.Cells[lastcell.Row, 3].Value != null || ExSheet.Cells[lastcell.Row, 4].Value != null || ExSheet.Cells[lastcell.Row, 5].Value != null || ExSheet.Cells[lastcell.Row, 6].Value != null || ExSheet.Cells[lastcell.Row, 7].Value != null)
                     BlinkEnd = 1;
-                for (int i = BlinkEnd; i < (DTR.Count + BlinkEnd); i++)
+                int bufInt = DTR.Count;
+                bool uiAccess;
+                for (int i = BlinkEnd; i < (bufInt + BlinkEnd); i++)
                 {
                     //System.Windows.Threading.Dispatcher.Run();
                     //System.Windows.Threading.Dispatcher disp = System.Windows.Threading.Dispatcher.CurrentDispatcher;
-                    ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
-                    ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
-                    ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
-                    ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
-                    ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
-                    ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
-                    ExportCursor = i- BlinkEnd;
+                    //ExSheet.Cells[lastcell.Row + i, 2] = DTR[i - BlinkEnd].Date;
+                    //ExSheet.Cells[lastcell.Row + i, 3] = DTR[i - BlinkEnd].Time;
+                    //ExSheet.Cells[lastcell.Row + i, 4] = DTR[i - BlinkEnd].Teacher;
+                    //ExSheet.Cells[lastcell.Row + i, 5] = DTR[i - BlinkEnd].Group;
+                    //ExSheet.Cells[lastcell.Row + i, 6] = DTR[i - BlinkEnd].Category;
+                    //ExSheet.Cells[lastcell.Row + i, 7] = DTR[i - BlinkEnd].Place;
+                    ExSheet.Cells[lastcell.Row + i, 2] = DTR[0].Date;
+                    ExSheet.Cells[lastcell.Row + i, 3] = DTR[0].Time;
+                    ExSheet.Cells[lastcell.Row + i, 4] = DTR[0].Teacher;
+                    ExSheet.Cells[lastcell.Row + i, 5] = DTR[0].Group;
+                    ExSheet.Cells[lastcell.Row + i, 6] = DTR[0].Category;
+                    ExSheet.Cells[lastcell.Row + i, 7] = DTR[0].Place;
+                    DTR.RemoveAt(0);
+                    uiAccess = dataGridExport.Dispatcher.CheckAccess();
+                    if (uiAccess)
+                    {
+                        CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+                        dataGridExport.UpdateLayout();
+                    }
+                    else
+                        dataGridExport.Dispatcher.Invoke(
+                                    () =>
+                                    {
+                                        CollectionViewSource.GetDefaultView(dataGridExport.ItemsSource).Refresh();
+                                        dataGridExport.UpdateLayout();
+                                    }, System.Windows.Threading.DispatcherPriority.Normal
+                                );                    
+                    ExportCursor +=1;
+                    if ((DateTime.Now.Subtract(employed.CreationTime.ToLocalTime()).TotalMinutes > (Properties.Settings.Default.WaitingInLine - 1)))
+                    {
+                        break;
+                    }
+
                 }
                 exBook.Save();
                 exBook.Close(true);
@@ -903,7 +842,8 @@ namespace SvodExcel
                     int i = 0;
                     while (File.Exists(pathB))
                     {
-                        if (i > 10000)
+                        Thread.Sleep(200);
+                        if (i > 100)
                             break;
                         i++;
                     }
@@ -1927,9 +1867,75 @@ namespace SvodExcel
         {
             if(OwnedWindows.Count>0)
             {
-                for(int i=0;i>)
+                for(int i=0;i>OwnedWindows.Count;i++)
+                {
+                        OwnedWindows[i].Show();
+                        OwnedWindows[i].Activate();
+                        OwnedWindows[i].Focus();
+                        OwnedWindows[i].Top = this.Top;
+                        OwnedWindows[i].Left = this.Left;
+                        OwnedWindows[i].Title += "1";
+                }
+            }        
+            if(PB!=null)
+            {
+                PB.Show();
+                PB.Activate();
+                PB.Focus();
+                PB.Top = this.Top+this.Height/2 - PB.Height/2;
+                PB.Left = this.Left+this.Width/2 - PB.Width/2;
+                PB.Title += "1";
             }
-            
+        }
+
+        private void SvodExcel_LocationChanged(object sender, EventArgs e)
+        {
+            if (OwnedWindows.Count > 0)
+            {
+                for (int i = 0; i > OwnedWindows.Count; i++)
+                {
+                        OwnedWindows[i].Show();
+                        OwnedWindows[i].Activate();
+                        OwnedWindows[i].Focus();
+                        OwnedWindows[i].Top = this.Top;
+                        OwnedWindows[i].Left = this.Left;
+                        OwnedWindows[i].Title += "1";
+                }
+            }
+            if (PB != null)
+            {
+                PB.Show();
+                PB.Activate();
+                PB.Focus();
+                PB.Top = this.Top + this.Height / 2 - PB.Height / 2;
+                PB.Left = this.Left + this.Width / 2 - PB.Width / 2;
+                PB.Title += "1";
+            }
+        }
+
+        private void SvodExcel_Activated(object sender, EventArgs e)
+        {
+            if (OwnedWindows.Count > 0)
+            {
+                for (int i = 0; i > OwnedWindows.Count; i++)
+                {
+                    OwnedWindows[i].Show();
+                    OwnedWindows[i].Activate();
+                    OwnedWindows[i].Focus();
+                    OwnedWindows[i].Top = this.Top;
+                    OwnedWindows[i].Left = this.Left;
+                    OwnedWindows[i].Title += "1";
+                }
+            }
+            if (PB != null)
+            {
+                PB.Show();
+                PB.Activate();
+                PB.Focus();
+                PB.Top = this.Top + this.Height / 2 - PB.Height / 2;
+                PB.Left = this.Left + this.Width / 2 - PB.Width / 2;
+                PB.Title += "1";
+            }
         }
 
         public void ConnectDisconnect()

@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:local="clr-namespace:SvodExcel"
         mc:Ignorable="d"
-        Title="Общее расписание" Height="450" Width="800" Icon="Images\excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded" Closing="SvodExcel_Closing" ResizeMode="CanResizeWithGrip" Drop="SvodExcel_Drop" AllowDrop="True" GotFocus="SvodExcel_GotFocus">
+        Title="Общее расписание" Height="450" Width="800" Icon="Images\excel_import.ico" MinWidth="800" MinHeight="450" Closed="SvodExcel_Closed" Loaded="SvodExcel_Loaded" Closing="SvodExcel_Closing" ResizeMode="CanResizeWithGrip" Drop="SvodExcel_Drop" AllowDrop="True" GotFocus="SvodExcel_GotFocus" LocationChanged="SvodExcel_LocationChanged" Activated="SvodExcel_Activated">
     <Window.Resources>
         <Image x:Key="excel_import_enable" Source="Images\excel_import.png"></Image>
         <Image x:Key="excel_import_disable" Source="Images\excel_import_disable.png"></Image>
