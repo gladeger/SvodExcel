@@ -30,6 +30,19 @@ namespace SvodExcel
         public NoneTeacher(){}
     }
 
+    public struct ErrorRowInIDFsAndLinkToOtherRow
+    {
+        public int ErrorFile;
+        public int ErrorRow;
+        public int LinkFile;
+        public int LinkRow;
+    }
+public struct ErrorRowInIDFsAndLinkToRowOnSvod
+    {
+        public int ErrorFile;
+        public int ErrorRow;
+        public int LinkRow;
+    }
     public partial class OpenFileTable : Window
     {
         List<string> InputFileName = new List<string>();
@@ -48,6 +61,8 @@ namespace SvodExcel
         private bool ClickToAddRow = true;
         public ListViewEditWindow LVEW = new ListViewEditWindow();
         public ListViewEditWindow LVEWY = new ListViewEditWindow();
+        public List<ErrorRowInIDFsAndLinkToOtherRow> ERLR = new List<ErrorRowInIDFsAndLinkToOtherRow>();
+        public List<ErrorRowInIDFsAndLinkToRowOnSvod> ERLS = new List<ErrorRowInIDFsAndLinkToRowOnSvod>();
         public OpenFileTable(string[] dataString = null, Window OwnerWindow = null)
         {
             InitializeComponent();
@@ -507,7 +522,7 @@ namespace SvodExcel
                     {
                         if (IDFs[i].InputDataFileRows[j].Intersection(SvodData[l]))
                         {
-                            if(
+                            /*if(
                                 MessageBox.Show(
                                     "Пересекаются записи \n" +
                                     "из файла\n" +
@@ -525,7 +540,14 @@ namespace SvodExcel
                             {
                                 return;
                             }
-                            
+                            */
+                            ERLS.Add(new ErrorRowInIDFsAndLinkToRowOnSvod
+                                {
+                                    ErrorFile = i,
+                                    ErrorRow = j,
+                                    LinkRow = l
+                                }
+                            );
                         }
                     }
                 }
@@ -545,6 +567,7 @@ namespace SvodExcel
                         {
                             if (IDFs[i].InputDataFileRows[j].Intersection(IDFs[k].InputDataFileRows[m]))
                             {
+                                /*
                                 if(
                                     MessageBox.Show(
                                         "Пересекаются записи \n" +
@@ -565,7 +588,15 @@ namespace SvodExcel
                                 {
                                     return;
                                 }
-                                
+                                */
+                                ERLR.Add(new ErrorRowInIDFsAndLinkToOtherRow
+                                    {
+                                        ErrorFile = i,
+                                        ErrorRow = j,
+                                        LinkFile = k,
+                                        LinkRow = m
+                                    }
+                                );
                             }
                             else
                             { 
@@ -575,6 +606,7 @@ namespace SvodExcel
                     }
                 }
             }
+            dataGridExport.UpdateLayout();
         }
         private void buttonDeleteFile_Click(object sender, RoutedEventArgs e)
         {
@@ -1004,6 +1036,30 @@ namespace SvodExcel
         private void buttonListTeacher_Click(object sender, RoutedEventArgs e)
         {
             LVEWY.Show();
+        }
+
+        private void dataGridExport_LayoutUpdated(object sender, EventArgs e)
+        {
+            if(ERLR.Count>0||ERLS.Count>0)
+            {
+                for (int i= 0;i< dataGridExport.Items.Count;i++)
+                {
+                    DataGridRow row = (DataGridRow)dataGridExport.ItemContainerGenerator.ContainerFromIndex(i);
+                    SolidColorBrush brush = new SolidColorBrush(Colors.LawnGreen);
+                    row.Background = brush;
+                }
+                for(int i=0;i<ERLS.Count;i++)
+                {
+                    if(ERLS[i].ErrorFile==listBoxInputFiles.SelectedIndex)
+                    {
+
+                    }
+                }
+                for (int i = 0; i < ERLR.Count; i++)
+                {
+
+                }
+            }
         }
     }
 }
