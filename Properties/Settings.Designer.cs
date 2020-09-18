@@ -25,7 +25,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel\\РАСП.xlsx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.125\\net\\SvodExcel\\РАСП.xlsx")]
         public string PathToGlobalData {
             get {
                 return ((string)(this["PathToGlobalData"]));
@@ -55,7 +55,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.125\\net\\SvodExcel")]
         public string PathToGlobal {
             get {
                 return ((string)(this["PathToGlobal"]));
@@ -127,7 +127,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.125\\net\\SvodExcel")]
         public string PathNet {
             get {
                 return ((string)(this["PathNet"]));
@@ -172,7 +172,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel\\РАСП.xlsx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.125\\net\\SvodExcel\\РАСП.xlsx")]
         public string PathToGlobalDataDefault {
             get {
                 return ((string)(this["PathToGlobalDataDefault"]));
@@ -217,7 +217,7 @@ namespace SvodExcel.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.251\\net\\SvodExcel")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\192.168.1.125\\net\\SvodExcel")]
         public string PathToGlobalDefault {
             get {
                 return ((string)(this["PathToGlobalDefault"]));

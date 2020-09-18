@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="PathToGlobalData" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel\РАСП.xlsx</Value>
+      <Value Profile="(Default)">\\192.168.1.125\net\SvodExcel\РАСП.xlsx</Value>
     </Setting>
     <Setting Name="PathVariable1" Type="System.String" Scope="Application">
       <Value Profile="(Default)">D:\Repos\SvodExcel\РАСП.xlsx</Value>
@@ -12,7 +12,7 @@
       <Value Profile="(Default)">C:\Users\Администратор ОК\source\repos\SvodExcel\РАСП.xlsx</Value>
     </Setting>
     <Setting Name="PathToGlobal" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel</Value>
+      <Value Profile="(Default)">\\192.168.1.125\net\SvodExcel</Value>
     </Setting>
     <Setting Name="GlobalData" Type="System.String" Scope="Application">
       <Value Profile="(Default)">РАСП.xlsx</Value>
@@ -33,7 +33,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PathNet" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel</Value>
+      <Value Profile="(Default)">\\192.168.1.125\net\SvodExcel</Value>
     </Setting>
     <Setting Name="NameSvodExcel" Type="System.String" Scope="User">
       <Value Profile="(Default)">РАСП.xlsx</Value>
@@ -45,7 +45,7 @@
       <Value Profile="(Default)">RFadmin111</Value>
     </Setting>
     <Setting Name="PathToGlobalDataDefault" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel\РАСП.xlsx</Value>
+      <Value Profile="(Default)">\\192.168.1.125\net\SvodExcel\РАСП.xlsx</Value>
     </Setting>
     <Setting Name="PathLocalNewData" Type="System.String" Scope="User">
       <Value Profile="(Default)">.\</Value>
@@ -57,7 +57,7 @@
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="PathToGlobalDefault" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">\\192.168.1.251\net\SvodExcel</Value>
+      <Value Profile="(Default)">\\192.168.1.125\net\SvodExcel</Value>
     </Setting>
     <Setting Name="StartAdminMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
